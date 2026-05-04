@@ -1,0 +1,21 @@
+{
+    "name": "IndieGabo.HandyTools.Debugging.Editor",
+    "rootNamespace": "IndieGabo.HandyTools.Editor.Debugging",
+    "references": [
+        "IndieGabo.HandyTools.Runtime",
+        "IndieGabo.HandyTools.Editor",
+        "IndieGabo.HandyTools.Debugging",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,23 @@
+{
+    "name": "IndieGabo.HandyTools.Input",
+    "rootNamespace": "IndieGabo.HandyTools.Input",
+    "references": [
+        "IndieGabo.HandyTools.Runtime",
+        "IndieGabo.HandyTools.Logger",
+        "IndieGabo.HandyTools.Utils",
+        "Unity.InputSystem",
+        "Unity.TextMeshPro",
+        "Unity.Localization",
+        "Unity.Addressables",
+        "Unity.ResourceManager"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

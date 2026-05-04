@@ -1,0 +1,50 @@
+.handy-container {
+    padding-top: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+}
+
+.handy-top-label {
+    margin-bottom: 5px;
+}
+
+.handy-container-horizontal {
+    padding-top: 0;
+    padding-right: 5px;
+    padding-bottom: 0;
+    padding-left: 5px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.label-separator {
+    padding-top: 5px;
+    padding-right: 0;
+    padding-bottom: 5px;
+    padding-left: 0;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+    border-left-color: rgb(137, 137, 137);
+    border-right-color: rgb(137, 137, 137);
+    border-top-color: rgb(137, 137, 137);
+    border-bottom-color: rgb(137, 137, 137);
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 1px;
+    border-left-width: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.tab-content {
+    padding-top: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+}

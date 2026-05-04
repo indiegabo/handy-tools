@@ -1,0 +1,34 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/HandyTools/Editor/Resources/UI%20Toolkit/HandySheet_Style.uss?fileID=7433441132597879392&amp;guid=2ff946a34c4d1234cb53ca8734142f3c&amp;type=3#HandySheet_Style" />
+    <editor:Toolbar>
+        <editor:ObjectField type="UnityEngine.InputSystem.InputActionAsset, Unity.InputSystem" name="field-action-asset" enabled="false" style="flex-grow: 1;" />
+    </editor:Toolbar>
+    <engine:VisualElement name="pane-wrapper" style="flex-grow: 1;">
+        <IndieGabo.HandyTools.UITooling.SplitView name="pane-one" fixed-pane-initial-dimension="150" style="flex-shrink: 0; flex-grow: 1;">
+            <engine:VisualElement name="container-maps" style="flex-grow: 1; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; min-width: 150px;">
+                <engine:VisualElement name="container-label" class="handy-container" style="flex-grow: 0; border-bottom-width: 1px; border-left-color: rgb(176, 176, 176); border-right-color: rgb(176, 176, 176); border-top-color: rgb(176, 176, 176); border-bottom-color: rgb(176, 176, 176);">
+                    <engine:Label text="Maps" style="font-size: 14px; -unity-font-style: bold; border-bottom-width: 0; border-bottom-color: rgb(128, 128, 128);" />
+                </engine:VisualElement>
+                <engine:ListView name="list-maps" allow-add="false" allow-remove="false" virtualization-method="DynamicHeight" show-bound-collection-size="false" horizontal-scrolling="false" />
+            </engine:VisualElement>
+            <IndieGabo.HandyTools.UITooling.SplitView name="pane-two" fixed-pane-initial-dimension="150" style="flex-grow: 0;">
+                <engine:VisualElement name="container-actions" class="handy-container" style="flex-grow: 1; flex-shrink: 0; min-width: 150px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;">
+                    <engine:VisualElement name="container-label" class="handy-container" style="flex-grow: 0; border-bottom-width: 1px; border-left-color: rgb(176, 176, 176); border-right-color: rgb(176, 176, 176); border-top-color: rgb(176, 176, 176); border-bottom-color: rgb(176, 176, 176);">
+                        <engine:Label text="Actions" style="font-size: 14px; -unity-font-style: bold; border-bottom-width: 0; border-bottom-color: rgb(128, 128, 128);" />
+                    </engine:VisualElement>
+                    <engine:ListView name="list-actions" allow-add="false" allow-remove="false" show-bound-collection-size="false" virtualization-method="DynamicHeight" enabled="true" style="visibility: visible; display: flex; flex-grow: 1;" />
+                </engine:VisualElement>
+                <engine:VisualElement name="container-entries" style="flex-grow: 1; padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px; border-left-width: 1px; border-left-color: rgb(75, 75, 75); flex-shrink: 1; min-width: 300px;">
+                    <editor:Toolbar style="align-items: center;">
+                        <engine:Label text="Control Scheme:" name="label-scheme" style="padding-right: 5px;" />
+                        <editor:ToolbarMenu text="None" name="menu-schemes" style="max-width: 166px;" />
+                        <engine:VisualElement name="Separator" style="flex-grow: 1;" />
+                        <editor:ToolbarSpacer />
+                        <editor:ToolbarButton text="Save" name="button-save" />
+                    </editor:Toolbar>
+                    <engine:VisualElement name="content-entries" style="flex-grow: 1;" />
+                </engine:VisualElement>
+            </IndieGabo.HandyTools.UITooling.SplitView>
+        </IndieGabo.HandyTools.UITooling.SplitView>
+    </engine:VisualElement>
+</engine:UXML>

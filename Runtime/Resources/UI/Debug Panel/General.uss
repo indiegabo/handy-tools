@@ -1,0 +1,88 @@
+.debug-panel-overlay {
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+    padding-top: 24px;
+    padding-right: 24px;
+    padding-bottom: 24px;
+    padding-left: 24px;
+    background-color: rgba(0, 0, 0, 0.55);
+}
+
+.debug-panel-window {
+    width: 560px;
+    max-width: 92%;
+    max-height: 88%;
+    padding-top: 12px;
+    padding-right: 12px;
+    padding-bottom: 12px;
+    padding-left: 12px;
+    background-color: rgba(31, 0, 31, 0.92);
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-left-color: rgb(188, 188, 188);
+    border-right-color: rgb(188, 188, 188);
+    border-top-color: rgb(188, 188, 188);
+    border-bottom-color: rgb(188, 188, 188);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.debug-panel-header {
+    height: 40px;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom-width: 1px;
+    border-left-color: rgb(188, 188, 188);
+    border-right-color: rgb(188, 188, 188);
+    border-top-color: rgb(188, 188, 188);
+    border-bottom-color: rgb(188, 188, 188);
+}
+
+.debug-panel-title {
+    color: rgb(188, 188, 188);
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+}
+
+.debug-panel-button {
+    min-width: 84px;
+    height: 30px;
+    color: rgb(248, 248, 248);
+    background-color: rgba(188, 188, 188, 0);
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-left-color: rgb(221, 221, 221);
+    border-right-color: rgb(221, 221, 221);
+    border-top-color: rgb(221, 221, 221);
+    border-bottom-color: rgb(221, 221, 221);
+}
+
+.debug-panel-scrollview {
+    flex-grow: 1;
+}
+
+.section-container {
+    background-color: rgba(23, 3, 26, 0.82);
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-left-color: rgb(200, 200, 200);
+    border-right-color: rgb(200, 200, 200);
+    border-top-color: rgb(200, 200, 200);
+    border-bottom-color: rgb(200, 200, 200);
+    margin-bottom: 5px;
+}

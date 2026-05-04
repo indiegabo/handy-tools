@@ -1,0 +1,16 @@
+{
+    "name": "IndieGabo.HandyTools.GlobalConfig",
+    "rootNamespace": "IndieGabo.HandyTools.GlobalConfig",
+    "references": [
+        "IndieGabo.HandyTools.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

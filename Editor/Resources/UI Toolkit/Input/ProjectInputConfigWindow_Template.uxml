@@ -1,0 +1,12 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/HandyTools/Editor/Resources/UI%20Toolkit/HandySheet_Style.uss?fileID=7433441132597879392&amp;guid=2ff946a34c4d1234cb53ca8734142f3c&amp;type=3#HandySheet_Style" />
+    <engine:VisualElement name="container-player-manager" class="handy-container" style="flex-grow: 0;">
+        <engine:Label text="Player Manager Prefab" emoji-fallback-support="false" class="handy-top-label" />
+        <editor:ObjectField name="field-player-manager-prefab" type="IndieGabo.HandyTools.HandyInputSystem.PlayerManager, IndieGabo.HandyTools.Runtime" />
+    </engine:VisualElement>
+    <engine:VisualElement name="container-number-of-players" class="handy-container" style="flex-grow: 0;">
+        <engine:Label text="Max number of players" class="handy-top-label" />
+        <engine:SliderInt value="1" high-value="8" low-value="1" fill="false" show-input-field="true" inverted="false" name="field-max-number-of-players" />
+        <engine:Label text="Singleplayer" name="label-type-hint" style="margin-top: -1px; margin-left: 5px; -unity-font-style: italic; font-size: 10px;" />
+    </engine:VisualElement>
+</engine:UXML>

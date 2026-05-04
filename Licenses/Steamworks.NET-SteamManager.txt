@@ -1,0 +1,19 @@
+Steamworks.NET SteamManager Notice
+
+Origin
+This notice corresponds to the SteamManager example distributed with
+Steamworks.NET and used as the basis for
+Assets/HandyTools/Runtime/Scripts/Steam/HandySteamManager.cs.
+
+Original Notice
+The SteamManager is designed to work with Steamworks.NET
+This file is released into the public domain.
+Where that dedication is not recognized you are granted a perpetual,
+irrevocable license to copy and modify this file as you see fit.
+
+Upstream Project
+https://github.com/rlabrecque/Steamworks.NET
+
+Redistribution Scope in HandyTools
+HandyTools redistributes only its adapted HandySteamManager.cs source file.
+The Steamworks.NET package itself is not bundled inside Assets/HandyTools.

@@ -1,0 +1,20 @@
+{
+    "name": "IndieGabo.HandyTools.Gameplay.Editor",
+    "rootNamespace": "IndieGabo.HandyTools.Editor.Gameplay",
+    "references": [
+        "IndieGabo.HandyTools.Runtime",
+        "IndieGabo.HandyTools.Editor",
+        "IndieGabo.HandyTools.Gameplay"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

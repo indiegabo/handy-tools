@@ -1,0 +1,19 @@
+{
+    "name": "IndieGabo.HandyTools.Debugging",
+    "rootNamespace": "IndieGabo.HandyTools.Debugging",
+    "references": [
+        "IndieGabo.HandyTools.Runtime",
+        "IndieGabo.HandyTools.Gameplay",
+        "Unity.InputSystem",
+        "UniTask"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

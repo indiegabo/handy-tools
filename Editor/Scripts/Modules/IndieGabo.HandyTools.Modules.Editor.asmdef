@@ -1,0 +1,27 @@
+{
+    "name": "IndieGabo.HandyTools.Modules.Editor",
+    "rootNamespace": "IndieGabo.HandyTools.Editor.Modules",
+    "references": [
+        "IndieGabo.HandyTools.Runtime",
+        "IndieGabo.HandyTools.Editor",
+        "IndieGabo.HandyTools.Debugging.Editor",
+        "IndieGabo.HandyTools.Gameplay.Editor",
+        "IndieGabo.HandyTools.GlobalConfig.Editor",
+        "IndieGabo.HandyTools.Input.Editor",
+        "IndieGabo.HandyTools.Logger.Editor",
+        "IndieGabo.HandyTools.SaveSystem.Editor",
+        "IndieGabo.HandyTools.ScreenShooter.Editor",
+        "IndieGabo.HandyTools.Steam.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,10 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/HandyTools/Resources/UI/Debug%20Panel/General.uss?fileID=7433441132597879392&amp;guid=7ea7b5347e04d6c4c98d6bf8cdec206a&amp;type=3#General" />
+    <engine:VisualElement class="section-container" style="flex-grow: 1; padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px;">
+        <engine:VisualElement style="flex-grow: 0; flex-direction: row; align-items: center; width: 100%; -unity-text-align: middle-left;">
+            <engine:Label text="FPS:" style="color: rgb(221, 221, 221); -unity-font-style: bold;" />
+            <engine:VisualElement name="spacer" style="flex-grow: 1;" />
+            <engine:Label text="60" name="label-fps-counter" style="color: rgb(221, 221, 221); -unity-font-style: normal; font-size: 16px;" />
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>

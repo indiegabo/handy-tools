@@ -1,0 +1,30 @@
+{
+  "name": "com.indiegabo.handy-tools",
+  "version": "2.0.1",
+  "displayName": "Handy Tools",
+  "description": "A collection of tools for Unity. Mostly scripts.",
+  "unity": "2022.3",
+  "unityRelease": "0f1",
+  "documentationUrl": "https://indiegabo.github.io/handy-tools",
+  "changelogUrl": "https://indiegabo.github.io/handy-tools/documentation/CHANGELOG.html",
+  "licensesUrl": "https://github.com/indiegabo/handy-tools/blob/main/LICENSE.md",
+  "author": {
+    "name": "IndieGabo",
+    "email": "indiegabodev@gmail.com",
+    "url": "http://indiegabo.github.io/portfolio"
+  },
+  "keywords": [
+    "events",
+    "patterns",
+    "scripts",
+    "tools",
+    "indiegabo"
+  ],
+  "samples": [],
+  "scripts": {
+    "release": "npm run release-it",
+    "pre-release": "npx auto-changelog -p && mv -f CHANGELOG.md ../../docfx_project/documentation/CHANGELOG.md && docfx ../../docfx_project/docfx.json && echo Go create Unity .meta and the .unitypackage before releasing",
+    "serve-docs": "docfx ../../docfx_project/docfx.json --serve",
+    "build-docs": "docfx ../../docfx_project/docfx.json"
+  }
+}

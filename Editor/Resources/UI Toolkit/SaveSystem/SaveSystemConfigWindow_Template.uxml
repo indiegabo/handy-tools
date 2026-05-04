@@ -1,0 +1,30 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/HandyTools/Editor/Resources/UI%20Toolkit/HandySheet_Style.uss?fileID=7433441132597879392&amp;guid=2ff946a34c4d1234cb53ca8734142f3c&amp;type=3#HandySheet_Style" />
+    <engine:VisualElement name="container-auto-load" class="handy-container-horizontal" style="flex-grow: 0;">
+        <engine:Toggle label="Auto-load on bootstrap?" name="field-auto-load" style="width: 100%;" />
+    </engine:VisualElement>
+    <engine:VisualElement name="container-slot-strategy" class="handy-container" style="flex-grow: 0;">
+        <engine:Label text="Strategy" class="handy-top-label" />
+        <engine:EnumField value="Center" type="IndieGabo.HandyTools.SaveSystem.SlotStrategy, IndieGabo.HandyTools.Runtime" name="field-slot-strategy" />
+    </engine:VisualElement>
+    <engine:VisualElement name="container-max-indexed-slots" class="handy-container" style="flex-grow: 0;">
+        <engine:Label text="Max Indexed Slots" class="handy-top-label" />
+        <engine:SliderInt value="1" high-value="20" low-value="1" fill="false" show-input-field="true" inverted="false" name="field-max-indexed-slots" />
+    </engine:VisualElement>
+    <engine:VisualElement name="container-file-extension" class="handy-container" style="flex-grow: 0;">
+        <engine:Label text="Save file extension" class="handy-top-label" />
+        <engine:TextField name="field-file-extension" value="save" />
+    </engine:VisualElement>
+    <engine:VisualElement name="container-persist-on-destroy" class="handy-container-horizontal" style="flex-grow: 0;">
+        <engine:Label text="Persist On Manager Destroy" />
+        <engine:Toggle name="field-persist-on-destroy" />
+    </engine:VisualElement>
+    <engine:VisualElement name="container-persist-on-quit" class="handy-container-horizontal" style="flex-grow: 0;">
+        <engine:Label text="Persist On Quit" />
+        <engine:Toggle name="field-persist-on-quit" />
+    </engine:VisualElement>
+    <engine:VisualElement name="container-delta-factor" class="handy-container" style="flex-grow: 0;">
+        <engine:Label text="Massive persistance delta factor" focusable="false" tooltip="The higher this number is, less iteration by frame when massively saving." class="handy-top-label" />
+        <engine:SliderInt value="1" high-value="30" low-value="1" fill="false" show-input-field="true" inverted="false" name="field-delta-factor" tooltip="The higher this number is, less iteration by frame when massively saving." />
+    </engine:VisualElement>
+</engine:UXML>

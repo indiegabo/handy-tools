@@ -1,0 +1,21 @@
+{
+    "name": "IndieGabo.HandyTools.Identifying.Editor",
+    "rootNamespace": "IndieGabo.HandyTools.Editor.Identifying",
+    "references": [
+        "IndieGabo.HandyTools.Runtime",
+        "IndieGabo.HandyTools.Editor",
+        "IndieGabo.HandyTools.Identifying",
+        "IndieGabo.HandyTools.Utils"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

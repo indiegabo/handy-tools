@@ -1,0 +1,18 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/HandyTools/Editor/Resources/UI%20Toolkit/HandySheet_Style.uss?fileID=7433441132597879392&amp;guid=2ff946a34c4d1234cb53ca8734142f3c&amp;type=3#HandySheet_Style" />
+    <engine:VisualElement name="container-entry" class="handy-container" style="display: flex; flex-grow: 1;">
+        <engine:VisualElement name="container-static-sprite" style="flex-grow: 0; margin-bottom: 5px;">
+            <engine:Label text="Static Sprite" class="handy-top-label" />
+            <editor:ObjectField name="field-static-sprite" type="UnityEngine.Sprite, UnityEngine.CoreModule" style="margin-bottom: 5px;" />
+            <engine:VisualElement name="static-sprite-preview" style="background-color: rgba(26, 23, 23, 0.25); flex-shrink: 0; max-height: 50px; border-left-color: rgba(190, 190, 190, 0.43); border-right-color: rgba(190, 190, 190, 0.43); border-top-color: rgba(190, 190, 190, 0.43); border-bottom-color: rgba(190, 190, 190, 0.43); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px;" />
+        </engine:VisualElement>
+        <engine:VisualElement name="container-animations" style="flex-grow: 1;">
+            <engine:Label text="Animations" class="handy-top-label" />
+            <engine:ListView virtualization-method="DynamicHeight" reorderable="true" horizontal-scrolling="false" show-border="false" show-add-remove-footer="false" name="listview-animations" selection-type="None" style="display: flex; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; flex-grow: 1;" />
+            <IndieGabo.HandyTools.UITooling.NamedItemCreationForm name="creation-form" style="flex-grow: 0; flex-shrink: 0;" />
+        </engine:VisualElement>
+    </engine:VisualElement>
+    <engine:VisualElement name="container-no-entry" class="handy-container" style="flex-grow: 1; align-items: center; justify-content: center; display: none;">
+        <engine:Label text="Select an action" style="-unity-font-style: bold; font-size: 19px;" />
+    </engine:VisualElement>
+</engine:UXML>

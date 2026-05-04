@@ -1,0 +1,14 @@
+{
+    "name": "IndieGabo.HandyTools.Runtime",
+    "rootNamespace": "IndieGabo.HandyTools",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

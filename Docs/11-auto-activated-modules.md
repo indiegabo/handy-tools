@@ -1,0 +1,151 @@
+# Auto-Activated Modules
+
+This document covers the optional HandyTools modules that default to active when
+no explicit override exists in `HandyModuleSettings`. These modules do not own
+dedicated editor panels.
+
+## How Activation Works
+
+These modules are still optional. They simply use
+`HandyModuleDescriptor.IsActiveByDefault = true`, which means they resolve as
+active until a project stores an explicit state override.
+
+Because they do not appear in the shared modules window, projects that need to
+override their activation should do so through
+`Assets/Resources/HandyTools/Modules/HandyModuleSettings.asset`.
+
+## Summary Table
+
+| Module      | Id            | Default       | Load Order | Bootstrap Body |
+| ----------- | ------------- | ------------- | ---------- | -------------- |
+| Web         | `web`         | On when unset | `170`      | Empty          |
+| Pooling     | `pooling`     | On when unset | `180`      | Empty          |
+| Identifying | `identifying` | On when unset | `190`      | Empty          |
+| Rendering   | `rendering`   | On when unset | `195`      | Empty          |
+
+## Web
+
+### Activation Profile
+
+- Activation mode: Optional
+- Active by default: Yes
+- Load order: `170`
+- Declared dependencies: none
+
+### Responsibilities
+
+Web provides static request and response helpers for package-level HTTP-style
+integrations.
+
+### Runtime Entry Points
+
+- `Runtime/Scripts/Web/WebModuleDefinition.cs`
+- `Runtime/Scripts/Web/WebModuleBootstrapper.cs`
+- `Runtime/Scripts/Web/WebRequest.cs`
+- `Runtime/Scripts/Web/WebResponse.cs`
+- `Runtime/Scripts/Web/WebRequestPerformer.cs`
+
+The bootstrapper body is intentionally empty because the slice exposes helper
+types rather than a runtime service object.
+
+### Notes for AI Agents
+
+- Keep Web as an auto-activated helper slice unless it gains real user-facing
+  configuration or runtime boot responsibilities.
+- The old Strapi-specific wrappers were removed. Do not reintroduce dead API
+  surfaces without real consumers.
+
+## Pooling
+
+### Activation Profile
+
+- Activation mode: Optional
+- Active by default: Yes
+- Load order: `180`
+- Declared dependencies: none
+
+### Responsibilities
+
+Pooling provides generic object pooling primitives and pool initializer support.
+
+### Runtime Entry Points
+
+- `Runtime/Scripts/Pooling/PoolingModuleDefinition.cs`
+- `Runtime/Scripts/Pooling/PoolingModuleBootstrapper.cs`
+- `Runtime/Scripts/Pooling/HandyPool.cs`
+- `Runtime/Scripts/Pooling/IPoolSubject.cs`
+- `Runtime/Scripts/Pooling/HandyPoolInitializer.cs`
+
+The bootstrapper body is empty because actual pool creation is driven by scene
+initializers and consumers rather than by a global startup singleton.
+
+### Notes for AI Agents
+
+- Do not add fake bootstrap-time runtime objects just to justify the module.
+- Preserve the hardened pool lifecycle: clear pools on dismiss, destroy tracked
+  created subjects, and avoid unnecessary prewarm allocations.
+
+## Identifying
+
+### Activation Profile
+
+- Activation mode: Optional
+- Active by default: Yes
+- Load order: `190`
+- Declared dependencies: none
+
+### Responsibilities
+
+Identifying provides the scene-object GUID system used for GUID-backed
+references.
+
+### Runtime Entry Points
+
+- `Runtime/Scripts/Identifying/IdentifyingModuleDefinition.cs`
+- `Runtime/Scripts/Identifying/IdentifyingModuleBootstrapper.cs`
+- `Runtime/Scripts/Identifying/SceneGuids/GuidComponent.cs`
+- `Runtime/Scripts/Identifying/SceneGuids/GuidManager.cs`
+- `Runtime/Scripts/Identifying/SceneGuids/GuidReference.cs`
+
+The bootstrapper is empty because the module exposes types and workflows rather
+than creating a global runtime manager object at startup.
+
+### Notes for AI Agents
+
+- The GUID runtime now lives under `Identifying/SceneGuids` and the runtime
+  namespace `IndieGabo.HandyTools.Identifying.SceneGuids`.
+- This rename is intentionally breaking for source compatibility. Update any
+  consumer `using` directives that referenced the old namespace.
+- Keep the split between scene GUID runtime code and `Utils/Identifying`
+  support code intact.
+- Editor drawers under `Identifying.Editor` serve both the GUID system and the
+  utility identifier types.
+
+## Rendering
+
+### Activation Profile
+
+- Activation mode: Optional
+- Active by default: Yes
+- Load order: `195`
+- Declared dependencies: none
+
+### Responsibilities
+
+Rendering owns rendering-specific helpers such as URP 2D light transitions.
+
+### Runtime Entry Points
+
+- `Runtime/Scripts/Rendering/RenderingModuleDefinition.cs`
+- `Runtime/Scripts/Rendering/RenderingModuleBootstrapper.cs`
+- `Runtime/Scripts/Rendering/Extensions/Light2DExtensions.cs`
+
+The bootstrapper is empty because the slice currently exposes extension helpers
+only.
+
+### Notes for AI Agents
+
+- Keep URP references inside the Rendering asmdef so the main Utils asmdef stays
+  package-clean.
+- If the slice ever gains real configuration, document the change and move it
+  into the configurable modules surface.

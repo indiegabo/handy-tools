@@ -1,0 +1,313 @@
+# Configurable Modules
+
+This document covers the HandyTools modules that appear in the shared modules
+window at `HandyTools/Modules/Configuration`. These modules are optional and
+default to inactive unless a project explicitly activates them.
+
+## Summary Table
+
+| Module        | Id               | Default | Load Order | Dedicated Panel |
+| ------------- | ---------------- | ------- | ---------- | --------------- |
+| Logging       | `logging`        | Off     | `-1000`    | Yes             |
+| Input         | `input`          | Off     | `30`       | Yes             |
+| Gameplay      | `gameplay`       | Off     | `40`       | Yes             |
+| Save System   | `save-system`    | Off     | `100`      | Yes             |
+| Globals       | `global-config`  | Off     | `130`      | Yes             |
+| Steam         | `steam`          | Off     | `150`      | Yes             |
+| ScreenShooter | `screen-shooter` | Off     | `160`      | Yes             |
+| Debugging     | `debugging`      | Off     | `500`      | Yes             |
+
+## Logging
+
+### Activation Profile
+
+- Activation mode: Optional
+- Active by default: No
+- Load order: `-1000`
+- Declared dependencies: none
+
+### Responsibilities
+
+Logging provides colored diagnostic logging for runtime and editor workflows.
+It exists early in the boot sequence so other active modules can emit readable
+logs during startup.
+
+### Runtime Entry Points
+
+- `Runtime/Scripts/Logging/LoggingModuleDefinition.cs`
+- `Runtime/Scripts/Logging/LoggerBootstrapper.cs`
+- `Runtime/Scripts/Logging/HandyLogger.cs`
+- `Runtime/Scripts/Logging/HandyLoggerSetup.cs`
+
+The logger setup asset is created through `HandyGlobalConfig` and resolves to
+`Assets/Resources/Logging/HandyLoggerSetup.asset`.
+
+### Editor Workflow
+
+Use `HandyTools/Modules/Logging` or the shared modules window to change module
+activation and default colors.
+
+### Notes for AI Agents
+
+- Logging is optional. Do not make kernel or Utils code require it.
+- `LoggerBootstrapper` is meaningful only in the editor or when `HANDY_DEBUG`
+  style debug compilation conditions are enabled.
+
+## Input
+
+### Activation Profile
+
+- Activation mode: Optional
+- Active by default: No
+- Load order: `30`
+- Declared dependencies: none
+
+### Responsibilities
+
+Input owns project-level player input bootstrapping, multiplayer input
+configuration, rebinding helpers, and input feedback support types.
+
+### Runtime Entry Points
+
+- `Runtime/Scripts/Input/InputModuleDefinition.cs`
+- `Runtime/Scripts/Input/InputModuleBootstrapper.cs`
+- `Runtime/Scripts/Input/ProjectInputConfig.cs`
+- `Runtime/Scripts/Input/PlayerManager.cs`
+- `Runtime/Scripts/Input/Bindings/*`
+
+`ProjectInputConfig.Bootstrap()` loads or creates
+`Assets/Resources/HandyTools/ProjectInputConfig.asset`, validates the configured
+`PlayerManager` prefab, instantiates it, and marks it `DontDestroyOnLoad`.
+
+### Editor Workflow
+
+Use `HandyTools/Modules/Input` to configure the player manager prefab and the
+maximum player count. Input-owned support types such as rebinders and feedback
+containers also live in the Input slice.
+
+### Notes for AI Agents
+
+- Input-owned helpers belong in Input, not in Utils.
+- If you touch embedded input-related editor fields, use serialized-property
+  flows rather than object-reference assumptions.
+
+## Gameplay
+
+### Activation Profile
+
+- Activation mode: Optional
+- Active by default: No
+- Load order: `40`
+- Declared dependencies: none
+
+### Responsibilities
+
+Gameplay provides the global gameplay lifecycle service and gameplay session
+time tracking. It owns the runtime object that coordinates gameplay state and
+publishes lifecycle events.
+
+### Runtime Entry Points
+
+- `Runtime/Scripts/Gameplay/GameplayModuleDefinition.cs`
+- `Runtime/Scripts/Gameplay/GameplayModuleBootstrapper.cs`
+- `Runtime/Scripts/Gameplay/GameplayServiceBootstrapper.cs`
+- `Runtime/Scripts/Gameplay/GameplayService.cs`
+- `Runtime/Scripts/Gameplay/GameplayTimeScaler.cs`
+
+The gameplay service bootstrapper creates the runtime service object and
+registers it in the global service locator.
+
+### Editor Workflow
+
+Use `HandyTools/Modules/Gameplay` to manage activation and inspect the module
+panel. The gameplay slice does not currently rely on a dedicated global config
+asset.
+
+### Notes for AI Agents
+
+- Gameplay runtime code should resolve through the service surface rather than
+  ad hoc singleton patterns.
+- Keep gameplay-specific time handling inside the Gameplay slice instead of
+  reintroducing a generic Time Management module.
+
+## Save System
+
+### Activation Profile
+
+- Activation mode: Optional
+- Active by default: No
+- Load order: `100`
+- Declared dependencies: none
+
+### Responsibilities
+
+Save System owns slot management, persistence settings, Easy Save integration,
+and optional AES-backed local obfuscation for save data.
+
+### Runtime Entry Points
+
+- `Runtime/Scripts/SaveSystem/SaveSystemModuleDefinition.cs`
+- `Runtime/Scripts/SaveSystem/SaveSystemBootstrapper.cs`
+- `Runtime/Scripts/SaveSystem/SaveSystemConfig.cs`
+- `Runtime/Scripts/SaveSystem/SlotManager.cs`
+- `Runtime/Scripts/SaveSystem/LoadedSlotService.cs`
+
+The config asset resolves to
+`Assets/Resources/SaveSystem/SaveSystemConfig.asset`. Runtime bootstrap creates
+the `SaveSystem` GameObject, registers `SlotManager` and `LoadedSlotService` in
+the global service locator, and can pre-create indexed slots.
+
+### Editor Workflow
+
+Use `HandyTools/Modules/Save System` to control auto boot, slot strategy,
+indexed slot limits, and encryption settings.
+
+### Notes for AI Agents
+
+- Save encryption here is local obfuscation, not strong client-side security.
+- Reuse `Utils/Crypto` instead of creating a new crypto ownership boundary.
+
+## Globals
+
+### Activation Profile
+
+- Activation mode: Optional
+- Active by default: No
+- Load order: `130`
+- Declared dependencies: none
+
+### Responsibilities
+
+Globals provides editable global JSON data backed by a value tree. It is the
+package-wide path-based configuration and lookup surface.
+
+### Runtime Entry Points
+
+- `Runtime/Scripts/GlobalConfig/GlobalConfigModuleDefinition.cs`
+- `Runtime/Scripts/GlobalConfig/GlobalConfigModuleBootstrapper.cs`
+- `Runtime/Scripts/GlobalConfig/Globals.cs`
+- `Runtime/Scripts/GlobalConfig/JsonTree/*`
+
+The runtime module loads JSON from `Assets/Resources/globals`. JsonTree types
+are internal support code for this module and now live under the
+`IndieGabo.HandyTools.GlobalConfig.JsonTree` namespace.
+
+### Editor Workflow
+
+Use `HandyTools/Modules/Globals` to edit the JSON tree, reload from disk, and
+save back to the `globals` resource file.
+
+### Notes for AI Agents
+
+- Treat JsonTree as GlobalConfig-owned support code, not as a standalone module.
+- Preserve the `Resources/globals` contract when changing load or save logic.
+
+## Debugging
+
+### Activation Profile
+
+- Activation mode: Optional
+- Active by default: No
+- Load order: `500`
+- Declared dependencies: none
+
+### Responsibilities
+
+Debugging provides the runtime debug panel, debug settings, and pluggable panel
+sections discovered through attributes.
+
+### Runtime Entry Points
+
+- `Runtime/Scripts/Debugging/DebuggingModuleDefinition.cs`
+- `Runtime/Scripts/Debugging/DebuggingModuleBootstrapper.cs`
+- `Runtime/Scripts/Debugging/DebugPanelBootstrapper.cs`
+- `Runtime/Scripts/Debugging/DebugPanel.cs`
+- `Runtime/Scripts/Debugging/DebugPanelRegistry.cs`
+
+The panel config asset resolves to `Assets/Resources/Debugging/DebugPanel.asset`.
+The module loads late because it is diagnostic tooling rather than core game
+runtime infrastructure.
+
+### Editor Workflow
+
+Use `HandyTools/Modules/Debugging` to toggle the panel, control cursor and pause
+behavior, and edit the embedded toggle `InputAction`.
+
+### Notes for AI Agents
+
+- Embedded `InputAction` editing must use serialized-property workflows.
+- Debugging code may be inactive in non-editor or non-debug targets depending on
+  compile conditions and the runtime bootstrap path.
+
+## Steam
+
+### Activation Profile
+
+- Activation mode: Optional
+- Active by default: No
+- Load order: `150`
+- Declared dependencies: desktop standalone Steamworks support
+
+### Responsibilities
+
+Steam bootstraps the persistent Steamworks.NET manager for supported desktop
+targets and exposes editor visibility into the configured app id and project
+root `steam_appid.txt` file.
+
+### Runtime Entry Points
+
+- `Runtime/Scripts/Steam/SteamModuleDefinition.cs`
+- `Runtime/Scripts/Steam/SteamModuleBootstrapper.cs`
+- `Runtime/Scripts/Steam/HandySteamManager.cs`
+
+The module uses dependency status to block activation on unsupported targets.
+
+### Editor Workflow
+
+Use `HandyTools/Modules/Steam` to inspect the platform dependency state, the
+hardcoded app id, and whether `steam_appid.txt` exists in the project root.
+
+### Notes for AI Agents
+
+- Do not assume Steam is available on mobile, WebGL, or unsupported desktop
+  configurations.
+- Respect the dependency gate and keep platform messaging accurate.
+
+## ScreenShooter
+
+### Activation Profile
+
+- Activation mode: Optional
+- Active by default: No
+- Load order: `160`
+- Declared dependencies: none
+
+### Responsibilities
+
+ScreenShooter owns the runtime screenshot capturer, its trigger input action,
+and the output directory resolution logic.
+
+### Runtime Entry Points
+
+- `Runtime/Scripts/ScreenShooter/ScreenShooterModuleDefinition.cs`
+- `Runtime/Scripts/ScreenShooter/ScreenShooterModuleBootstrapper.cs`
+- `Runtime/Scripts/ScreenShooter/ScreenShooter.cs`
+- `Runtime/Scripts/ScreenShooter/ScreenShooterConfig.cs`
+
+The config asset resolves to
+`Assets/Resources/ScreenShooter/ScreenShooterConfig.asset`. The default trigger
+is `Left Ctrl + F12`, and relative output directories resolve from the project
+root.
+
+### Editor Workflow
+
+Use `HandyTools/Modules/ScreenShooter` to edit the embedded trigger action and
+the output directory.
+
+### Notes for AI Agents
+
+- Preserve relative-path resolution semantics when editing output path logic.
+- Treat the embedded `InputAction` as asset data, not as a standalone asset
+  reference.
+
+Continue with [Auto-Activated Modules](11-auto-activated-modules.md).

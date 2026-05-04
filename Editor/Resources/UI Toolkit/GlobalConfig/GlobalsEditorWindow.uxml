@@ -1,0 +1,31 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/HandyTools/Editor/Resources/UI%20Toolkit/HandySheet_Style.uss?fileID=7433441132597879392&amp;guid=2ff946a34c4d1234cb53ca8734142f3c&amp;type=3#HandySheet_Style" />
+    <ui:VisualElement name="root-container" class="handy-container">
+        <ui:VisualElement name="top-config-row" class="tab-content handy-container">
+            <ui:Label text="GlobalConfig — Settings (template)" class="handy-top-label" />
+            <ui:VisualElement class="handy-container-horizontal">
+                <ui:Button name="btnReload" text="Reload" />
+                <ui:Button name="btnSave" text="Save" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:Label text="Globals Editor" class="label-separator" />
+        <IndieGabo.HandyTools.UITooling.SplitView name="main-split" fixed-pane-index="0" fixed-pane-initial-dimension="160" orientation="Horizontal">
+            <ui:VisualElement name="left-pane" class="tab-content">
+                <ui:VisualElement name="left-tools" class="handy-container-horizontal">
+                    <ui:Button name="btnNewRoot" text="New Root" />
+                </ui:VisualElement>
+                <ui:ListView name="rootList" selection-type="Single" show-bound-collection-size="false" reorderable="false" />
+            </ui:VisualElement>
+            <ui:VisualElement name="right-pane" class="tab-content">
+                <ui:Label name="detailHeader" text="Select a root to edit…" class="label-separator" />
+                <ui:VisualElement name="detail-addbar" class="handy-container-horizontal">
+                    <ui:TextField name="tfAddKey" label="Key" />
+                    <ui:Button name="btnAddString" text="Add String" />
+                    <ui:Button name="btnAddNumber" text="Add Number" />
+                    <ui:Button name="btnAddBool" text="Add Bool" />
+                </ui:VisualElement>
+                <ui:ScrollView name="detailScroll" />
+            </ui:VisualElement>
+        </IndieGabo.HandyTools.UITooling.SplitView>
+    </ui:VisualElement>
+</ui:UXML>

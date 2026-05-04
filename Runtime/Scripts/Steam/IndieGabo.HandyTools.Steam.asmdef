@@ -1,0 +1,17 @@
+{
+    "name": "IndieGabo.HandyTools.Steam",
+    "rootNamespace": "IndieGabo.HandyTools.Steam",
+    "references": [
+        "IndieGabo.HandyTools.Runtime",
+        "com.rlabrecque.steamworks.net"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
