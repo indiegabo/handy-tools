@@ -2,8 +2,7 @@
     "name": "IndieGabo.HandyTools.Web",
     "rootNamespace": "IndieGabo.HandyTools.Web",
     "references": [
-        "IndieGabo.HandyTools.Runtime",
-        "UniTask"
+        "IndieGabo.HandyTools.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

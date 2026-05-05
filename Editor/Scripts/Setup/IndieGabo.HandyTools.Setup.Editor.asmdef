@@ -4,8 +4,8 @@
     "references": [
         "IndieGabo.HandyTools.Runtime",
         "IndieGabo.HandyTools.Editor",
-        "IndieGabo.HandyTools.EssentialsPackage.Editor",
-        "IndieGabo.HandyTools.Input",
+        "IndieGabo.HandyTools.Input.Editor",
+        "IndieGabo.HandyTools.Steam.Editor",
         "IndieGabo.HandyTools.Logger"
     ],
     "includePlatforms": [

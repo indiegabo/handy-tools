@@ -4,7 +4,6 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine;
 using Sirenix.OdinInspector;
-using System.Linq;
 using IndieGabo.HandyTools.Logger;
 
 namespace IndieGabo.HandyTools.Input.Bindings
@@ -13,7 +12,7 @@ namespace IndieGabo.HandyTools.Input.Bindings
     {
         #region Static       
 
-        private static List<InputActionButtonRebinder> ActionButtonRebinders;
+        private static List<InputActionButtonRebinder> _actionButtonRebinders;
 
         // When the action system re-resolves bindings, we want to update our UI in response. While this will
         // also trigger from changes we made ourselves, it ensures that we react to changes made elsewhere. If
@@ -28,11 +27,11 @@ namespace IndieGabo.HandyTools.Input.Bindings
             var actionMap = action?.actionMap ?? obj as InputActionMap;
             var actionAsset = actionMap?.asset ?? obj as InputActionAsset;
 
-            if (ActionButtonRebinders == null) return;
+            if (_actionButtonRebinders == null) return;
 
-            for (var i = 0; i < ActionButtonRebinders.Count; ++i)
+            for (var i = 0; i < _actionButtonRebinders.Count; ++i)
             {
-                var component = ActionButtonRebinders[i];
+                var component = _actionButtonRebinders[i];
                 var referencedAction = component.ActionReference?.action;
                 if (referencedAction == null)
                     continue;
@@ -132,6 +131,17 @@ namespace IndieGabo.HandyTools.Input.Bindings
 
         public void Initialize(InputControlScheme controlScheme)
         {
+            if (_isInitialized)
+            {
+                if (_controlScheme == controlScheme)
+                {
+                    UpdateBindingInfo();
+                    return;
+                }
+
+                Dismiss();
+            }
+
             _controlScheme = controlScheme;
 
             if (ResolveActionAndBinding(out InputAction action, out int bindingIndex))
@@ -139,11 +149,14 @@ namespace IndieGabo.HandyTools.Input.Bindings
                 UpdateBindingInfo();
             }
 
-            ActionButtonRebinders ??= new List<InputActionButtonRebinder>();
+            _actionButtonRebinders ??= new List<InputActionButtonRebinder>();
 
-            ActionButtonRebinders.Add(this);
+            if (!_actionButtonRebinders.Contains(this))
+            {
+                _actionButtonRebinders.Add(this);
+            }
 
-            if (ActionButtonRebinders.Count == 1)
+            if (_actionButtonRebinders.Count == 1)
                 InputSystem.onActionChange += OnActionChange;
 
             _isInitialized = true;
@@ -155,18 +168,23 @@ namespace IndieGabo.HandyTools.Input.Bindings
             _onGoingRebind?.Dispose();
             _onGoingRebind = null;
 
-            if (ActionButtonRebinders != null)
+            if (_actionButtonRebinders != null)
             {
-                ActionButtonRebinders.Remove(this);
+                _actionButtonRebinders.Remove(this);
 
-                if (ActionButtonRebinders.Count == 0)
+                if (_actionButtonRebinders.Count == 0)
                 {
-                    ActionButtonRebinders = null;
+                    _actionButtonRebinders = null;
                     InputSystem.onActionChange -= OnActionChange;
                 }
             }
 
             _isInitialized = false;
+        }
+
+        private void OnDestroy()
+        {
+            Dismiss();
         }
 
         #endregion
@@ -199,7 +217,7 @@ namespace IndieGabo.HandyTools.Input.Bindings
             }
 
             bindingIndex = _actionReference.action.bindings.IndexOf(
-                b => b.groups.Contains(_controlScheme.bindingGroup)
+                b => BindingBelongsToSchemeGroup(b, _controlScheme.bindingGroup)
             );
 
             if (bindingIndex == -1)
@@ -335,7 +353,7 @@ namespace IndieGabo.HandyTools.Input.Bindings
                 if (binding.action == newBinding.action) continue;
 
                 // IF they are not at the same control scheme, we do not care.
-                if (!binding.groups.Contains(_controlScheme.name)) continue;
+                if (!BindingBelongsToSchemeGroup(binding, _controlScheme.bindingGroup)) continue;
 
                 // From here we must empty the other binding.
 
@@ -361,7 +379,7 @@ namespace IndieGabo.HandyTools.Input.Bindings
                 InputBinding binding = action.actionMap.bindings[i];
 
                 // IF they are not at the same control scheme, we do not care.
-                if (!binding.groups.Contains(_controlScheme.name)) continue;
+                if (!BindingBelongsToSchemeGroup(binding, _controlScheme.bindingGroup)) continue;
 
                 if (binding.action == newBinding.action) continue;
 
@@ -377,6 +395,46 @@ namespace IndieGabo.HandyTools.Input.Bindings
         {
             _onGoingRebind?.Dispose();
             _onGoingRebind = null;
+        }
+
+        private static bool BindingBelongsToSchemeGroup(
+            InputBinding binding,
+            string bindingGroup
+        )
+        {
+            string groups = binding.groups;
+            if (string.IsNullOrEmpty(groups) || string.IsNullOrEmpty(bindingGroup))
+            {
+                return false;
+            }
+
+            int startIndex = 0;
+            while (startIndex < groups.Length)
+            {
+                int separatorIndex = groups.IndexOf(';', startIndex);
+                if (separatorIndex < 0)
+                {
+                    separatorIndex = groups.Length;
+                }
+
+                int tokenLength = separatorIndex - startIndex;
+                if (tokenLength == bindingGroup.Length &&
+                    string.Compare(
+                        groups,
+                        startIndex,
+                        bindingGroup,
+                        0,
+                        tokenLength,
+                        StringComparison.Ordinal
+                    ) == 0)
+                {
+                    return true;
+                }
+
+                startIndex = separatorIndex + 1;
+            }
+
+            return false;
         }
 
         [Serializable]

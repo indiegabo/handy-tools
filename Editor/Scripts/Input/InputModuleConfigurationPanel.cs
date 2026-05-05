@@ -22,10 +22,23 @@ namespace IndieGabo.HandyTools.Editor.Input
             InputModuleDefinition.Dependencies;
 
         /// <inheritdoc />
+        protected override bool SupportsStarterSetup => true;
+
+        /// <inheritdoc />
+        protected override string StarterSetupDescription =>
+            "Import the default Input starter assets into Assets/_Project/Input and assign the Player Manager prefab to this module configuration.";
+
+        /// <inheritdoc />
         protected override void BuildPanel(VisualElement root, HandyModuleEditorContext context)
         {
+            _ = context;
+
             ProjectInputConfig.ReloadInstance();
-            ProjectInputConfig config = ProjectInputConfig.Get();
+            if (!ProjectInputConfig.TryGetExisting(out ProjectInputConfig config))
+            {
+                root.Add(CreateMissingConfigHelpBox());
+                return;
+            }
 
             int sanitizedPlayerCount = Mathf.Clamp(config.MaxNumberOfPlayers, 1, 8);
             if (sanitizedPlayerCount != config.MaxNumberOfPlayers)
@@ -46,6 +59,13 @@ namespace IndieGabo.HandyTools.Editor.Input
             root.Add(prefabHelpBox);
 
             RefreshPrefabState(config, prefabHelpBox);
+        }
+
+        /// <inheritdoc />
+        protected override string RunStarterSetup(HandyModuleEditorContext context)
+        {
+            _ = context;
+            return InputModuleStarterSetup.Run();
         }
 
         private static Label CreateIntroLabel()
@@ -132,6 +152,14 @@ namespace IndieGabo.HandyTools.Editor.Input
             prefabHelpBox.text =
                 "The assigned PlayerManager prefab will be instantiated by the Input module bootstrapper.";
             prefabHelpBox.messageType = HelpBoxMessageType.Info;
+        }
+
+        private static HelpBox CreateMissingConfigHelpBox()
+        {
+            return new HelpBox(
+                "The project does not provide ProjectInputConfig.asset yet. Run Starter Setup to import the default Input project assets before editing the module configuration.",
+                HelpBoxMessageType.Warning
+            );
         }
     }
 }

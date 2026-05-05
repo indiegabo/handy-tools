@@ -1,4 +1,5 @@
 using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -19,8 +20,10 @@ namespace IndieGabo.HandyTools.Identifying.SceneGuids
 
         private Guid _guid = Guid.Empty;
 
+        [FoldoutGroup("Guid")]
+        [ReadOnly]
         [SerializeField]
-        private byte[] serializedGuid;
+        private byte[] _serializedGuid;
 
         #endregion
 
@@ -86,14 +89,14 @@ namespace IndieGabo.HandyTools.Identifying.SceneGuids
 #if UNITY_EDITOR
             if (IsAssetOnDisk())
             {
-                serializedGuid = Array.Empty<byte>();
+                _serializedGuid = Array.Empty<byte>();
                 _guid = Guid.Empty;
                 return;
             }
 #endif
 
             EnsureGuidLoaded();
-            serializedGuid = _guid == Guid.Empty
+            _serializedGuid = _guid == Guid.Empty
                 ? Array.Empty<byte>()
                 : _guid.ToByteArray();
         }
@@ -154,18 +157,18 @@ namespace IndieGabo.HandyTools.Identifying.SceneGuids
                 return;
             }
 
-            if (serializedGuid == null || serializedGuid.Length != 16)
+            if (_serializedGuid == null || _serializedGuid.Length != 16)
             {
                 return;
             }
 
-            _guid = new Guid(serializedGuid);
+            _guid = new Guid(_serializedGuid);
         }
 
         private void AssignNewGuid()
         {
             _guid = Guid.NewGuid();
-            serializedGuid = _guid.ToByteArray();
+            _serializedGuid = _guid.ToByteArray();
 
 #if UNITY_EDITOR
             EditorUtility.SetDirty(this);
@@ -181,7 +184,7 @@ namespace IndieGabo.HandyTools.Identifying.SceneGuids
         {
             GuidManager.Remove(_guid);
             _guid = Guid.Empty;
-            serializedGuid = Array.Empty<byte>();
+            _serializedGuid = Array.Empty<byte>();
         }
 
 #if UNITY_EDITOR

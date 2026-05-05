@@ -7,8 +7,17 @@ using UnityEngine;
 
 namespace IndieGabo.HandyTools.Editor.PackageCreation
 {
+    /// <summary>
+    /// Exports Unity project folders into distributable unitypackage files.
+    /// </summary>
     public static class UnityPackageCreator
     {
+        /// <summary>
+        /// Exports the contents of one folder into a unitypackage file.
+        /// </summary>
+        /// <param name="folderPath">Folder that contains the assets to export.</param>
+        /// <param name="relativeOutputPath">Relative path where the package will be written.</param>
+        /// <param name="outputFilename">Output package file name without extension.</param>
         public static void TurnFolderIntoPackage(
             string folderPath,
             string relativeOutputPath,

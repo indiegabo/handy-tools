@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -16,13 +17,14 @@ namespace IndieGabo.HandyTools.Modules
     )]
     public sealed class HandyModuleSettings : ScriptableObject
     {
-        private const string ResourcePath = "HandyTools/Modules/HandyModuleSettings";
+        private const string _resourcePath = "HandyTools/Modules/HandyModuleSettings";
 
 #if UNITY_EDITOR
-        private const string EditorAssetPath =
+        private const string _editorAssetPath =
             "Assets/Resources/HandyTools/Modules/HandyModuleSettings.asset";
 #endif
 
+        [BoxGroup("Modules")]
         [SerializeField] private List<HandyModuleState> _modules = new();
 
         private static HandyModuleSettings _instance;
@@ -94,7 +96,7 @@ namespace IndieGabo.HandyTools.Modules
 
         private static HandyModuleSettings LoadInstance()
         {
-            HandyModuleSettings asset = Resources.Load<HandyModuleSettings>(ResourcePath);
+            HandyModuleSettings asset = Resources.Load<HandyModuleSettings>(_resourcePath);
 
 #if UNITY_EDITOR
             if (asset == null)
@@ -110,7 +112,7 @@ namespace IndieGabo.HandyTools.Modules
         private static HandyModuleSettings LoadOrCreateEditorAsset()
         {
             HandyModuleSettings asset = AssetDatabase.LoadAssetAtPath<HandyModuleSettings>(
-                EditorAssetPath
+                _editorAssetPath
             );
             if (asset != null)
             {
@@ -119,7 +121,7 @@ namespace IndieGabo.HandyTools.Modules
 
             EnsureEditorFolders();
             asset = CreateInstance<HandyModuleSettings>();
-            AssetDatabase.CreateAsset(asset, EditorAssetPath);
+            AssetDatabase.CreateAsset(asset, _editorAssetPath);
             AssetDatabase.SaveAssets();
             return asset;
         }

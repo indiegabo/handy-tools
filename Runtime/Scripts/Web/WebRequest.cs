@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
-using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
@@ -168,7 +167,8 @@ namespace IndieGabo.HandyTools.Web
             {
                 _httpHeaders[key] = value;
                 return this;
-            };
+            }
+            ;
 
             _httpHeaders.Add(key, value);
             return this;
@@ -258,12 +258,12 @@ namespace IndieGabo.HandyTools.Web
         /// Performs the request asynchronously.
         /// </summary>
         /// <returns></returns>
-        public virtual async UniTask<WebResponse> SendAsync()
+        public virtual async Awaitable<WebResponse> SendAsync()
         {
             _unityWebRequest = GenerateRequest();
             UnityWebRequestAsyncOperation operation = _unityWebRequest.SendWebRequest();
 
-            await operation.ToUniTask();
+            await Awaitable.FromAsyncOperation(operation);
 
             WebResponse response = GenerateResponse(_unityWebRequest);
 

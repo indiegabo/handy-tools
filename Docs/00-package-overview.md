@@ -43,26 +43,36 @@ ready.
 
 ## Module Catalog
 
-| Slice         | Kind                  | Default State    | Editor Surface        | Main Runtime Entry                                                 |
-| ------------- | --------------------- | ---------------- | --------------------- | ------------------------------------------------------------------ |
-| Logging       | Configurable module   | Off              | Shared modules window | `LoggingModuleDefinition`, `LoggerBootstrapper`                    |
-| Input         | Configurable module   | Off              | Shared modules window | `InputModuleDefinition`, `ProjectInputConfig.Bootstrap()`          |
-| Gameplay      | Configurable module   | Off              | Shared modules window | `GameplayModuleDefinition`, `GameplayServiceBootstrapper`          |
-| Save System   | Configurable module   | Off              | Shared modules window | `SaveSystemModuleDefinition`, `SaveSystemBootstrapper`             |
-| Globals       | Configurable module   | Off              | Shared modules window | `GlobalConfigModuleDefinition`, `Globals.LoadFromGlobals()`        |
-| Debugging     | Configurable module   | Off              | Shared modules window | `DebuggingModuleDefinition`, `DebugPanelBootstrapper`              |
-| Steam         | Configurable module   | Off              | Shared modules window | `SteamModuleDefinition`, `SteamModuleBootstrapper`                 |
-| ScreenShooter | Configurable module   | Off              | Shared modules window | `ScreenShooterModuleDefinition`, `ScreenShooterModuleBootstrapper` |
-| Web           | Auto-activated module | On when unset    | No panel              | `WebModuleDefinition`                                              |
-| Pooling       | Auto-activated module | On when unset    | No panel              | `PoolingModuleDefinition`                                          |
-| Identifying   | Auto-activated module | On when unset    | No panel              | `IdentifyingModuleDefinition`                                      |
-| Rendering     | Auto-activated module | On when unset    | No panel              | `RenderingModuleDefinition`                                        |
-| Utils         | Utility/support slice | Always available | No panel              | Static helpers only                                                |
+| Slice         | Kind                  | Default State    | Editor Surface        | Main Runtime Entry                                                          |
+| ------------- | --------------------- | ---------------- | --------------------- | --------------------------------------------------------------------------- |
+| Logging       | Configurable module   | Off              | Shared modules window | `LoggingModuleDefinition`, `LoggerBootstrapper`                             |
+| Input         | Configurable module   | Off              | Shared modules window | `InputModuleDefinition`, `ProjectInputConfig.Bootstrap()`                   |
+| Gameplay      | Configurable module   | Off              | Shared modules window | `GameplayModuleDefinition`, `GameplayServiceBootstrapper`, `GameplayConfig` |
+| Save System   | Configurable module   | Off              | Shared modules window | `SaveSystemModuleDefinition`, `SaveSystemBootstrapper`                      |
+| Globals       | Configurable module   | Off              | Shared modules window | `GlobalConfigModuleDefinition`, `Globals.LoadFromGlobals()`                 |
+| Debugging     | Configurable module   | Off              | Shared modules window | `DebuggingModuleDefinition`, `DebugPanelBootstrapper`                       |
+| Steam         | Configurable module   | Off              | Shared modules window | `SteamModuleDefinition`, `SteamModuleBootstrapper`                          |
+| ScreenShooter | Configurable module   | Off              | Shared modules window | `ScreenShooterModuleDefinition`, `ScreenShooterModuleBootstrapper`          |
+| Web           | Auto-activated module | On when unset    | No panel              | `WebModuleDefinition`                                                       |
+| Pooling       | Auto-activated module | On when unset    | No panel              | `PoolingModuleDefinition`                                                   |
+| Identifying   | Auto-activated module | On when unset    | No panel              | `IdentifyingModuleDefinition`                                               |
+| Rendering     | Auto-activated module | On when unset    | No panel              | `RenderingModuleDefinition`                                                 |
+| Utils         | Utility/support slice | Always available | No panel              | Static helpers only                                                         |
 
 ## Documentation Reading Map
 
 - Read [Kernel and Boot Flow](01-kernel-and-boot-flow.md) to understand the
   startup order and module discovery rules.
+- Read [Service Locator Guide](07-service-locator-guide.md) to understand the
+  default-versus-identified registration model and the intended lookup APIs.
+- Read [HandyBus Guide](08-handybus-guide.md) to understand event
+  subscription tokens, dispatch semantics, and event authoring rules.
+- Read [Pooling Guide](09-pooling-guide.md) to understand pool definitions,
+  independent runtimes, and identifier-based pool lookup.
+- Read [Gameplay Guide](12-gameplay-guide.md) to understand lifecycle state,
+  indefinite interruptions, and gameplay time persistence strategy.
+- Read [Planned Modules](../../../Docs/planned-modules.md) to review candidate
+  and planned module investigations before turning an idea into a new slice.
 - Read [Editor Setup and Configuration](02-editor-setup-and-configuration.md)
   to understand menus, setup automation, and asset locations.
 - Read [Assembly Layout and Dependency Rules](03-assembly-layout-and-dependency-rules.md)

@@ -8,6 +8,7 @@ using IndieGabo.HandyTools.Editor.SaveSystem;
 using IndieGabo.HandyTools.Editor.ScreenShooter;
 using IndieGabo.HandyTools.Editor.Steam;
 using IndieGabo.HandyTools.Modules;
+using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -20,29 +21,30 @@ namespace IndieGabo.HandyTools.Editor.Modules
     /// </summary>
     public sealed class HandyToolsModulesWindow : EditorWindow
     {
-        private const string DebuggingModuleId = "debugging";
-        private const string GameplayModuleId = "gameplay";
-        private const string GlobalConfigModuleId = "global-config";
-        private const string InputModuleId = "input";
-        private const string LoggingModuleId = "logging";
-        private const string SaveSystemModuleId = "save-system";
-        private const string ScreenShooterModuleId = "screen-shooter";
-        private const string SteamModuleId = "steam";
+        private const string _debuggingModuleId = "debugging";
+        private const string _gameplayModuleId = "gameplay";
+        private const string _globalConfigModuleId = "global-config";
+        private const string _inputModuleId = "input";
+        private const string _loggingModuleId = "logging";
+        private const string _saveSystemModuleId = "save-system";
+        private const string _screenShooterModuleId = "screen-shooter";
+        private const string _steamModuleId = "steam";
 
         private static readonly ModulePanelRegistration[] _registrations =
         {
-            new(InputModuleId, "Input", new Vector2(900f, 560f), () => new InputModuleConfigurationPanel()),
-            new(GameplayModuleId, "Gameplay", new Vector2(860f, 520f), () => new GameplayModuleConfigurationPanel()),
-            new(SaveSystemModuleId, "Save System", new Vector2(920f, 620f), () => new SaveSystemModuleConfigurationPanel()),
-            new(DebuggingModuleId, "Debugging", new Vector2(900f, 560f), () => new DebuggingModuleConfigurationPanel()),
-            new(LoggingModuleId, "Logging", new Vector2(860f, 520f), () => new LoggingModuleConfigurationPanel()),
-            new(GlobalConfigModuleId, "Globals", new Vector2(1040f, 680f), () => new GlobalConfigModuleConfigurationPanel()),
-            new(SteamModuleId, "Steam", new Vector2(860f, 520f), () => new SteamModuleConfigurationPanel()),
-            new(ScreenShooterModuleId, "ScreenShooter", new Vector2(900f, 560f), () => new ScreenShooterModuleConfigurationPanel())
+            new(_inputModuleId, "Input", new Vector2(900f, 560f), () => new InputModuleConfigurationPanel()),
+            new(_gameplayModuleId, "Gameplay", new Vector2(860f, 520f), () => new GameplayModuleConfigurationPanel()),
+            new(_saveSystemModuleId, "Save System", new Vector2(920f, 620f), () => new SaveSystemModuleConfigurationPanel()),
+            new(_debuggingModuleId, "Debugging", new Vector2(900f, 560f), () => new DebuggingModuleConfigurationPanel()),
+            new(_loggingModuleId, "Logging", new Vector2(860f, 520f), () => new LoggingModuleConfigurationPanel()),
+            new(_globalConfigModuleId, "Globals", new Vector2(1040f, 680f), () => new GlobalConfigModuleConfigurationPanel()),
+            new(_steamModuleId, "Steam", new Vector2(860f, 520f), () => new SteamModuleConfigurationPanel()),
+            new(_screenShooterModuleId, "ScreenShooter", new Vector2(900f, 560f), () => new ScreenShooterModuleConfigurationPanel())
         };
 
+        [HideInInspector]
         [SerializeField]
-        private string _selectedModuleId = InputModuleId;
+        private string _selectedModuleId = _inputModuleId;
 
         /// <summary>
         /// Opens the unified modules configuration window.
@@ -56,49 +58,49 @@ namespace IndieGabo.HandyTools.Editor.Modules
         [MenuItem(HandyToolsEditorMenuPaths.Input, false, 10)]
         private static void OpenInput()
         {
-            OpenAndSelect(InputModuleId);
+            OpenAndSelect(_inputModuleId);
         }
 
         [MenuItem(HandyToolsEditorMenuPaths.Gameplay, false, 11)]
         private static void OpenGameplay()
         {
-            OpenAndSelect(GameplayModuleId);
+            OpenAndSelect(_gameplayModuleId);
         }
 
         [MenuItem(HandyToolsEditorMenuPaths.SaveSystem, false, 12)]
         private static void OpenSaveSystem()
         {
-            OpenAndSelect(SaveSystemModuleId);
+            OpenAndSelect(_saveSystemModuleId);
         }
 
         [MenuItem(HandyToolsEditorMenuPaths.Debugging, false, 13)]
         private static void OpenDebugging()
         {
-            OpenAndSelect(DebuggingModuleId);
+            OpenAndSelect(_debuggingModuleId);
         }
 
         [MenuItem(HandyToolsEditorMenuPaths.Logging, false, 14)]
         private static void OpenLogging()
         {
-            OpenAndSelect(LoggingModuleId);
+            OpenAndSelect(_loggingModuleId);
         }
 
         [MenuItem(HandyToolsEditorMenuPaths.Globals, false, 15)]
         private static void OpenGlobals()
         {
-            OpenAndSelect(GlobalConfigModuleId);
+            OpenAndSelect(_globalConfigModuleId);
         }
 
         [MenuItem(HandyToolsEditorMenuPaths.Steam, false, 16)]
         private static void OpenSteam()
         {
-            OpenAndSelect(SteamModuleId);
+            OpenAndSelect(_steamModuleId);
         }
 
         [MenuItem(HandyToolsEditorMenuPaths.ScreenShooter, false, 17)]
         private static void OpenScreenShooter()
         {
-            OpenAndSelect(ScreenShooterModuleId);
+            OpenAndSelect(_screenShooterModuleId);
         }
 
         /// <summary>

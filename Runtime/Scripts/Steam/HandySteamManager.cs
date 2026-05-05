@@ -25,12 +25,12 @@ namespace IndieGabo.HandyTools.Steam
     [DisallowMultipleComponent]
     public class HandySteamManager : HandyBehaviour
     {
-        private const string AppId = "480";
+        private const string _appId = "480";
 
         /// <summary>
         /// Gets the Steam App ID configured by the runtime manager.
         /// </summary>
-        public static string ConfiguredAppId => AppId;
+        public static string ConfiguredAppId => _appId;
 
         /// <summary>
         /// Gets whether the current compilation target supports Steamworks.
@@ -143,9 +143,9 @@ namespace IndieGabo.HandyTools.Steam
                 // Once you get a Steam AppID assigned by Valve, you need to replace AppId_t.Invalid with it and
                 // remove steam_appid.txt from the game depot. eg: "(AppId_t)480" or "new AppId_t(480)".
                 // See the Valve documentation for more information: https://partner.steamgames.com/doc/sdk/api#initialization_and_shutdown
-                if (!string.IsNullOrEmpty(AppId))
+                if (!string.IsNullOrEmpty(_appId))
                 {
-                    var AppId_t = new AppId_t(Convert.ToUInt32(AppId));
+                    var AppId_t = new AppId_t(Convert.ToUInt32(_appId));
                     if (SteamAPI.RestartAppIfNecessary(AppId_t))
                     {
                         Application.Quit();

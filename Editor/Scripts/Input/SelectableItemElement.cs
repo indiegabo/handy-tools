@@ -3,6 +3,9 @@ using UnityEngine.UIElements;
 
 namespace IndieGabo.HandyTools.Editor
 {
+    /// <summary>
+    /// UI Toolkit element that displays one selectable named item.
+    /// </summary>
     public class SelectableItemElement : VisualElement
     {
         static readonly string TemplatePath
@@ -13,6 +16,9 @@ namespace IndieGabo.HandyTools.Editor
 
         private string _name;
 
+        /// <summary>
+        /// Gets or sets the display name rendered by the element.
+        /// </summary>
         public string Name
         {
             get => _name;
@@ -23,6 +29,9 @@ namespace IndieGabo.HandyTools.Editor
             }
         }
 
+        /// <summary>
+        /// Creates the visual tree for the selectable item element.
+        /// </summary>
         public SelectableItemElement()
         {
             var templateAsset = Resources.Load<VisualTreeAsset>($"{TemplatePath}");

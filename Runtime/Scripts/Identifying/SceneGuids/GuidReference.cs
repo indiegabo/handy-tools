@@ -1,4 +1,5 @@
 ﻿using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -20,15 +21,21 @@ namespace IndieGabo.HandyTools.Identifying.SceneGuids
         private bool _isCacheSet;
         private Guid _guid;
 
+        [FoldoutGroup("Guid")]
+        [ReadOnly]
         [SerializeField]
-        private byte[] serializedGuid;
+        private byte[] _serializedGuid;
 
 #if UNITY_EDITOR
+        [FoldoutGroup("Editor Cache")]
+        [ReadOnly]
         [SerializeField]
-        private string cachedName;
+        private string _cachedName;
 
+        [FoldoutGroup("Editor Cache")]
+        [ReadOnly]
         [SerializeField]
-        private SceneAsset cachedScene;
+        private SceneAsset _cachedScene;
 #endif
 
         private Action<GameObject> _guidAddedDelegate;
@@ -103,7 +110,7 @@ namespace IndieGabo.HandyTools.Identifying.SceneGuids
             }
 
             _guid = target.GetGuid();
-            serializedGuid = _guid == Guid.Empty
+            _serializedGuid = _guid == Guid.Empty
                 ? Array.Empty<byte>()
                 : _guid.ToByteArray();
 
@@ -139,7 +146,7 @@ namespace IndieGabo.HandyTools.Identifying.SceneGuids
         /// </summary>
         public void OnBeforeSerialize()
         {
-            serializedGuid = _guid == Guid.Empty
+            _serializedGuid = _guid == Guid.Empty
                 ? Array.Empty<byte>()
                 : _guid.ToByteArray();
         }
@@ -151,8 +158,8 @@ namespace IndieGabo.HandyTools.Identifying.SceneGuids
         {
             _cachedReference = null;
             _isCacheSet = false;
-            _guid = serializedGuid != null && serializedGuid.Length == 16
-                ? new Guid(serializedGuid)
+            _guid = _serializedGuid != null && _serializedGuid.Length == 16
+                ? new Guid(_serializedGuid)
                 : Guid.Empty;
             InitializeDelegates();
         }
@@ -172,14 +179,14 @@ namespace IndieGabo.HandyTools.Identifying.SceneGuids
         {
             if (targetObject == null)
             {
-                cachedName = string.Empty;
-                cachedScene = null;
+                _cachedName = string.Empty;
+                _cachedScene = null;
                 return;
             }
 
-            cachedName = targetObject.name;
+            _cachedName = targetObject.name;
             string scenePath = targetObject.scene.path;
-            cachedScene = string.IsNullOrWhiteSpace(scenePath)
+            _cachedScene = string.IsNullOrWhiteSpace(scenePath)
                 ? null
                 : AssetDatabase.LoadAssetAtPath<SceneAsset>(scenePath);
         }

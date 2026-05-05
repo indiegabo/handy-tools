@@ -8,8 +8,15 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 namespace IndieGabo.HandyTools.Editor
 {
-    public static class ProjectCreator
+    /// <summary>
+    /// Creates feedback container assets from selected InputActionAsset files.
+    /// </summary>
+    public static class FeedbackContainerCreator
     {
+        /// <summary>
+        /// Validates whether the feedback container creation menu item should be enabled.
+        /// </summary>
+        /// <returns>True when the current selection can create a container.</returns>
         [MenuItem("Assets/HandyTools/Create Input Feedback Container", true, priority = 80)] // Enable validation
         private static bool ValidateCreationMenuItem()
         {
@@ -26,6 +33,9 @@ namespace IndieGabo.HandyTools.Editor
             return projectFile != null;
         }
 
+        /// <summary>
+        /// Creates a feedback container asset from the currently selected input asset.
+        /// </summary>
         [MenuItem("Assets/HandyTools/Create Input Feedback Container", false, priority = 80)]
         private static void RequestProjectCreation()
         {
@@ -35,7 +45,7 @@ namespace IndieGabo.HandyTools.Editor
 
             if (actionAsset == null)
             {
-                HandyLogger.Error($"{nameof(ProjectCreator)}", $"Could not load project file at {assetPath}");
+                HandyLogger.Error($"{nameof(FeedbackContainerCreator)}", $"Could not load project file at {assetPath}");
                 return;
             }
 

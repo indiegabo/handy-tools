@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -10,14 +9,35 @@ using UnityEngine;
 
 namespace IndieGabo.HandyTools.HandyBus
 {
+    /// <summary>
+    /// Discovers event bus types and clears them during editor and runtime
+    /// initialization boundaries.
+    /// </summary>
     public static class EventBusUtil
     {
-        public static IReadOnlyList<Type> EventTypes { get; set; }
-        public static IReadOnlyList<Type> EventBusTypes { get; set; }
+        private static readonly Dictionary<Type, RegisteredBus> _registeredBuses = new();
+        private static readonly List<Type> _eventTypes = new();
+        private static readonly List<Type> _eventBusTypes = new();
+
+        /// <summary>
+        /// Gets all registered event types.
+        /// </summary>
+        public static IReadOnlyList<Type> EventTypes => _eventTypes;
+
+        /// <summary>
+        /// Gets all registered closed event bus types.
+        /// </summary>
+        public static IReadOnlyList<Type> EventBusTypes => _eventBusTypes;
 
 #if UNITY_EDITOR
+        /// <summary>
+        /// Gets or sets the current editor play mode state.
+        /// </summary>
         public static PlayModeStateChange PlayModeState { get; set; }
 
+        /// <summary>
+        /// Hooks editor play mode transitions used to clear runtime event buses.
+        /// </summary>
         [InitializeOnLoadMethod]
         public static void InitializeEditor()
         {
@@ -31,46 +51,86 @@ namespace IndieGabo.HandyTools.HandyBus
 
             if (state == PlayModeStateChange.ExitingPlayMode)
             {
-                ClearAllBusses();
+                ClearAllBuses();
             }
         }
 #endif
 
+        /// <summary>
+        /// Clears all registered event bus state for a new runtime session.
+        /// </summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         public static void Initialize()
         {
-            EventTypes = PredefinedAssemblyUtil.GetTypes(typeof(IEvent));
-            EventBusTypes = InitializeBusses();
+            ClearAllBuses();
         }
 
-        static List<Type> InitializeBusses()
+        internal static void RegisterBus(
+            Type eventType,
+            Type eventBusType,
+            Action clearAction
+        )
         {
-            List<Type> eventBusTypes = new();
-            var typedef = typeof(EventBus<>);
-            foreach (var eventType in EventTypes)
+            if (eventType == null)
             {
-                var busType = typedef.MakeGenericType(eventType);
-                eventBusTypes.Add(busType);
+                throw new ArgumentNullException(nameof(eventType));
             }
 
-            return eventBusTypes;
-        }
+            if (eventBusType == null)
+            {
+                throw new ArgumentNullException(nameof(eventBusType));
+            }
 
-        public static void ClearAllBusses()
-        {
-            if (EventBusTypes == null)
+            if (clearAction == null)
+            {
+                throw new ArgumentNullException(nameof(clearAction));
+            }
+
+            if (_registeredBuses.ContainsKey(eventType))
             {
                 return;
             }
 
-            for (int i = 0; i < EventBusTypes.Count; i++)
+            _registeredBuses.Add(
+                eventType,
+                new RegisteredBus(eventBusType, clearAction)
+            );
+
+            _eventTypes.Add(eventType);
+            _eventBusTypes.Add(eventBusType);
+        }
+
+        /// <summary>
+        /// Clears all registered event bus bindings.
+        /// </summary>
+        public static void ClearAllBuses()
+        {
+            if (_registeredBuses.Count == 0)
             {
-                var busType = EventBusTypes[i];
-                var clearMethod = busType.GetMethod(
-                    "Clear",
-                    BindingFlags.Static | BindingFlags.NonPublic
-                );
-                clearMethod.Invoke(null, null);
+                return;
+            }
+
+            foreach (RegisteredBus registeredBus in _registeredBuses.Values)
+            {
+                registeredBus.Clear();
+            }
+        }
+
+        private readonly struct RegisteredBus
+        {
+            private readonly Action _clearAction;
+
+            public RegisteredBus(Type busType, Action clearAction)
+            {
+                BusType = busType;
+                _clearAction = clearAction;
+            }
+
+            public Type BusType { get; }
+
+            public void Clear()
+            {
+                _clearAction();
             }
         }
     }

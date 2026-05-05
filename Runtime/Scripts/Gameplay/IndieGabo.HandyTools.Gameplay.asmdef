@@ -4,8 +4,7 @@
     "references": [
         "IndieGabo.HandyTools.Runtime",
         "IndieGabo.HandyTools.Logger",
-        "IndieGabo.HandyTools.SaveSystem",
-        "UniTask"
+        "IndieGabo.HandyTools.SaveSystem"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

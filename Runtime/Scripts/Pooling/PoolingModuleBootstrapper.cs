@@ -18,6 +18,7 @@ namespace IndieGabo.HandyTools.Pooling
         /// <inheritdoc />
         public void Bootstrap()
         {
+            PoolRegistry.Bootstrap();
         }
     }
 }

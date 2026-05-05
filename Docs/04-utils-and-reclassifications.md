@@ -28,7 +28,8 @@ do not justify a separate module or a dedicated asmdef.
 
 The former Time Management slice was reduced to utility helpers such as
 `TimeScalerAsync` and `TimeScalerRoutines`. These remain shared helpers rather
-than module candidates.
+than module candidates, and the old residual `Runtime/Scripts/Time Management`
+folder path was removed.
 
 ### JsonTree moved into GlobalConfig
 
@@ -48,7 +49,7 @@ support code.
 URP-specific light helpers were moved into `Runtime/Scripts/Rendering` so the
 main Utils asmdef no longer needs URP references.
 
-## Removed or Deprecated Code
+## Removed Code
 
 These removals matter because they describe current ownership policy:
 

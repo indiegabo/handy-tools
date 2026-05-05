@@ -6,8 +6,12 @@ using UnityEngine;
 namespace IndieGabo.HandyTools.Utils.InspectorFields
 {
     [Serializable]
+    /// <summary>
+    /// Wraps one layer selection so it can be edited through an inspector dropdown.
+    /// </summary>
     public class LayerField
     {
+        [BoxGroup("Layer")]
         [ValueDropdown("GetAllLayers")]
         [OnValueChanged("OnIndexValueChange")]
         [LabelText("Layer")]
@@ -16,7 +20,14 @@ namespace IndieGabo.HandyTools.Utils.InspectorFields
 
         private string _name;
 
+        /// <summary>
+        /// Gets or sets the selected layer index.
+        /// </summary>
         public int index { get => _index; set => _index = value; }
+
+        /// <summary>
+        /// Gets the name of the selected layer.
+        /// </summary>
         public string name => _name;
 
         private void OnIndexValueChange(int index)
@@ -36,7 +47,10 @@ namespace IndieGabo.HandyTools.Utils.InspectorFields
             return list;
         }
 
-        // makes it work with the existing Unity methods (LoadLevel/LoadScene)
+        /// <summary>
+        /// Converts the wrapper to the selected layer index.
+        /// </summary>
+        /// <param name="layerField">Wrapper instance to convert.</param>
         public static implicit operator int(LayerField layerField)
         {
             return layerField.index;

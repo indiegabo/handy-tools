@@ -1,33 +1,44 @@
+using System;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Pool;
 
 namespace IndieGabo.HandyTools.Pooling
 {
     /// <summary>
-    /// Base ScriptableObject pool that manages one ObjectPool per prefab.
+    /// Base ScriptableObject pool definition that can spawn one or more
+    /// independent runtime instances.
     /// </summary>
-    public abstract class HandyPool<TBehaviour> : ScriptableObject where TBehaviour : MonoBehaviour, IPoolSubject<ObjectPool<TBehaviour>>
+    public abstract class HandyPool<TBehaviour> : ScriptableObject
+        where TBehaviour : MonoBehaviour, IPoolSubject<TBehaviour>
     {
         #region Inspector
 
-        [Header("HandyTools")]
+        [BoxGroup("HandyTools")]
         [SerializeField]
         [Min(0)]
         private int _defaultSize;
 
+        [BoxGroup("HandyTools")]
         [SerializeField]
         [Min(1)]
         private int _maxSize = 10000;
 
+        [BoxGroup("HandyTools")]
         [SerializeField]
-        private List<TBehaviour> _prefabs = new();
+        private bool _enableCollectionChecksInPlayerBuilds;
 
-        [Header("Events")]
+        [BoxGroup("Entries")]
+        [SerializeField]
+        [ListDrawerSettings(Expanded = true)]
+        private List<PoolEntryConfiguration> _entries = new();
+
+        [BoxGroup("Events")]
         [SerializeField]
         private UnityEvent _initialized;
 
+        [BoxGroup("Events")]
         [SerializeField]
         private UnityEvent _dismissed;
 
@@ -35,71 +46,60 @@ namespace IndieGabo.HandyTools.Pooling
 
         #region Fields
 
-        private Dictionary<TBehaviour, ObjectPool<TBehaviour>> _pools;
-        private HashSet<TBehaviour> _createdSubjects;
-        private List<TBehaviour> _prewarmedSubjects;
-        private Transform _container;
-        private bool _isAvailable;
+        private HandyPoolRuntime<TBehaviour> _defaultRuntime;
 
         #endregion
 
         #region Getters
 
-        public bool IsAvailable => _isAvailable;
+        /// <summary>
+        /// Gets whether the default runtime instance currently owns active
+        /// pools.
+        /// </summary>
+        public bool IsAvailable => _defaultRuntime != null && _defaultRuntime.IsAvailable;
 
         #endregion
 
         #region Initializing
 
         /// <summary>
-        /// Creates all declared pools and optionally prewarms them.
+        /// Creates one independent runtime instance from this pool definition.
+        /// </summary>
+        /// <returns>Independent pool runtime instance.</returns>
+        public HandyPoolRuntime<TBehaviour> CreateRuntime()
+        {
+            return new HandyPoolRuntime<TBehaviour>(
+                name,
+                BuildRuntimeDefinitions(),
+                _defaultSize,
+                _maxSize,
+                _enableCollectionChecksInPlayerBuilds
+            );
+        }
+
+        /// <summary>
+        /// Initializes the default runtime instance and optionally prewarms all
+        /// configured entries.
         /// </summary>
         /// <param name="container">Optional parent for instantiated subjects.</param>
         /// <param name="initialAmount">
-        /// Prewarm amount per prefab. Fractional values are rounded up.
+        /// Additional prewarm amount per configured subpool. Fractional values
+        /// are rounded up.
         /// </param>
         public void Initialize(Transform container = null, float initialAmount = 0)
         {
-            if (_isAvailable)
-            {
-                Dismiss();
-            }
-
-            EnsureRuntimeState();
-            _container = container;
-            _pools.Clear();
-            _createdSubjects.Clear();
-            _prewarmedSubjects.Clear();
-            _prefabs.ForEach(prefab => RequestPoolCreation(prefab, initialAmount));
-            _isAvailable = true;
+            _defaultRuntime = CreateRuntime();
+            _defaultRuntime.Initialize(container, initialAmount);
             _initialized?.Invoke();
         }
 
         /// <summary>
-        /// Clears all created pools and destroys pooled instances.
+        /// Dismisses the default runtime instance and destroys all tracked
+        /// pooled subjects it owns.
         /// </summary>
         public void Dismiss()
         {
-            EnsureRuntimeState();
-
-            foreach (ObjectPool<TBehaviour> pool in _pools.Values)
-            {
-                pool.Clear();
-            }
-
-            foreach (TBehaviour subject in _createdSubjects)
-            {
-                if (subject != null)
-                {
-                    Destroy(subject.gameObject);
-                }
-            }
-
-            _pools.Clear();
-            _createdSubjects.Clear();
-            _prewarmedSubjects.Clear();
-            _container = null;
-            _isAvailable = false;
+            _defaultRuntime?.Dismiss();
             _dismissed?.Invoke();
         }
 
@@ -108,81 +108,57 @@ namespace IndieGabo.HandyTools.Pooling
         #region Creating
 
         /// <summary>
-        /// Creates a pool for the provided prefab when missing and optionally
-        /// prewarms a number of instances.
+        /// Creates a prefab-keyed subpool in the default runtime when missing
+        /// and optionally prewarms additional instances.
         /// </summary>
         /// <param name="prefab">Prefab used to create pooled instances.</param>
         /// <param name="initialAmount">
-        /// Prewarm amount for the new pool. Fractional values are rounded up.
+        /// Additional prewarm amount for the created subpool. Fractional
+        /// values are rounded up.
         /// </param>
         public void RequestPoolCreation(TBehaviour prefab, float initialAmount = 0)
         {
-            EnsureRuntimeState();
+            EnsureDefaultRuntime().RequestPoolCreation(prefab, initialAmount);
+        }
 
-            if (prefab == null) return;
-            if (_pools.ContainsKey(prefab)) return;
+        /// <summary>
+        /// Creates an identified configured subpool in the default runtime
+        /// when missing and optionally prewarms additional instances.
+        /// </summary>
+        /// <param name="identifier">Configured pool identifier.</param>
+        /// <param name="initialAmount">
+        /// Additional prewarm amount for the created subpool. Fractional
+        /// values are rounded up.
+        /// </param>
+        public void RequestPoolCreation(
+            PoolIdentifier identifier,
+            float initialAmount = 0
+        )
+        {
+            EnsureDefaultRuntime().RequestPoolCreation(identifier, initialAmount);
+        }
 
-            ObjectPool<TBehaviour> pool = new ObjectPool<TBehaviour>(
-                () => Create(prefab),
-                OnTakenFromPool,
-                OnReturnedToPool,
-                OnDestroyInPool,
-                true,
-                _defaultSize,
-                _maxSize
+        /// <summary>
+        /// Creates a new runtime-defined identified subpool in the default
+        /// runtime when missing and optionally prewarms additional instances.
+        /// </summary>
+        /// <param name="identifier">Identifier assigned to the subpool.</param>
+        /// <param name="prefab">Prefab used to create pooled instances.</param>
+        /// <param name="initialAmount">
+        /// Additional prewarm amount for the created subpool. Fractional
+        /// values are rounded up.
+        /// </param>
+        public void RequestPoolCreation(
+            PoolIdentifier identifier,
+            TBehaviour prefab,
+            float initialAmount = 0
+        )
+        {
+            EnsureDefaultRuntime().RequestPoolCreation(
+                identifier,
+                prefab,
+                initialAmount
             );
-
-            _pools.Add(prefab, pool);
-
-            int prewarmCount = Mathf.Max(0, Mathf.CeilToInt(initialAmount));
-            if (prewarmCount <= 0)
-            {
-                return;
-            }
-
-            _prewarmedSubjects.Clear();
-            for (int index = 0; index < prewarmCount; index++)
-            {
-                _prewarmedSubjects.Add(pool.Get());
-            }
-
-            for (int index = 0; index < _prewarmedSubjects.Count; index++)
-            {
-                _prewarmedSubjects[index].ReleaseToPool();
-            }
-
-            _prewarmedSubjects.Clear();
-        }
-
-        #endregion
-
-        #region Pooling Callbacks
-
-        private TBehaviour Create(TBehaviour prefab)
-        {
-            TBehaviour subject = Instantiate(prefab, _container);
-            subject.gameObject.SetActive(false);
-            subject.SetPool(_pools[prefab]);
-            _createdSubjects.Add(subject);
-            return subject;
-        }
-
-        private void OnTakenFromPool(TBehaviour subject)
-        {
-            subject.gameObject.SetActive(true);
-            subject.OnTakenFromPool();
-        }
-
-        private void OnReturnedToPool(TBehaviour subject)
-        {
-            subject.OnReturnedToPool();
-            subject.gameObject.SetActive(false);
-        }
-
-        private void OnDestroyInPool(TBehaviour subject)
-        {
-            _createdSubjects.Remove(subject);
-            Destroy(subject.gameObject);
         }
 
         #endregion
@@ -190,51 +166,234 @@ namespace IndieGabo.HandyTools.Pooling
         #region Getting
 
         /// <summary>
-        /// Gets an instance from the pool for the provided prefab.
+        /// Gets an instance from the default runtime for the provided prefab.
         /// </summary>
         /// <param name="prefab">Prefab pool to use.</param>
         /// <returns>An active pooled instance.</returns>
         public TBehaviour Get(TBehaviour prefab)
         {
-            EnsureRuntimeState();
-            if (prefab == null) return null;
-
-            if (!_pools.TryGetValue(prefab, out ObjectPool<TBehaviour> pool))
-            {
-                RequestPoolCreation(prefab);
-                pool = _pools[prefab];
-            }
-
-            return pool.Get();
+            return EnsureDefaultRuntime().Get(prefab);
         }
 
         /// <summary>
-        /// Attempts to get an instance from an already-created prefab pool.
+        /// Gets an instance from the default runtime for the provided
+        /// identifier.
+        /// </summary>
+        /// <param name="identifier">Configured pool identifier.</param>
+        /// <returns>An active pooled instance.</returns>
+        public TBehaviour Get(PoolIdentifier identifier)
+        {
+            return EnsureDefaultRuntime().Get(identifier);
+        }
+
+        /// <summary>
+        /// Attempts to get an instance from an already-created prefab pool in
+        /// the default runtime.
         /// </summary>
         /// <param name="prefab">Prefab pool to query.</param>
         /// <param name="subject">Retrieved active pooled instance.</param>
         /// <returns>True when the prefab pool already exists.</returns>
         public bool TryGet(TBehaviour prefab, out TBehaviour subject)
         {
+            if (_defaultRuntime != null)
+            {
+                return _defaultRuntime.TryGet(prefab, out subject);
+            }
+
             subject = null;
-            EnsureRuntimeState();
-
-            if (prefab == null) return false;
-
-            if (!_pools.TryGetValue(prefab, out ObjectPool<TBehaviour> pool)) return false;
-
-            subject = pool.Get();
-
-            return true;
+            return false;
         }
 
-        private void EnsureRuntimeState()
+        /// <summary>
+        /// Attempts to get an instance from an already-created identified pool
+        /// in the default runtime.
+        /// </summary>
+        /// <param name="identifier">Configured pool identifier.</param>
+        /// <param name="subject">Retrieved active pooled instance.</param>
+        /// <returns>True when the identified pool already exists.</returns>
+        public bool TryGet(PoolIdentifier identifier, out TBehaviour subject)
         {
-            _pools ??= new Dictionary<TBehaviour, ObjectPool<TBehaviour>>(
-                _prefabs != null ? _prefabs.Count : 0
+            if (_defaultRuntime != null)
+            {
+                return _defaultRuntime.TryGet(identifier, out subject);
+            }
+
+            subject = null;
+            return false;
+        }
+
+        /// <summary>
+        /// Returns one subject to its owning subpool in the default runtime.
+        /// </summary>
+        /// <param name="subject">Subject to return.</param>
+        /// <returns>True when the subject belongs to the default runtime.</returns>
+        public bool Release(TBehaviour subject)
+        {
+            return _defaultRuntime != null && _defaultRuntime.TryRelease(subject);
+        }
+
+        /// <summary>
+        /// Gets whether a prefab-keyed subpool is currently active in the
+        /// default runtime.
+        /// </summary>
+        /// <param name="prefab">Prefab used to resolve the subpool.</param>
+        /// <returns>True when the subpool is active.</returns>
+        public bool HasPool(TBehaviour prefab)
+        {
+            return _defaultRuntime != null && _defaultRuntime.HasPool(prefab);
+        }
+
+        /// <summary>
+        /// Gets whether an identified subpool is currently active in the
+        /// default runtime.
+        /// </summary>
+        /// <param name="identifier">Pool identifier.</param>
+        /// <returns>True when the subpool is active.</returns>
+        public bool HasPool(PoolIdentifier identifier)
+        {
+            return _defaultRuntime != null && _defaultRuntime.HasPool(identifier);
+        }
+
+        /// <summary>
+        /// Attempts to capture runtime counters for one active prefab-keyed
+        /// subpool in the default runtime.
+        /// </summary>
+        /// <param name="prefab">Prefab used to resolve the subpool.</param>
+        /// <param name="statistics">Captured statistics snapshot.</param>
+        /// <returns>True when the subpool is active.</returns>
+        public bool TryGetStatistics(
+            TBehaviour prefab,
+            out PoolStatistics statistics
+        )
+        {
+            if (_defaultRuntime != null)
+            {
+                return _defaultRuntime.TryGetStatistics(prefab, out statistics);
+            }
+
+            statistics = default;
+            return false;
+        }
+
+        /// <summary>
+        /// Attempts to capture runtime counters for one active identified
+        /// subpool in the default runtime.
+        /// </summary>
+        /// <param name="identifier">Pool identifier.</param>
+        /// <param name="statistics">Captured statistics snapshot.</param>
+        /// <returns>True when the subpool is active.</returns>
+        public bool TryGetStatistics(
+            PoolIdentifier identifier,
+            out PoolStatistics statistics
+        )
+        {
+            if (_defaultRuntime != null)
+            {
+                return _defaultRuntime.TryGetStatistics(identifier, out statistics);
+            }
+
+            statistics = default;
+            return false;
+        }
+
+        #endregion
+
+        #region Helpers
+
+        private HandyPoolRuntime<TBehaviour> EnsureDefaultRuntime()
+        {
+            _defaultRuntime ??= CreateRuntime();
+            return _defaultRuntime;
+        }
+
+        private List<PoolRuntimeDefinition<TBehaviour>> BuildRuntimeDefinitions()
+        {
+            List<PoolRuntimeDefinition<TBehaviour>> definitions = new(
+                _entries != null ? _entries.Count : 0
             );
-            _createdSubjects ??= new HashSet<TBehaviour>();
-            _prewarmedSubjects ??= new List<TBehaviour>();
+
+            if (_entries == null)
+            {
+                return definitions;
+            }
+
+            for (int index = 0; index < _entries.Count; index++)
+            {
+                PoolEntryConfiguration entry = _entries[index];
+                if (entry == null || !entry.IsValid)
+                {
+                    continue;
+                }
+
+                definitions.Add(entry.ToRuntimeDefinition(_defaultSize, _maxSize));
+            }
+
+            return definitions;
+        }
+
+        [Serializable]
+        private sealed class PoolEntryConfiguration
+        {
+            [SerializeField]
+            private TBehaviour _prefab;
+
+            [SerializeField]
+            private string _identifier;
+
+            [SerializeField]
+            [Min(-1)]
+            private int _initialCapacity = -1;
+
+            [SerializeField]
+            [Min(-1)]
+            private int _maxSize = -1;
+
+            [SerializeField]
+            [Min(0)]
+            private int _prewarmCount;
+
+            [SerializeField]
+            private bool _collectionCheck = true;
+
+            public TBehaviour Prefab => _prefab;
+
+            public bool IsValid => _prefab != null;
+
+            public PoolRuntimeDefinition<TBehaviour> ToRuntimeDefinition(
+                int defaultSize,
+                int defaultMaxSize
+            )
+            {
+                int initialCapacity = _initialCapacity >= 0
+                    ? _initialCapacity
+                    : defaultSize;
+                int maxSize = _maxSize > 0 ? _maxSize : defaultMaxSize;
+                maxSize = Mathf.Max(1, maxSize);
+                initialCapacity = Mathf.Clamp(initialCapacity, 0, maxSize);
+
+                bool hasIdentifier = TryGetIdentifier(out PoolIdentifier identifier);
+                return new PoolRuntimeDefinition<TBehaviour>(
+                    _prefab,
+                    identifier,
+                    hasIdentifier,
+                    initialCapacity,
+                    maxSize,
+                    _prewarmCount,
+                    _collectionCheck
+                );
+            }
+
+            private bool TryGetIdentifier(out PoolIdentifier identifier)
+            {
+                if (string.IsNullOrWhiteSpace(_identifier))
+                {
+                    identifier = default;
+                    return false;
+                }
+
+                identifier = new PoolIdentifier(_identifier);
+                return true;
+            }
         }
 
         #endregion

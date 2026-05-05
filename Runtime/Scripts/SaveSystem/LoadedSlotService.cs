@@ -1,11 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using IndieGabo.HandyTools.HandyBus;
 using IndieGabo.HandyTools.Logger;
 using UnityEngine.Events;
 using UnityEngine;
-using Cysharp.Threading.Tasks;
 using IndieGabo.HandyTools.Utils;
 
 namespace IndieGabo.HandyTools.SaveSystem
@@ -18,7 +16,7 @@ namespace IndieGabo.HandyTools.SaveSystem
         #region Fields
 
         private LoadedSlot _loadedSlot;
-        private EventBinding<SlotEvent> _slotEventBinding;
+        private EventSubscription<SlotEvent> _slotEventSubscription;
         private readonly Dictionary<SerializableGuid, ISavableEntity> _registry = new();
 
         #endregion
@@ -32,19 +30,14 @@ namespace IndieGabo.HandyTools.SaveSystem
 
         #region Behaviour
 
-        protected virtual void Awake()
-        {
-            _slotEventBinding = new EventBinding<SlotEvent>(OnSlotEvent);
-        }
-
         protected virtual void OnEnable()
         {
-            EventBus<SlotEvent>.Register(_slotEventBinding);
+            _slotEventSubscription = EventBus<SlotEvent>.Subscribe(OnSlotEvent);
         }
 
         protected virtual void OnDisable()
         {
-            EventBus<SlotEvent>.Deregister(_slotEventBinding);
+            _slotEventSubscription.Dispose();
         }
 
         #endregion
@@ -342,8 +335,8 @@ namespace IndieGabo.HandyTools.SaveSystem
         /// by iterating through them and saving them to the loaded slot.
         /// </summary>
         /// <param name="strategy">The persistence strategy to use. Defaults to <see cref="PersistanceStrategy.CacheOnly"/>.</param>
-        /// <returns>A <see cref="Task"/> that represents the asynchronous operation.</returns>
-        public async UniTask PersistBindingsAsync(
+        /// <returns>An awaitable that represents the asynchronous operation.</returns>
+        public async Awaitable PersistBindingsAsync(
             PersistanceStrategy strategy = PersistanceStrategy.CacheOnly
         )
         {
@@ -377,7 +370,7 @@ namespace IndieGabo.HandyTools.SaveSystem
                 // Wait for the next frame to avoid processing overloads.
                 if (i % amountPerFrame == 0 && i != 0)
                 {
-                    await UniTask.Yield();
+                    await Awaitable.NextFrameAsync();
                 }
             }
 
@@ -386,9 +379,9 @@ namespace IndieGabo.HandyTools.SaveSystem
             {
                 // Wait for the next frame one more time to avoid
                 // processing overloads before writing to the file.
-                await UniTask.Yield();
+                await Awaitable.NextFrameAsync();
                 _loadedSlot.Persist();
-                await UniTask.Yield();
+                await Awaitable.NextFrameAsync();
             }
         }
 

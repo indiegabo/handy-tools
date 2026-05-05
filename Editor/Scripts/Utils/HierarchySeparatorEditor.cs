@@ -5,6 +5,9 @@ namespace IndieGabo.HandyTools.Editor.Utils
 {
     [CustomEditor(typeof(HierarchySeparator))]
     [CanEditMultipleObjects]
+    /// <summary>
+    /// Custom inspector for hierarchy separator styling values.
+    /// </summary>
     public class HierarchySeparatorEditor : UnityEditor.Editor
     {
         private SerializedProperty _outlineSize;
@@ -12,6 +15,9 @@ namespace IndieGabo.HandyTools.Editor.Utils
         private SerializedProperty _barColor;
         private SerializedProperty _textColor;
 
+        /// <summary>
+        /// Resolves the serialized properties used by the inspector.
+        /// </summary>
         public void OnEnable()
         {
             _outlineSize = serializedObject.FindProperty("m_OutlineSize");
@@ -20,6 +26,9 @@ namespace IndieGabo.HandyTools.Editor.Utils
             _textColor = serializedObject.FindProperty("m_TextColor");
         }
 
+        /// <summary>
+        /// Draws the custom inspector for the hierarchy separator component.
+        /// </summary>
         public override void OnInspectorGUI()
         {
             serializedObject.Update();

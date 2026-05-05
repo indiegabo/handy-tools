@@ -6,8 +6,16 @@ using UnityEngine;
 namespace IndieGabo.HandyTools.Utils
 {
 
+    /// <summary>
+    /// Provides reflection helpers used by dynamic gameplay systems.
+    /// </summary>
     public static class Reflection
     {
+        /// <summary>
+        /// Invokes one parameterless method when it exists on the target object.
+        /// </summary>
+        /// <param name="evaluatedObject">Object that may contain the method.</param>
+        /// <param name="methodName">Method name to search for.</param>
         public static void InvokeIfExists(this object evaluatedObject, string methodName)
         {
             if (evaluatedObject == null) return;
@@ -35,6 +43,13 @@ namespace IndieGabo.HandyTools.Utils
             }
         }
 
+        /// <summary>
+        /// Retrieves one parameterless method by name when it exists on the
+        /// target object.
+        /// </summary>
+        /// <param name="evaluatedObject">Object that may contain the method.</param>
+        /// <param name="methodName">Method name to search for.</param>
+        /// <returns>The matching MethodInfo, or null when not found.</returns>
         public static MethodInfo HasMethod(this object evaluatedObject, string methodName)
         {
             if (evaluatedObject == null) return null;

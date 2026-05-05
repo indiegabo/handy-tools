@@ -23,8 +23,8 @@ namespace IndieGabo.HandyTools.SaveSystem
 
             Object.DontDestroyOnLoad(go);
 
-            ServiceLocator.Global.Register(slotManager);
-            ServiceLocator.Global.Register(lodedSloteService);
+            ServiceLocator.Register(slotManager);
+            ServiceLocator.Register(lodedSloteService);
 
             if (SaveSystemConfig.Instance.EnsureIndexedSlots)
             {

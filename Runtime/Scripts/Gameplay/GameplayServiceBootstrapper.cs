@@ -15,9 +15,15 @@ namespace IndieGabo.HandyTools.Gameplay
         /// </summary>
         public static void Bootstrap()
         {
+            if (ServiceLocator.TryGet(out GameplayService existingGameplayService))
+            {
+                _ = existingGameplayService;
+                return;
+            }
+
             GameObject go = new("GameplayService");
             GameplayService gameplayService = go.AddComponent<GameplayService>();
-            ServiceLocator.Global.Register(gameplayService);
+            ServiceLocator.Register(gameplayService);
 
             go.AddComponent<GameplayTimeRegisterer>();
 

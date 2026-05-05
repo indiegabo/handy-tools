@@ -6,14 +6,19 @@ using UnityEngine.InputSystem;
 
 namespace IndieGabo.HandyTools.Input.Bindings
 {
+    /// <summary>
+    /// Serializes an action-map identifier selected from one InputActionAsset.
+    /// </summary>
     [Serializable]
     public class InputActionMapField
     {
         #region Inspector        
 
-    [SerializeField]
+        [BoxGroup("Configuration")]
+        [SerializeField]
         private InputActionAsset _inputActionAsset;
 
+        [BoxGroup("Configuration")]
         [ValueDropdown("GetActionMapsIds")]
         [LabelText("Map")]
         [SerializeField]
@@ -23,12 +28,20 @@ namespace IndieGabo.HandyTools.Input.Bindings
 
         #region Getters
 
+        /// <summary>
+        /// Gets the serialized action-map identifier.
+        /// </summary>
         public string MapId => _mapId;
 
         #endregion
 
         #region Impliciting
 
+        /// <summary>
+        /// Converts the wrapper to the stored map identifier.
+        /// </summary>
+        /// <param name="inputActionMapField">Wrapped map field value.</param>
+        /// <returns>The serialized action-map identifier.</returns>
         public static implicit operator string(InputActionMapField inputActionMapField)
         {
             return inputActionMapField.MapId;
@@ -38,6 +51,10 @@ namespace IndieGabo.HandyTools.Input.Bindings
 
         #region Callbacks
 
+        /// <summary>
+        /// Builds the Odin dropdown list from the configured action asset.
+        /// </summary>
+        /// <returns>An enumerable list of action-map options.</returns>
         private IEnumerable GetActionMapsIds()
         {
             if (_inputActionAsset == null) return default;

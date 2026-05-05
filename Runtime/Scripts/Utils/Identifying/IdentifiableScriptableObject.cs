@@ -8,6 +8,9 @@ using UnityEditor;
 
 namespace IndieGabo.HandyTools.Utils.Identifying
 {
+    /// <summary>
+    /// Base ScriptableObject that owns a persistent identifier value.
+    /// </summary>
     public class IdentifiableScriptableObject : SerializedScriptableObject
     {
         #region Inspector
@@ -34,7 +37,14 @@ namespace IndieGabo.HandyTools.Utils.Identifying
 
         #region  Getters
 
+        /// <summary>
+        /// Gets the serialized identifier value.
+        /// </summary>
         public Identifier Identifier => _identifier;
+
+        /// <summary>
+        /// Gets the identifier formatted as a GUID string.
+        /// </summary>
         public string ID => _identifier.ToGuidString();
 
         #endregion

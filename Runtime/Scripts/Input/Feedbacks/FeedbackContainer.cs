@@ -1,8 +1,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using IndieGabo.HandyTools.Logger;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,9 +12,14 @@ namespace IndieGabo.HandyTools.HandyInputSystem.Feedbacks
     /// </summary>
     public class FeedbackContainer : HandyScriptableObject
     {
+        [NonSerialized]
+        private Dictionary<Guid, FeedbackEntry> _feedbackCache;
+
+        [BoxGroup("Feedback")]
         [SerializeField]
         private InputActionAsset _actionAsset;
 
+        [BoxGroup("Feedback")]
         [SerializeField]
         private FeedbackDictionary _feedbacks;
 
@@ -35,13 +39,13 @@ namespace IndieGabo.HandyTools.HandyInputSystem.Feedbacks
              out FeedbackEntry entry
         )
         {
-            return _feedbacks.TryGetValue(actionID.ToString(), out entry);
+            return TryGetEntry(actionID, out entry);
         }
 
         public bool TrySprite(Guid actionID, string controlSchemeName, out Sprite sprite)
         {
             sprite = null;
-            if (!_feedbacks.TryGetValue(actionID.ToString(), out FeedbackEntry entry))
+            if (!TryGetEntry(actionID, out FeedbackEntry entry))
             {
                 return false;
             }
@@ -50,13 +54,13 @@ namespace IndieGabo.HandyTools.HandyInputSystem.Feedbacks
         }
 
         public bool TrySpriteOrFallback(
-            Guid actionID, 
-            string controlSchemeName, 
+            Guid actionID,
+            string controlSchemeName,
             out Sprite sprite
         )
         {
             sprite = null;
-            if (!_feedbacks.TryGetValue(actionID.ToString(), out FeedbackEntry entry))
+            if (!TryGetEntry(actionID, out FeedbackEntry entry))
             {
                 return false;
             }
@@ -66,13 +70,13 @@ namespace IndieGabo.HandyTools.HandyInputSystem.Feedbacks
 
         public bool TryAnimationData(
             string animationName,
-            Guid actionID, 
-            string controlSchemeName, 
+            Guid actionID,
+            string controlSchemeName,
             out FeedbackAnimationData animation
         )
         {
             animation = null;
-            if (!_feedbacks.TryGetValue(actionID.ToString(), out FeedbackEntry entry))
+            if (!TryGetEntry(actionID, out FeedbackEntry entry))
             {
                 return false;
             }
@@ -82,20 +86,20 @@ namespace IndieGabo.HandyTools.HandyInputSystem.Feedbacks
 
         public bool TryAnimationDataOrFallback(
             string animationName,
-            Guid actionID, 
-            string controlSchemeName, 
+            Guid actionID,
+            string controlSchemeName,
             out FeedbackAnimationData animation
         )
         {
             animation = null;
-            if (!_feedbacks.TryGetValue(actionID.ToString(), out FeedbackEntry entry))
+            if (!TryGetEntry(actionID, out FeedbackEntry entry))
             {
                 return false;
             }
 
             return entry.TryAnimationDataOrFallback(
-                animationName, 
-                controlSchemeName, 
+                animationName,
+                controlSchemeName,
                 out animation
             );
         }
@@ -121,10 +125,34 @@ namespace IndieGabo.HandyTools.HandyInputSystem.Feedbacks
             {
                 entry = new FeedbackEntry();
                 _feedbacks.Add(guid, entry);
+                _feedbackCache = null;
             }
             UnityEditor.EditorUtility.SetDirty(this);
             return entry;
         }
 #endif
+
+        private bool TryGetEntry(Guid actionID, out FeedbackEntry entry)
+        {
+            EnsureFeedbackCache();
+            return _feedbackCache.TryGetValue(actionID, out entry);
+        }
+
+        private void EnsureFeedbackCache()
+        {
+            if (_feedbackCache != null)
+            {
+                return;
+            }
+
+            _feedbackCache = new Dictionary<Guid, FeedbackEntry>(_feedbacks.Count);
+            foreach (KeyValuePair<string, FeedbackEntry> pair in _feedbacks)
+            {
+                if (Guid.TryParse(pair.Key, out Guid actionId))
+                {
+                    _feedbackCache[actionId] = pair.Value;
+                }
+            }
+        }
     }
 }

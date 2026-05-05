@@ -9,6 +9,9 @@ using UnityEngine.Events;
 
 namespace IndieGabo.HandyTools.Editor
 {
+    /// <summary>
+    /// UI Toolkit element used to edit one feedback animation entry.
+    /// </summary>
     public class FeedbackAnimationElement : VisualElement
     {
         static readonly string TemplatePath
@@ -27,6 +30,10 @@ namespace IndieGabo.HandyTools.Editor
 
         private UnityAction<FeedbackAnimation> _onDeleteAction;
 
+        /// <summary>
+        /// Creates the visual tree used to edit one feedback animation.
+        /// </summary>
+        /// <param name="onDeleAction">Callback invoked when the animation is deleted.</param>
         public FeedbackAnimationElement(UnityAction<FeedbackAnimation> onDeleAction)
         {
             _onDeleteAction = onDeleAction;
@@ -47,6 +54,11 @@ namespace IndieGabo.HandyTools.Editor
             Add(_mainContainer);
         }
 
+        /// <summary>
+        /// Loads one animation and the targeted control scheme data into the element.
+        /// </summary>
+        /// <param name="animation">Animation to edit.</param>
+        /// <param name="controlSchemeName">Control scheme currently being edited.</param>
         public void LoadAnimation(FeedbackAnimation animation, string controlSchemeName)
         {
             _animation = animation;

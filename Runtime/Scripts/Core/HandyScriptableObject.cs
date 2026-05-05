@@ -8,8 +8,17 @@ using UnityEditor;
 
 namespace IndieGabo.HandyTools.HandyInputSystem.Feedbacks
 {
+    /// <summary>
+    /// Base ScriptableObject that exposes reflection-based field assignment for
+    /// editor-persisted configuration assets.
+    /// </summary>
     public class HandyScriptableObject : ScriptableObject
     {
+        /// <summary>
+        /// Assigns a field by name and marks the asset dirty in the editor.
+        /// </summary>
+        /// <param name="fieldName">Field name to update.</param>
+        /// <param name="value">Value assigned to the field.</param>
         protected virtual void SetFieldValue(string fieldName, object value)
         {
             FieldInfo field = this.GetType().GetField(

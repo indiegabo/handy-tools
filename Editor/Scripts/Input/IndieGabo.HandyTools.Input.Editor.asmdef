@@ -4,7 +4,7 @@
     "references": [
         "IndieGabo.HandyTools.Runtime",
         "IndieGabo.HandyTools.Editor",
-        "IndieGabo.HandyTools.UITooling.Editor",
+        "IndieGabo.HandyTools.StarterPackages.Editor",
         "IndieGabo.HandyTools.Input",
         "IndieGabo.HandyTools.Logger",
         "Unity.InputSystem"

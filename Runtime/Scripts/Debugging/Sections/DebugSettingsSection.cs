@@ -6,10 +6,16 @@ using UnityEngine.UIElements;
 namespace IndieGabo.HandyTools.Debugging
 {
     [DebugPanelSection]
+    /// <summary>
+    /// Debug panel section that controls frame rate and vertical sync settings.
+    /// </summary>
     public class DebugSettingsSection : DebugPanelSection
     {
-        private const string TemplatePath = "UI/Debug Panel/Sections/DebugSettingsSection_Template";
+        private const string _templatePath = "UI/Debug Panel/Sections/DebugSettingsSection_Template";
 
+        /// <summary>
+        /// Gets the display order of the section inside the panel.
+        /// </summary>
         public override int OrderInPanel => 9999;
 
         private TemplateContainer _mainContainer;
@@ -20,9 +26,13 @@ namespace IndieGabo.HandyTools.Debugging
         private DebugSettingsConfig Config => DebugSettingsConfig.Instance;
         private Dictionary<string, int> _fpsRates = new();
 
+        /// <summary>
+        /// Builds the UI Toolkit element used by the section.
+        /// </summary>
+        /// <returns>The root visual element of the section.</returns>
         public override VisualElement BuildSectionElement()
         {
-            var templateAsset = Resources.Load<VisualTreeAsset>($"{TemplatePath}");
+            var templateAsset = Resources.Load<VisualTreeAsset>($"{_templatePath}");
             _mainContainer = templateAsset.CloneTree();
 
             Init();

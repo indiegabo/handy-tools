@@ -6,7 +6,10 @@ using UnityEngine.UIElements;
 namespace IndieGabo.HandyTools.Editor
 {
     [CustomEditor(typeof(FeedbackContainer))]
-    public class FeedbackContainerEditor : UnityEditor.Editor
+    /// <summary>
+    /// Custom inspector that opens the dedicated feedback container window.
+    /// </summary>
+    public class FeedbackContainerInspector : UnityEditor.Editor
     {
         static readonly string MainTemplatePath
             = "UI Toolkit/Input/Feedbacks/FeedbackContainerInspector_Template";
@@ -15,6 +18,10 @@ namespace IndieGabo.HandyTools.Editor
         private TemplateContainer _containerMain;
         private Button _buttonOpenWindow;
 
+        /// <summary>
+        /// Creates the custom inspector UI for the feedback container asset.
+        /// </summary>
+        /// <returns>The root inspector visual element.</returns>
         public override VisualElement CreateInspectorGUI()
         {
             _containerMain

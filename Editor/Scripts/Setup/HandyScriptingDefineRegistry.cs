@@ -81,10 +81,9 @@ namespace IndieGabo.HandyTools.Editor.ProjectSetup
     /// </summary>
     internal static class HandyScriptingDefineRegistry
     {
-        private const string HandyDotweenPresentDefine = "HANDY_DOTWEEN_PRESENT";
-        private const string HandyDebugDefine = "HANDY_DEBUG";
-        private const string HandyToolsDevelopmentDefine = "HANDY_TOOLS_DEVELOPMENT";
-        private const string UnitaskDotweenSupportDefine = "UNITASK_DOTWEEN_SUPPORT";
+        private const string _handyDotweenPresentDefine = "HANDY_DOTWEEN_PRESENT";
+        private const string _handyDebugDefine = "HANDY_DEBUG";
+        private const string _handyToolsDevelopmentDefine = "HANDY_TOOLS_DEVELOPMENT";
 
         private static readonly IReadOnlyList<HandyScriptingDefineDefinition> _definitions =
             CreateDefinitions();
@@ -118,7 +117,7 @@ namespace IndieGabo.HandyTools.Editor.ProjectSetup
             return new[]
             {
                 new HandyScriptingDefineDefinition(
-                    HandyDotweenPresentDefine,
+                    _handyDotweenPresentDefine,
                     "DOTween Integration",
                     "Compiles DOTween-backed HandyTools APIs such as light tween extensions.",
                     availabilityResolver: IsDotweenInstalled,
@@ -126,21 +125,12 @@ namespace IndieGabo.HandyTools.Editor.ProjectSetup
                         "DOTween.dll was not found under Assets/Plugins/Demigiant/DOTween. Install DOTween before enabling this define."
                 ),
                 new HandyScriptingDefineDefinition(
-                    UnitaskDotweenSupportDefine,
-                    "UniTask DOTween Support",
-                    "Enables UniTask integration code paths that depend on DOTween support.",
-                    enableOnSetup: true,
-                    availabilityResolver: IsDotweenInstalled,
-                    unavailableReason:
-                        "DOTween.dll was not found under Assets/Plugins/Demigiant/DOTween. Install DOTween before enabling this define."
-                ),
-                new HandyScriptingDefineDefinition(
-                    HandyDebugDefine,
+                    _handyDebugDefine,
                     "Handy Debug Runtime",
                     "Keeps HandyTools debug-only runtime hooks available outside the editor."
                 ),
                 new HandyScriptingDefineDefinition(
-                    HandyToolsDevelopmentDefine,
+                    _handyToolsDevelopmentDefine,
                     "HandyTools Development",
                     "Enables HandyTools development-only editor actions and internal workflows."
                 ),

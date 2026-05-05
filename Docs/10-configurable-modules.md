@@ -75,15 +75,20 @@ configuration, rebinding helpers, and input feedback support types.
 - `Runtime/Scripts/Input/PlayerManager.cs`
 - `Runtime/Scripts/Input/Bindings/*`
 
-`ProjectInputConfig.Bootstrap()` loads or creates
+`ProjectInputConfig.Bootstrap()` loads the existing
 `Assets/Resources/HandyTools/ProjectInputConfig.asset`, validates the configured
-`PlayerManager` prefab, instantiates it, and marks it `DontDestroyOnLoad`.
+`PlayerManager` prefab, avoids spawning duplicate managers, and marks the
+instantiated runtime manager as `DontDestroyOnLoad`.
 
 ### Editor Workflow
 
 Use `HandyTools/Modules/Input` to configure the player manager prefab and the
-maximum player count. Input-owned support types such as rebinders and feedback
-containers also live in the Input slice.
+maximum player count. The panel also exposes a `Starter Setup` button that
+imports the module-owned Input starter package into `Assets/_Project/Input`,
+materializes the module configuration asset when needed, and assigns the
+default `PlayerManager` prefab to `ProjectInputConfig`.
+Input-owned support types such as rebinders and feedback containers also live
+in the Input slice.
 
 ### Notes for AI Agents
 
@@ -103,8 +108,9 @@ containers also live in the Input slice.
 ### Responsibilities
 
 Gameplay provides the global gameplay lifecycle service and gameplay session
-time tracking. It owns the runtime object that coordinates gameplay state and
-publishes lifecycle events.
+time tracking. It owns the runtime object that coordinates gameplay state,
+publishes lifecycle events, and persists tracked gameplay time through either
+local user data or Save System-backed slot data.
 
 ### Runtime Entry Points
 
@@ -112,16 +118,28 @@ publishes lifecycle events.
 - `Runtime/Scripts/Gameplay/GameplayModuleBootstrapper.cs`
 - `Runtime/Scripts/Gameplay/GameplayServiceBootstrapper.cs`
 - `Runtime/Scripts/Gameplay/GameplayService.cs`
+- `Runtime/Scripts/Gameplay/GameplayEvent.cs`
+- `Runtime/Scripts/Gameplay/GameplayConfig.cs`
+- `Runtime/Scripts/Gameplay/GameplayLocalUserData.cs`
+- `Runtime/Scripts/Gameplay/GameplayTimeRegisterer.cs`
 - `Runtime/Scripts/Gameplay/GameplayTimeScaler.cs`
 
 The gameplay service bootstrapper creates the runtime service object and
-registers it in the global service locator.
+registers it in the global service locator. `GameplayConfig` resolves to
+`Assets/Resources/Gameplay/GameplayConfig.asset` and controls the gameplay time
+persistence strategy.
 
 ### Editor Workflow
 
-Use `HandyTools/Modules/Gameplay` to manage activation and inspect the module
-panel. The gameplay slice does not currently rely on a dedicated global config
-asset.
+Use `HandyTools/Modules/Gameplay` to manage activation and choose the gameplay
+time persistence strategy.
+
+- `Local User Data` stores accumulated gameplay time in machine-local user data.
+- `Save System` writes gameplay time into the currently loaded slot.
+
+The `Save System` option is only selectable when the Save System module is
+active. See [Gameplay Guide](12-gameplay-guide.md) for usage patterns and state
+semantics.
 
 ### Notes for AI Agents
 
@@ -129,6 +147,16 @@ asset.
   ad hoc singleton patterns.
 - Keep gameplay-specific time handling inside the Gameplay slice instead of
   reintroducing a generic Time Management module.
+- Interrupting gameplay is indefinite after the pause transition completes.
+  Returning to gameplay is an explicit `ResumeGameplay()` decision, not an
+  automatic timeout.
+- Pause ownership is exclusive. The owner that called
+  `PauseGameplay(interruptionOwner)` must be the one that calls
+  `ResumeGameplay(interruptionOwner)`, while `StopGameplay()` stays available
+  as the higher-priority shutdown path.
+- `GameplayStatusChangeEvent` is now rich enough to carry previous status,
+  transition origin, and session context. Prefer consuming that payload over
+  rebuilding transition meaning from the current status alone.
 
 ## Save System
 
@@ -195,7 +223,10 @@ are internal support code for this module and now live under the
 ### Editor Workflow
 
 Use `HandyTools/Modules/Globals` to edit the JSON tree, reload from disk, and
-save back to the `globals` resource file.
+save back to the `globals` resource file. The panel now exposes a `Starter
+Setup` button that creates `Assets/Resources/globals.json` explicitly when the
+project does not provide it yet, instead of silently creating the file while
+opening the editor surface.
 
 ### Notes for AI Agents
 
@@ -266,6 +297,8 @@ The module uses dependency status to block activation on unsupported targets.
 
 Use `HandyTools/Modules/Steam` to inspect the platform dependency state, the
 hardcoded app id, and whether `steam_appid.txt` exists in the project root.
+The panel also exposes a `Starter Setup` button that writes the file when the
+project still does not provide it.
 
 ### Notes for AI Agents
 

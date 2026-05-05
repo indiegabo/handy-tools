@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using IndieGabo.HandyTools.HandyBus;
 using IndieGabo.HandyTools.HandyServiceLocator;
@@ -13,20 +12,27 @@ using UnityEngine.InputSystem.Users;
 namespace IndieGabo.HandyTools.HandyInputSystem
 {
     [RequireComponent(typeof(PlayerInputManager))]
+    /// <summary>
+    /// Coordinates single-player and multiplayer PlayerInput lifecycle.
+    /// </summary>
     public class PlayerManager : HandyBehaviour
     {
         #region Static
 
-        public readonly static string SinglePlayerServiceName
-            = "SinglePlayerInput";
+        private const string _maxPlayerCountFieldName = "m_MaxPlayerCount";
+
+        private static FieldInfo _cachedMaxPlayerCountField;
+        private static bool _didResolveMaxPlayerCountField;
 
         #endregion
 
         #region Inspector
 
+        [BoxGroup("Configuration")]
         [SerializeField]
         private PlayerInput _playerInputPrefab;
 
+        [BoxGroup("Configuration")]
         [SerializeField]
         private MultiplayerModeOptions _defaultMultiplayerOptions;
 
@@ -42,12 +48,18 @@ namespace IndieGabo.HandyTools.HandyInputSystem
         private readonly Dictionary<int, PlayerInput> _playerInputsRegistry
             = new();
 
+        private readonly Dictionary<PlayerInput, PlayerInputServiceRegistrationKeys>
+            _playerInputServiceRegistrations = new();
+
         // Device → Player mapping to prevent duplicate joins per device.
         private readonly Dictionary<int, PlayerInput> _deviceToPlayer
             = new();
 
         // Track the current shared keyboard/mouse owner instead of a bool.
         private PlayerInput _keyboardOwner;
+
+        private readonly List<PlayerInput> _playerBuffer = new();
+        private readonly List<InputDevice> _deviceBuffer = new();
 
         #endregion
 
@@ -64,6 +76,18 @@ namespace IndieGabo.HandyTools.HandyInputSystem
         private void Awake()
         {
             _playerInputManager = GetComponent<PlayerInputManager>();
+
+            if (_playerInputPrefab == null)
+            {
+                HandyLogger.Error(
+                    $"{nameof(PlayerManager)}",
+                    $"{nameof(PlayerInput)} prefab is not set.",
+                    this
+                );
+                enabled = false;
+                return;
+            }
+
             HackManagerLimit();
 
             _playerInputManager.notificationBehavior
@@ -79,11 +103,27 @@ namespace IndieGabo.HandyTools.HandyInputSystem
 
             EnterSinglePlayerMode();
 
-            ServiceLocator.Global.Register(this);
-            ServiceLocator.Global.Register(_playerInputManager);
-            ServiceLocator.Global.Register(
-                SinglePlayerServiceName,
+            ServiceLocator.Register(this);
+            ServiceLocator.Register(_playerInputManager);
+            ServiceLocator.Register(
+                PlayerInputServiceKeys.SinglePlayer,
                 _singlePlayerInput
+            );
+        }
+
+        private void OnDestroy()
+        {
+            DeregisterTrackedPlayerServices();
+
+            if (_playerInputManager != null)
+            {
+                DisableMultiplayerCallbacks();
+            }
+
+            ServiceLocator.Deregister(this);
+            ServiceLocator.Deregister(_playerInputManager);
+            ServiceLocator.Deregister<PlayerInput>(
+                PlayerInputServiceKeys.SinglePlayer
             );
         }
 
@@ -132,30 +172,29 @@ namespace IndieGabo.HandyTools.HandyInputSystem
         /// </summary>
         public void EnterSinglePlayerMode()
         {
-            List<PlayerInput> playerInputs
-                = _playerInputsRegistry.Values.ToList();
+            CopyRegisteredPlayers(_playerBuffer);
+
+            for (int i = 0; i < _playerBuffer.Count; i++)
+            {
+                DeregisterPlayerServiceRegistrations(_playerBuffer[i]);
+            }
 
             _playerInputsRegistry.Clear();
             _deviceToPlayer.Clear();
             _keyboardOwner = null;
 
-            for (int i = 0; i < playerInputs.Count; i++)
+            for (int i = 0; i < _playerBuffer.Count; i++)
             {
-                var pi = playerInputs[i];
+                PlayerInput pi = _playerBuffer[i];
                 if (pi != null)
                 {
                     Destroy(pi.gameObject);
                 }
             }
 
-            _playerInputManager.DisableJoining();
+            _playerBuffer.Clear();
 
-            _playerInputManager.playerJoinedEvent.RemoveListener(
-                OnPlayerJoined
-            );
-            _playerInputManager.playerLeftEvent.RemoveListener(
-                OnPlayerLeft
-            );
+            DisableMultiplayerCallbacks();
 
             _singlePlayerInput.gameObject.SetActive(true);
             _singlePlayerInput.neverAutoSwitchControlSchemes = false;
@@ -170,7 +209,7 @@ namespace IndieGabo.HandyTools.HandyInputSystem
         /// </summary>
         public void EnterMultiplayerMode(MultiplayerModeOptions options = null)
         {
-            var resolved = options ?? _defaultMultiplayerOptions;
+            MultiplayerModeOptions resolved = options ?? _defaultMultiplayerOptions;
 
             _singlePlayerInput.gameObject.SetActive(false);
 
@@ -185,6 +224,8 @@ namespace IndieGabo.HandyTools.HandyInputSystem
             _keyboardOwner = null;
 
             TryUnpairSinglePlayerDevices();
+
+            DisableMultiplayerCallbacks();
 
             _playerInputManager.playerJoinedEvent.AddListener(
                 OnPlayerJoined
@@ -225,6 +266,17 @@ namespace IndieGabo.HandyTools.HandyInputSystem
                 HandyLogger.Error(
                     $"{nameof(PlayerManager)}",
                     "Join rejected: could not resolve joining device.",
+                    this
+                );
+                SafeRejectJoin(playerInput);
+                return;
+            }
+
+            if (!HasValidInputUser(playerInput))
+            {
+                HandyLogger.Error(
+                    $"{nameof(PlayerManager)}",
+                    "Join rejected: PlayerInput does not expose a valid InputUser id.",
                     this
                 );
                 SafeRejectJoin(playerInput);
@@ -276,7 +328,23 @@ namespace IndieGabo.HandyTools.HandyInputSystem
                 _deviceToPlayer[device.deviceId] = playerInput;
             }
 
+            if (!TryRegisterPlayerServiceRegistrations(playerInput))
+            {
+                CleanupMappings(playerInput);
+                SafeRejectJoin(playerInput);
+                return;
+            }
+
             _playerInputsRegistry[playerInput.playerIndex] = playerInput;
+
+            Guid persistentGuid = Guid.Empty;
+            if (TryGetPlayerServiceRegistration(
+                playerInput,
+                out PlayerInputServiceRegistrationKeys registrationKeys
+            ))
+            {
+                persistentGuid = registrationKeys.PersistentGuid;
+            }
 
             playerInput.name
                 = $"PlayerInput [{playerInput.playerIndex}] " +
@@ -290,6 +358,7 @@ namespace IndieGabo.HandyTools.HandyInputSystem
                 new PlayerJoinedEvent()
                 {
                     playerIndex = playerInput.playerIndex,
+                    persistentGuid = persistentGuid,
                     playerInput = playerInput
                 }
             );
@@ -305,6 +374,15 @@ namespace IndieGabo.HandyTools.HandyInputSystem
             if (_singlePlayerInput == playerInput)
             {
                 return;
+            }
+
+            Guid persistentGuid = Guid.Empty;
+            if (TryGetPlayerServiceRegistration(
+                playerInput,
+                out PlayerInputServiceRegistrationKeys registrationKeys
+            ))
+            {
+                persistentGuid = registrationKeys.PersistentGuid;
             }
 
             // Remove device mappings for all paired devices.
@@ -329,6 +407,7 @@ namespace IndieGabo.HandyTools.HandyInputSystem
 
             if (playerInput != null)
             {
+                DeregisterPlayerServiceRegistrations(playerInput);
                 _playerInputsRegistry.Remove(playerInput.playerIndex);
             }
 
@@ -338,6 +417,7 @@ namespace IndieGabo.HandyTools.HandyInputSystem
                     playerIndex = playerInput != null
                         ? playerInput.playerIndex
                         : -1,
+                    persistentGuid = persistentGuid,
                     playerInput = playerInput
                 }
             );
@@ -364,7 +444,30 @@ namespace IndieGabo.HandyTools.HandyInputSystem
                 return false;
             }
 
-            players = _playerInputsRegistry.Values.ToList();
+            players = new List<PlayerInput>(_playerInputsRegistry.Count);
+            CopyRegisteredPlayers(players);
+            return true;
+        }
+
+        /// <summary>
+        /// Copies all multiplayer players into the provided results list.
+        /// </summary>
+        /// <param name="results">Destination list to populate.</param>
+        /// <returns>True when the current mode is multiplayer.</returns>
+        public bool TryGetAllPlayers(List<PlayerInput> results)
+        {
+            if (results == null)
+            {
+                throw new ArgumentNullException(nameof(results));
+            }
+
+            results.Clear();
+            if (_currentMode != Mode.Multiplayer)
+            {
+                return false;
+            }
+
+            CopyRegisteredPlayers(results);
             return true;
         }
 
@@ -373,12 +476,35 @@ namespace IndieGabo.HandyTools.HandyInputSystem
         /// </summary>
         public List<PlayerInput> GetAllActivePlayers()
         {
-            if (_currentMode == Mode.SinglePlayer)
+            List<PlayerInput> players = new();
+            GetAllActivePlayers(players);
+            return players;
+        }
+
+        /// <summary>
+        /// Copies all active PlayerInput instances into the provided list.
+        /// </summary>
+        /// <param name="results">Destination list to populate.</param>
+        public void GetAllActivePlayers(List<PlayerInput> results)
+        {
+            if (results == null)
             {
-                return new List<PlayerInput> { _singlePlayerInput };
+                throw new ArgumentNullException(nameof(results));
             }
 
-            return _playerInputsRegistry.Values.ToList();
+            results.Clear();
+
+            if (_currentMode == Mode.SinglePlayer)
+            {
+                if (_singlePlayerInput != null)
+                {
+                    results.Add(_singlePlayerInput);
+                }
+
+                return;
+            }
+
+            CopyRegisteredPlayers(results);
         }
 
         /// <summary>
@@ -398,6 +524,80 @@ namespace IndieGabo.HandyTools.HandyInputSystem
                 playerIndex,
                 out playerInput
             );
+        }
+
+        /// <summary>
+        /// Attempts to get a player by InputUser id (multiplayer only).
+        /// </summary>
+        /// <param name="inputUserId">InputUser.id value associated with the player.</param>
+        /// <param name="playerInput">Resolved player input when found.</param>
+        /// <returns>True when a matching player exists.</returns>
+        public bool TryGetPlayerByInputUserId(
+            uint inputUserId,
+            out PlayerInput playerInput
+        )
+        {
+            if (_currentMode != Mode.Multiplayer)
+            {
+                throw new InvalidOperationException(
+                    $"Trying to get player user {inputUserId} but current mode is "
+                    + $"{nameof(Mode.SinglePlayer)}"
+                );
+            }
+
+            return ServiceLocator.TryGet<PlayerInput>(
+                PlayerInputServiceKeys.ForInputUserId(inputUserId),
+                out playerInput
+            );
+        }
+
+        /// <summary>
+        /// Attempts to get a player by persistent GUID (multiplayer only).
+        /// </summary>
+        /// <param name="persistentGuid">Persistent GUID associated with the player.</param>
+        /// <param name="playerInput">Resolved player input when found.</param>
+        /// <returns>True when a matching player exists.</returns>
+        public bool TryGetPlayerByPersistentGuid(
+            Guid persistentGuid,
+            out PlayerInput playerInput
+        )
+        {
+            if (_currentMode != Mode.Multiplayer)
+            {
+                throw new InvalidOperationException(
+                    $"Trying to get player GUID {persistentGuid} but current mode is "
+                    + $"{nameof(Mode.SinglePlayer)}"
+                );
+            }
+
+            return ServiceLocator.TryGet<PlayerInput>(
+                PlayerInputServiceKeys.ForPersistentGuid(persistentGuid),
+                out playerInput
+            );
+        }
+
+        /// <summary>
+        /// Attempts to resolve the registration keys tracked for one player.
+        /// </summary>
+        /// <param name="playerInput">Player input to inspect.</param>
+        /// <param name="registrationKeys">Tracked registration keys when found.</param>
+        /// <returns>True when the player is currently tracked.</returns>
+        public bool TryGetPlayerServiceRegistration(
+            PlayerInput playerInput,
+            out PlayerInputServiceRegistrationKeys registrationKeys
+        )
+        {
+            if (playerInput != null
+                && _playerInputServiceRegistrations.TryGetValue(
+                    playerInput,
+                    out registrationKeys
+                ))
+            {
+                return true;
+            }
+
+            registrationKeys = default;
+            return false;
         }
 
         #endregion
@@ -468,11 +668,6 @@ namespace IndieGabo.HandyTools.HandyInputSystem
                 if (user.valid)
                 {
                     user.UnpairDevices();
-                    HandyLogger.Message(
-                        $"{nameof(PlayerManager)}",
-                        "Unpaired devices from SinglePlayerInput.",
-                        this
-                    );
                 }
             }
             catch (Exception ex)
@@ -490,22 +685,13 @@ namespace IndieGabo.HandyTools.HandyInputSystem
         /// </summary>
         protected virtual void HackManagerLimit()
         {
-            string fieldName = "m_MaxPlayerCount";
-
-            FieldInfo field = _playerInputManager
-                .GetType()
-                .GetField(
-                    fieldName,
-                    BindingFlags.Instance
-                    | BindingFlags.Public
-                    | BindingFlags.NonPublic
-                );
+            FieldInfo field = ResolveMaxPlayerCountField();
 
             if (field == null)
             {
                 HandyLogger.Warning(
                     $"{nameof(PlayerManager)}",
-                    $"Field {fieldName} not found in " +
+                    $"Field {_maxPlayerCountFieldName} not found in " +
                     $"{nameof(PlayerInputManager)}",
                     this
                 );
@@ -514,35 +700,91 @@ namespace IndieGabo.HandyTools.HandyInputSystem
 
             field.SetValue(
                 _playerInputManager,
-                ProjectInputConfig.Get().MaxNumberOfPlayers
+                Config.MaxNumberOfPlayers
             );
+        }
+
+        private static FieldInfo ResolveMaxPlayerCountField()
+        {
+            if (_didResolveMaxPlayerCountField)
+            {
+                return _cachedMaxPlayerCountField;
+            }
+
+            _didResolveMaxPlayerCountField = true;
+            _cachedMaxPlayerCountField = typeof(PlayerInputManager).GetField(
+                _maxPlayerCountFieldName,
+                BindingFlags.Instance
+                | BindingFlags.Public
+                | BindingFlags.NonPublic
+            );
+
+            return _cachedMaxPlayerCountField;
         }
 
         /// <summary>
         /// Resolves the most likely device that initiated the join.
         /// Prefers Gamepad; otherwise returns Keyboard or Mouse.
         /// </summary>
-        private InputDevice ResolveJoiningDevice(PlayerInput pi)
+        private static InputDevice ResolveJoiningDevice(PlayerInput pi)
         {
-            var paired = pi.user.valid ? pi.user.pairedDevices : pi.devices;
+            IReadOnlyList<InputDevice> paired = pi.user.valid
+                ? pi.user.pairedDevices
+                : pi.devices;
 
-            var gamepad = paired.FirstOrDefault(d => d is Gamepad);
-            if (gamepad != null)
+            InputDevice firstDevice = null;
+            bool hasKeyboard = false;
+            bool hasMouse = false;
+
+            for (int i = 0; i < paired.Count; i++)
             {
-                return gamepad;
+                InputDevice device = paired[i];
+                if (device == null)
+                {
+                    continue;
+                }
+
+                firstDevice ??= device;
+                if (device is Gamepad)
+                {
+                    return device;
+                }
+
+                if (device is Keyboard)
+                {
+                    hasKeyboard = true;
+                    continue;
+                }
+
+                if (device is Mouse)
+                {
+                    hasMouse = true;
+                }
             }
 
-            if (paired.Any(d => d is Keyboard))
+            if (hasKeyboard && Keyboard.current != null)
             {
                 return Keyboard.current;
             }
 
-            if (paired.Any(d => d is Mouse))
+            if (hasMouse && Mouse.current != null)
             {
                 return Mouse.current;
             }
 
-            return paired.FirstOrDefault();
+            return firstDevice;
+        }
+
+        /// <summary>
+        /// Determines whether a PlayerInput exposes a valid InputUser id.
+        /// </summary>
+        /// <param name="playerInput">Player input to inspect.</param>
+        /// <returns>True when the player has a valid InputUser id.</returns>
+        private static bool HasValidInputUser(PlayerInput playerInput)
+        {
+            return playerInput != null
+                && playerInput.user.valid
+                && playerInput.user.id != 0;
         }
 
         /// <summary>
@@ -555,12 +797,7 @@ namespace IndieGabo.HandyTools.HandyInputSystem
 
             if (pi.user.valid)
             {
-                // Clear accidental pairings.
-                var toUnpair = pi.user.pairedDevices.ToList();
-                for (int i = 0; i < toUnpair.Count; i++)
-                {
-                    pi.user.UnpairDevice(toUnpair[i]);
-                }
+                UnpairPairedDevices(pi);
 
                 // Pair explicitly with the given device.
                 InputUser.PerformPairingWithDevice(
@@ -572,8 +809,7 @@ namespace IndieGabo.HandyTools.HandyInputSystem
             else
             {
                 // Fallback when no valid user exists.
-                var devices = new List<InputDevice> { device };
-                pi.SwitchCurrentControlScheme(devices.ToArray());
+                pi.SwitchCurrentControlScheme(device);
             }
         }
 
@@ -589,11 +825,7 @@ namespace IndieGabo.HandyTools.HandyInputSystem
 
             if (pi.user.valid)
             {
-                var toUnpair = pi.user.pairedDevices.ToList();
-                for (int i = 0; i < toUnpair.Count; i++)
-                {
-                    pi.user.UnpairDevice(toUnpair[i]);
-                }
+                UnpairPairedDevices(pi);
 
                 if (kb != null)
                 {
@@ -606,12 +838,17 @@ namespace IndieGabo.HandyTools.HandyInputSystem
             }
             else
             {
-                var list = new List<InputDevice>();
-                if (kb != null) list.Add(kb);
-                if (ms != null) list.Add(ms);
-                if (list.Count > 0)
+                if (kb != null && ms != null)
                 {
-                    pi.SwitchCurrentControlScheme(list.ToArray());
+                    pi.SwitchCurrentControlScheme(kb, ms);
+                }
+                else if (kb != null)
+                {
+                    pi.SwitchCurrentControlScheme(kb);
+                }
+                else if (ms != null)
+                {
+                    pi.SwitchCurrentControlScheme(ms);
                 }
             }
         }
@@ -643,6 +880,8 @@ namespace IndieGabo.HandyTools.HandyInputSystem
         {
             if (playerInput == null) return;
 
+            DeregisterPlayerServiceRegistrations(playerInput);
+
             var devices = playerInput.user.valid
                 ? playerInput.user.pairedDevices
                 : playerInput.devices;
@@ -667,6 +906,160 @@ namespace IndieGabo.HandyTools.HandyInputSystem
             }
 
             _playerInputsRegistry.Remove(playerInput.playerIndex);
+        }
+
+        /// <summary>
+        /// Registers every canonical service identifier associated with one
+        /// multiplayer PlayerInput instance.
+        /// </summary>
+        /// <param name="playerInput">Player input being registered.</param>
+        /// <returns>True when all identifiers were registered successfully.</returns>
+        private bool TryRegisterPlayerServiceRegistrations(PlayerInput playerInput)
+        {
+            try
+            {
+                if (_playerInputServiceRegistrations.ContainsKey(playerInput))
+                {
+                    DeregisterPlayerServiceRegistrations(playerInput);
+                }
+
+                PlayerInputServiceRegistrationKeys registrationKeys
+                    = PlayerInputServiceKeys.CreateRegistration(
+                        playerInput,
+                        Guid.NewGuid()
+                    );
+
+                _playerInputServiceRegistrations[playerInput]
+                    = registrationKeys;
+
+                ServiceLocator.Register(
+                    registrationKeys.ByPlayerIndex,
+                    playerInput
+                );
+                ServiceLocator.Register(
+                    registrationKeys.ByInputUserId,
+                    playerInput
+                );
+                ServiceLocator.Register(
+                    registrationKeys.ByPersistentGuid,
+                    playerInput
+                );
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                DeregisterPlayerServiceRegistrations(playerInput);
+
+                HandyLogger.Error(
+                    $"{nameof(PlayerManager)}",
+                    $"Join rejected: failed to register player service identifiers. {ex.Message}",
+                    this
+                );
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Removes every named service identifier tracked for one multiplayer
+        /// PlayerInput instance.
+        /// </summary>
+        /// <param name="playerInput">Player input being deregistered.</param>
+        private void DeregisterPlayerServiceRegistrations(PlayerInput playerInput)
+        {
+            if (playerInput == null
+                || !_playerInputServiceRegistrations.TryGetValue(
+                    playerInput,
+                    out PlayerInputServiceRegistrationKeys registrationKeys
+                ))
+            {
+                return;
+            }
+
+            ServiceLocator.Deregister<PlayerInput>(
+                registrationKeys.ByPlayerIndex
+            );
+            ServiceLocator.Deregister<PlayerInput>(
+                registrationKeys.ByInputUserId
+            );
+            ServiceLocator.Deregister<PlayerInput>(
+                registrationKeys.ByPersistentGuid
+            );
+
+            _playerInputServiceRegistrations.Remove(playerInput);
+        }
+
+        /// <summary>
+        /// Removes every tracked multiplayer player registration from the
+        /// service locator.
+        /// </summary>
+        private void DeregisterTrackedPlayerServices()
+        {
+            if (_playerInputServiceRegistrations.Count == 0)
+            {
+                return;
+            }
+
+            _playerBuffer.Clear();
+
+            foreach (
+                KeyValuePair<PlayerInput, PlayerInputServiceRegistrationKeys> pair
+                in _playerInputServiceRegistrations
+            )
+            {
+                if (pair.Key != null)
+                {
+                    _playerBuffer.Add(pair.Key);
+                }
+            }
+
+            for (int i = 0; i < _playerBuffer.Count; i++)
+            {
+                DeregisterPlayerServiceRegistrations(_playerBuffer[i]);
+            }
+
+            _playerBuffer.Clear();
+        }
+
+        private void DisableMultiplayerCallbacks()
+        {
+            _playerInputManager.DisableJoining();
+            _playerInputManager.playerJoinedEvent.RemoveListener(OnPlayerJoined);
+            _playerInputManager.playerLeftEvent.RemoveListener(OnPlayerLeft);
+        }
+
+        private void CopyRegisteredPlayers(List<PlayerInput> results)
+        {
+            results.Clear();
+
+            foreach (KeyValuePair<int, PlayerInput> pair in _playerInputsRegistry)
+            {
+                if (pair.Value != null)
+                {
+                    results.Add(pair.Value);
+                }
+            }
+        }
+
+        private void UnpairPairedDevices(PlayerInput playerInput)
+        {
+            _deviceBuffer.Clear();
+
+            for (int i = 0; i < playerInput.user.pairedDevices.Count; i++)
+            {
+                InputDevice device = playerInput.user.pairedDevices[i];
+                if (device != null)
+                {
+                    _deviceBuffer.Add(device);
+                }
+            }
+
+            for (int i = 0; i < _deviceBuffer.Count; i++)
+            {
+                playerInput.user.UnpairDevice(_deviceBuffer[i]);
+            }
+
+            _deviceBuffer.Clear();
         }
 
         /// <summary>

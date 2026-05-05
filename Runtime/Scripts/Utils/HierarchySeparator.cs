@@ -1,4 +1,5 @@
 using UnityEngine;
+using Sirenix.OdinInspector;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -10,11 +11,19 @@ namespace IndieGabo.HandyTools.Utils
 #if UNITY_EDITOR
     [InitializeOnLoad]
 #endif
+    /// <summary>
+    /// Draws a styled separator row inside the Unity hierarchy window.
+    /// </summary>
     public class HierarchySeparator : MonoBehaviour
     {
+        [BoxGroup("Separator")]
         [HideInInspector]
         [SerializeField]
         private Color m_OutlineColor = Color.black;
+
+        /// <summary>
+        /// Gets or sets the outline color used by the separator.
+        /// </summary>
         public Color OutlineColor
         {
             get => m_OutlineColor;
@@ -25,9 +34,14 @@ namespace IndieGabo.HandyTools.Utils
             }
         }
 
+        [BoxGroup("Separator")]
         [HideInInspector]
         [SerializeField]
         private Color m_BarColor = Color.black;
+
+        /// <summary>
+        /// Gets or sets the fill color used by the separator bar.
+        /// </summary>
         public Color BarColor
         {
             get => m_BarColor;
@@ -38,9 +52,14 @@ namespace IndieGabo.HandyTools.Utils
             }
         }
 
+        [BoxGroup("Separator")]
         [HideInInspector]
         [SerializeField]
         private Color m_TextColor = Color.white;
+
+        /// <summary>
+        /// Gets or sets the text color used by the separator label.
+        /// </summary>
         public Color TextColor
         {
             get => m_TextColor;
@@ -51,9 +70,14 @@ namespace IndieGabo.HandyTools.Utils
             }
         }
 
+        [BoxGroup("Separator")]
         [HideInInspector]
         [SerializeField]
         private int m_OutlineSize = 0;
+
+        /// <summary>
+        /// Gets or sets the outline thickness used by the separator.
+        /// </summary>
         public int OutlineSize
         {
             get => m_OutlineSize;
@@ -63,11 +87,17 @@ namespace IndieGabo.HandyTools.Utils
             }
         }
 
+        /// <summary>
+        /// Destroys the runtime separator object so it remains editor-only.
+        /// </summary>
         public void Awake()
         {
             Destroy(gameObject);
         }
 
+        /// <summary>
+        /// Marks the separator object as editor-only.
+        /// </summary>
         public void Reset()
         {
             gameObject.tag = "EditorOnly";
@@ -79,6 +109,10 @@ namespace IndieGabo.HandyTools.Utils
             EditorApplication.hierarchyWindowItemByEntityIdOnGUI += HierarchyWindowItemOnGUI;
         }
 
+        /// <summary>
+        /// Creates a new hierarchy separator GameObject.
+        /// </summary>
+        /// <param name="menuCommand">Menu command context used for parenting.</param>
         [MenuItem("GameObject/Separator", false, 30)]
         public static void CreateSeparator(MenuCommand menuCommand)
         {

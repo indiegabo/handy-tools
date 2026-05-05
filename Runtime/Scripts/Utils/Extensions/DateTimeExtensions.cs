@@ -3,10 +3,19 @@ using UnityEngine;
 
 namespace IndieGabo.HandyTools.Utils.Extensions
 {
+    /// <summary>
+    /// Converts DateTime values into deterministic GUID-compatible payloads.
+    /// </summary>
     public static class DateTimeExtensions
     {
         private static readonly DateTime _epoch = new(1970, 1, 1, 0, 0, 0, 0);
 
+        /// <summary>
+        /// Converts the DateTime value into a GUID derived from milliseconds
+        /// since the Unix epoch.
+        /// </summary>
+        /// <param name="dateTime">DateTime value to convert.</param>
+        /// <returns>A GUID that encodes the provided timestamp.</returns>
         public static Guid ToGuid(this DateTime dateTime)
         {
             // Calculate the difference in milliseconds since the epoch

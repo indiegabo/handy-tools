@@ -26,7 +26,7 @@ namespace IndieGabo.HandyTools.Modules
             public string MethodName { get; }
         }
 
-        private static readonly MandatoryBootstrapCall[] MandatoryBootstrapCalls =
+        private static readonly MandatoryBootstrapCall[] _mandatoryBootstrapCalls =
         {
             new(
                 "HandyBus",
@@ -40,7 +40,7 @@ namespace IndieGabo.HandyTools.Modules
             ),
         };
 
-        private static readonly List<IHandyModuleBootstrapper> ActiveBootstrappers = new();
+        private static readonly List<IHandyModuleBootstrapper> _activeBootstrappers = new();
         private static bool _prepared;
         private static bool _bootstrapped;
 
@@ -49,7 +49,7 @@ namespace IndieGabo.HandyTools.Modules
         /// </summary>
         public static void ResetState()
         {
-            ActiveBootstrappers.Clear();
+            _activeBootstrappers.Clear();
             _prepared = false;
             _bootstrapped = false;
         }
@@ -82,17 +82,17 @@ namespace IndieGabo.HandyTools.Modules
             PrepareActiveModules();
             _bootstrapped = true;
 
-            for (int index = 0; index < ActiveBootstrappers.Count; index++)
+            for (int index = 0; index < _activeBootstrappers.Count; index++)
             {
-                ActiveBootstrappers[index].Bootstrap();
+                _activeBootstrappers[index].Bootstrap();
             }
         }
 
         private static void BootstrapMandatoryInfrastructure()
         {
-            for (int index = 0; index < MandatoryBootstrapCalls.Length; index++)
+            for (int index = 0; index < _mandatoryBootstrapCalls.Length; index++)
             {
-                MandatoryBootstrapCall bootstrapCall = MandatoryBootstrapCalls[index];
+                MandatoryBootstrapCall bootstrapCall = _mandatoryBootstrapCalls[index];
                 TryInvokeStaticBootstrap(bootstrapCall);
             }
         }
@@ -126,7 +126,7 @@ namespace IndieGabo.HandyTools.Modules
 
         private static void DiscoverActiveBootstrappers()
         {
-            ActiveBootstrappers.Clear();
+            _activeBootstrappers.Clear();
 
             HandyModuleSettings settings = HandyModuleSettings.Instance;
             foreach (IHandyModuleBootstrapper bootstrapper in CreateBootstrappers())
@@ -142,10 +142,10 @@ namespace IndieGabo.HandyTools.Modules
                     continue;
                 }
 
-                ActiveBootstrappers.Add(bootstrapper);
+                _activeBootstrappers.Add(bootstrapper);
             }
 
-            ActiveBootstrappers.Sort(
+            _activeBootstrappers.Sort(
                 (left, right) => left.Descriptor.LoadOrder.CompareTo(right.Descriptor.LoadOrder)
             );
         }

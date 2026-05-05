@@ -1,8 +1,7 @@
 using IndieGabo.HandyTools.Utils;
 using UnityEngine;
-using Sirenix.Utilities;
-using UnityEngine.AddressableAssets;
 using IndieGabo.HandyTools.Utils.Extensions;
+using Sirenix.OdinInspector;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -11,13 +10,26 @@ using UnityEditor;
 namespace IndieGabo.HandyTools.HandyInputSystem
 {
     [CreateAssetMenu(fileName = "ProjectInputConfig", menuName = "HandyTools/Input/ProjectInputConfig")]
+    /// <summary>
+    /// Stores project-wide input configuration used by the input module.
+    /// </summary>
     public class ProjectInputConfig : ScriptableObject
     {
         #region Fields
 
+        private const string _defaultResourcesPath = "HandyTools/ProjectInputConfig";
+
+#if UNITY_EDITOR
+        private const string _defaultAssetPath =
+            "Assets/Resources/HandyTools/ProjectInputConfig.asset";
+#endif
+
         private static ProjectInputConfig _cachedInstance;
 
+        [BoxGroup("Players")]
         [SerializeField] private int _maxNumberOfPlayers = 1;
+
+        [BoxGroup("Players")]
         [SerializeField] private PlayerManager _playerManagerPrefab;
 
         #endregion
@@ -44,13 +56,50 @@ namespace IndieGabo.HandyTools.HandyInputSystem
 
         #region Providing
 
+        /// <summary>
+        /// Attempts to resolve the existing project input configuration asset
+        /// from Resources without creating editor-side assets implicitly.
+        /// </summary>
+        /// <param name="inputConfig">
+        /// The resolved project input configuration when one is available.
+        /// </param>
+        /// <returns>
+        /// True when the project already provides a persisted configuration
+        /// asset; otherwise, false.
+        /// </returns>
+        public static bool TryGetExisting(out ProjectInputConfig inputConfig)
+        {
+            if (_cachedInstance != null)
+            {
+                inputConfig = _cachedInstance;
+                return true;
+            }
+
+            inputConfig = LoadFromResources();
+            if (inputConfig == null)
+            {
+                return false;
+            }
+
+            _cachedInstance = inputConfig;
+            return true;
+        }
+
         public static ProjectInputConfig Get()
         {
-            if (_cachedInstance == null)
+            if (TryGetExisting(out ProjectInputConfig inputConfig))
             {
-                _cachedInstance = GetFromResources();
+                return inputConfig;
             }
-            return _cachedInstance;
+
+#if UNITY_EDITOR
+            return GetOrCreateForEditor();
+#else
+            Debug.LogWarning(
+                "ProjectInputConfig asset was not found. Returning a temporary runtime instance."
+            );
+            return CreateInstance<ProjectInputConfig>();
+#endif
         }
 
         public static void ReloadInstance()
@@ -58,27 +107,45 @@ namespace IndieGabo.HandyTools.HandyInputSystem
             _cachedInstance = null;
         }
 
-        public static ProjectInputConfig GetFromResources()
+        private static ProjectInputConfig LoadFromResources()
         {
             // Try to load from default path first
-            var defaultPath = "HandyTools/ProjectInputConfig";
-            var inputConfig = Resources.Load<ProjectInputConfig>(defaultPath);
+            ProjectInputConfig inputConfig = Resources.Load<ProjectInputConfig>(
+                _defaultResourcesPath
+            );
 
             if (inputConfig != null) return inputConfig;
 
             // If not found, try alternative paths
             var path = HandyResources.GetPath("ProjectInputConfig");
-            if (!string.IsNullOrEmpty(path) && path != defaultPath)
+            if (!string.IsNullOrEmpty(path) && path != _defaultResourcesPath)
             {
                 inputConfig = Resources.Load<ProjectInputConfig>(path);
                 if (inputConfig != null) return inputConfig;
             }
 
-#if UNITY_EDITOR
-            // Create new instance and save it in Editor
-            var newInputConfig = CreateInstance<ProjectInputConfig>();
+            return null;
+        }
 
-            // Ensure Resources/HandyTools directory exists
+#if UNITY_EDITOR
+        /// <summary>
+        /// Resolves the existing project input configuration asset or creates
+        /// the default editor asset when tooling explicitly requires one.
+        /// </summary>
+        /// <returns>
+        /// The persisted project input configuration asset.
+        /// </returns>
+        public static ProjectInputConfig GetOrCreateForEditor()
+        {
+            if (TryGetExisting(out ProjectInputConfig inputConfig))
+            {
+                return inputConfig;
+            }
+
+            // Create new instance and save it in Editor.
+            ProjectInputConfig newInputConfig = CreateInstance<ProjectInputConfig>();
+
+            // Ensure Resources/HandyTools directory exists.
             if (!AssetDatabase.IsValidFolder("Assets/Resources"))
             {
                 AssetDatabase.CreateFolder("Assets", "Resources");
@@ -88,17 +155,14 @@ namespace IndieGabo.HandyTools.HandyInputSystem
                 AssetDatabase.CreateFolder("Assets/Resources", "HandyTools");
             }
 
-            AssetDatabase.CreateAsset(newInputConfig, $"Assets/Resources/HandyTools/ProjectInputConfig.asset");
+            AssetDatabase.CreateAsset(newInputConfig, _defaultAssetPath);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
+            _cachedInstance = newInputConfig;
             return newInputConfig;
-#else
-            // Runtime fallback - create non-persistent instance
-            Debug.LogWarning($"ProjectInputConfig asset not found at path '{path}' or '{defaultPath}'. Creating temporary runtime instance.");
-            return CreateInstance<ProjectInputConfig>();
-#endif
         }
+#endif
 
         #endregion
 
@@ -108,14 +172,31 @@ namespace IndieGabo.HandyTools.HandyInputSystem
         {
             if (!InputModuleDefinition.IsActive) return;
 
-            var inputConfig = Get();
+            if (!TryGetExisting(out ProjectInputConfig inputConfig))
+            {
+                Debug.LogWarning(
+                    "Input module bootstrap skipped because ProjectInputConfig.asset "
+                    + "was not found. Run the Input Starter Setup or create the "
+                    + "configuration asset explicitly before enabling runtime bootstrap."
+                );
+                return;
+            }
+
             Preconditions.CheckNotNull(inputConfig);
             Preconditions.CheckNotNull(
                 inputConfig.PlayerManagerPrefab,
                 $"{nameof(PlayerManager)} prefab is not set."
             );
 
-            var playerManager = Instantiate(inputConfig.PlayerManagerPrefab);
+            if (FindObjectsByType<PlayerManager>(
+                FindObjectsInactive.Include,
+                FindObjectsSortMode.None
+            ).Length > 0)
+            {
+                return;
+            }
+
+            PlayerManager playerManager = Instantiate(inputConfig.PlayerManagerPrefab);
             DontDestroyOnLoad(playerManager.gameObject);
             playerManager.gameObject.name = $"PlayerManager";
         }

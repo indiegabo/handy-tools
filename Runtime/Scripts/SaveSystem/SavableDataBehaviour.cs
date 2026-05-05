@@ -1,19 +1,33 @@
 using IndieGabo.HandyTools.HandyServiceLocator;
 using IndieGabo.HandyTools.Logger;
 using IndieGabo.HandyTools.Utils;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace IndieGabo.HandyTools.SaveSystem
 {
+    /// <summary>
+    /// Base behaviour for scene entities that persist typed save data through
+    /// the loaded slot service.
+    /// </summary>
+    /// <typeparam name="T">Persisted data type.</typeparam>
     public abstract class SavableDataBehaviour<T> : HandyBehaviour, ISavableEntity
     {
+        [BoxGroup("Save Data")]
         [SerializeField]
         protected T _data;
 
         protected LoadedSlotService _slotHandler;
         protected SerializableGuid _guid;
 
+        /// <summary>
+        /// Gets the stable identifier used by the save system.
+        /// </summary>
         public SerializableGuid ID => _guid;
+
+        /// <summary>
+        /// Gets or sets the boxed persisted data payload.
+        /// </summary>
         public object SavableData
         {
             get => _data;
@@ -23,16 +37,37 @@ namespace IndieGabo.HandyTools.SaveSystem
                 OnDataBind(_data);
             }
         }
+
+        /// <summary>
+        /// Gets the strongly typed persisted data payload.
+        /// </summary>
         public T Data => _data;
 
+        /// <summary>
+        /// Creates the default payload used when no save entry exists yet.
+        /// </summary>
+        /// <returns>A new default data instance.</returns>
         public abstract object GenerateDefaultData();
+
+        /// <summary>
+        /// Resolves the stable identifier used to store this entity.
+        /// </summary>
+        /// <returns>The resolved entity identifier.</returns>
         protected abstract SerializableGuid ResolveID();
 
+        /// <summary>
+        /// Reacts to boxed data assignment after the payload has been bound.
+        /// </summary>
+        /// <param name="data">New typed payload.</param>
         protected virtual void OnDataBind(T data) { }
 
+        /// <summary>
+        /// Resolves services, computes the entity identifier, and registers the
+        /// entity in the loaded slot service.
+        /// </summary>
         protected virtual void Awake()
         {
-            if (!ServiceLocator.Global.Get(out _slotHandler))
+            if (!ServiceLocator.TryGet(out _slotHandler))
             {
                 HandyLogger.Error(
                     "SavableDataBehaviour",
@@ -48,6 +83,10 @@ namespace IndieGabo.HandyTools.SaveSystem
                 _slotHandler.Bind(this);
         }
 
+        /// <summary>
+        /// Persists the current payload and unregisters the entity from the
+        /// loaded slot service.
+        /// </summary>
         protected virtual void OnDestroy()
         {
             if (_slotHandler != null)

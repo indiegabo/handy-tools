@@ -6,13 +6,12 @@ those entry points fit together and where configuration data is stored.
 
 ## Main Editor Menus
 
-| Menu path | Purpose |
-| --- | --- |
-| `HandyTools/Complete Setup` | Runs the one-time project setup flow |
-| `HandyTools/Essential Package/Import` | Imports the packaged essentials assets |
-| `HandyTools/Modules/Configuration` | Opens the shared modules configuration window |
-| `HandyTools/Modules/<Module Name>` | Opens the shared modules window preselected on one configurable module |
-| `HandyTools/Configuration/Scripting Defines` | Opens the managed scripting define window |
+| Menu path                                    | Purpose                                                                |
+| -------------------------------------------- | ---------------------------------------------------------------------- |
+| `HandyTools/Complete Setup`                  | Runs the one-time project setup flow                                   |
+| `HandyTools/Modules/Configuration`           | Opens the shared modules configuration window                          |
+| `HandyTools/Modules/<Module Name>`           | Opens the shared modules window preselected on one configurable module |
+| `HandyTools/Configuration/Scripting Defines` | Opens the managed scripting define window                              |
 
 ## One-Time Setup Flow
 
@@ -25,10 +24,10 @@ Important behaviors:
 - It uses a project-root anchor file to avoid rerunning the initial setup on
   every load.
 - It removes unavailable scripting defines before applying setup defaults.
-- It imports the essentials package.
-- It tries to inject the default `PlayerManager` prefab into
-  `ProjectInputConfig`.
-- It ensures `steam_appid.txt` exists in the project root.
+- It runs the Input module starter setup so the default project-side input
+  assets are available under `Assets/_Project/Input`.
+- It runs the Steam module starter setup so `steam_appid.txt` exists in the
+  project root.
 
 ## Shared Modules Window
 
@@ -48,6 +47,10 @@ submenu entries back into the same shared host. The current configurable set is:
 - Steam
 - ScreenShooter
 
+Each configurable module can also expose a `Starter Setup` action inside its
+panel. Starter setups create the project-side assets or files that a module
+needs before its runtime bootstrap becomes useful.
+
 Auto-activated modules do not appear in this window because they do not own a
 dedicated configuration surface.
 
@@ -55,16 +58,28 @@ dedicated configuration surface.
 
 The package uses a combination of `Resources` assets and project files.
 
-| Owner | Data location | Notes |
-| --- | --- | --- |
-| Module activation | `Assets/Resources/HandyTools/Modules/HandyModuleSettings.asset` | Stores explicit activation overrides |
-| Input | `Assets/Resources/HandyTools/ProjectInputConfig.asset` | Player manager prefab and player count |
-| Save System | `Assets/Resources/SaveSystem/SaveSystemConfig.asset` | Slot strategy, auto boot, encryption options |
-| Logging | `Assets/Resources/Logging/HandyLoggerSetup.asset` | Runtime/editor log colors |
-| Debugging | `Assets/Resources/Debugging/DebugPanel.asset` | Debug panel enable state and embedded input action |
-| ScreenShooter | `Assets/Resources/ScreenShooter/ScreenShooterConfig.asset` | Embedded input action and output path |
-| Globals | `Assets/Resources/globals` | JSON file edited through the Globals panel |
-| Steam | `steam_appid.txt` at project root | Editor panel surfaces status and hardcoded app id |
+| Owner             | Data location                                                   | Notes                                              |
+| ----------------- | --------------------------------------------------------------- | -------------------------------------------------- |
+| Module activation | `Assets/Resources/HandyTools/Modules/HandyModuleSettings.asset` | Stores explicit activation overrides               |
+| Input             | `Assets/Resources/HandyTools/ProjectInputConfig.asset`          | Player manager prefab and player count             |
+| Save System       | `Assets/Resources/SaveSystem/SaveSystemConfig.asset`            | Slot strategy, auto boot, encryption options       |
+| Logging           | `Assets/Resources/Logging/HandyLoggerSetup.asset`               | Runtime/editor log colors                          |
+| Debugging         | `Assets/Resources/Debugging/DebugPanel.asset`                   | Debug panel enable state and embedded input action |
+| ScreenShooter     | `Assets/Resources/ScreenShooter/ScreenShooterConfig.asset`      | Embedded input action and output path              |
+| Globals           | `Assets/Resources/globals`                                      | JSON file edited through the Globals panel         |
+| Steam             | `steam_appid.txt` at project root                               | Editor panel surfaces status and hardcoded app id  |
+
+## Starter Setup Surface
+
+- Input starter setup imports the module-owned starter package and materializes
+  the default Player Manager stack under `Assets/_Project/Input`, then assigns
+  the imported prefab to `Assets/Resources/HandyTools/ProjectInputConfig.asset`.
+- Globals starter setup creates `Assets/Resources/globals.json` when the
+  project does not provide it yet.
+- Steam starter setup writes `steam_appid.txt` to the project root when the
+  file is missing.
+- Modules that do not yet own project-side starter assets show the Starter
+  Setup section as unavailable.
 
 ## Embedded InputAction Editing
 

@@ -6,8 +6,17 @@ using IndieGabo.HandyTools.Utils.InspectorFields;
 namespace IndieGabo.HandyTools.Editor.Utils.InspectorFields
 {
     [CustomPropertyDrawer(typeof(SceneField))]
+    /// <summary>
+    /// Draws SceneField values as SceneAsset object fields in the inspector.
+    /// </summary>
     public class SceneFieldPropertyDrawer : PropertyDrawer
     {
+        /// <summary>
+        /// Draws the serialized SceneField and stores the scene path payload.
+        /// </summary>
+        /// <param name="position">Drawing area in the inspector.</param>
+        /// <param name="property">Serialized SceneField property.</param>
+        /// <param name="label">Inspector label for the property.</param>
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             EditorGUI.BeginProperty(position, GUIContent.none, property);

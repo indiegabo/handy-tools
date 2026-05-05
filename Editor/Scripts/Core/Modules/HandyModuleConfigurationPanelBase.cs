@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using IndieGabo.HandyTools.Modules;
 using UnityEditor;
@@ -17,6 +18,37 @@ namespace IndieGabo.HandyTools.Editor.Modules
         /// <inheritdoc />
         public virtual IReadOnlyList<HandyModuleDependencyStatus> Dependencies =>
             System.Array.Empty<HandyModuleDependencyStatus>();
+
+        /// <summary>
+        /// Gets whether the module exposes a starter setup action.
+        /// </summary>
+        protected virtual bool SupportsStarterSetup => false;
+
+        /// <summary>
+        /// Gets the explanatory text shown above the starter setup action.
+        /// </summary>
+        protected virtual string StarterSetupDescription =>
+            "Create the default project-side assets or files required by this module.";
+
+        /// <summary>
+        /// Gets the message shown when the module does not provide a starter
+        /// setup action yet.
+        /// </summary>
+        protected virtual string StarterSetupUnavailableMessage =>
+            "Starter setup is not available for this module yet.";
+
+        /// <summary>
+        /// Applies the default internal spacing used by informational module
+        /// help boxes.
+        /// </summary>
+        /// <param name="helpBox">Help box to style.</param>
+        protected static void ApplyInformationalHelpBoxStyle(HelpBox helpBox)
+        {
+            helpBox.style.paddingLeft = 12f;
+            helpBox.style.paddingRight = 12f;
+            helpBox.style.paddingTop = 10f;
+            helpBox.style.paddingBottom = 10f;
+        }
 
         /// <inheritdoc />
         public VisualElement CreatePanel(HandyModuleEditorContext context)
@@ -40,6 +72,7 @@ namespace IndieGabo.HandyTools.Editor.Modules
             content.style.flexDirection = FlexDirection.Column;
             content.SetEnabled(gate.CanEditConfiguration);
             BuildPanel(content, context);
+            content.Add(CreateStarterSetupSection(context));
             contentContainer.Add(content);
             root.Add(contentContainer);
 
@@ -60,6 +93,83 @@ namespace IndieGabo.HandyTools.Editor.Modules
         /// <param name="root">Root visual element for module-specific controls.</param>
         /// <param name="context">Shared module editor context.</param>
         protected abstract void BuildPanel(VisualElement root, HandyModuleEditorContext context);
+
+        /// <summary>
+        /// Executes the module starter setup action and returns a user-facing
+        /// status message.
+        /// </summary>
+        /// <param name="context">Shared module editor context.</param>
+        /// <returns>
+        /// A status message describing the outcome of the action.
+        /// </returns>
+        protected virtual string RunStarterSetup(HandyModuleEditorContext context)
+        {
+            return StarterSetupUnavailableMessage;
+        }
+
+        private VisualElement CreateStarterSetupSection(HandyModuleEditorContext context)
+        {
+            VisualElement section = new();
+            section.style.flexDirection = FlexDirection.Column;
+            section.style.marginTop = 14f;
+
+            Label title = new("Starter Setup");
+            title.style.unityFontStyleAndWeight = FontStyle.Bold;
+            title.style.marginBottom = 6f;
+            section.Add(title);
+
+            HelpBox description = new(
+                SupportsStarterSetup
+                    ? StarterSetupDescription
+                    : StarterSetupUnavailableMessage,
+                SupportsStarterSetup
+                    ? HelpBoxMessageType.Info
+                    : HelpBoxMessageType.Warning
+            );
+            ApplyInformationalHelpBoxStyle(description);
+            description.style.marginBottom = 8f;
+            section.Add(description);
+
+            HelpBox status = new(string.Empty, HelpBoxMessageType.None);
+            ApplyInformationalHelpBoxStyle(status);
+            status.style.display = DisplayStyle.None;
+            section.Add(status);
+
+            Button button = new(() => ExecuteStarterSetup(context))
+            {
+                text = "Starter Setup",
+            };
+            button.style.alignSelf = Align.FlexStart;
+            button.style.marginBottom = 8f;
+            button.SetEnabled(SupportsStarterSetup);
+            section.Add(button);
+
+            return section;
+
+            void ExecuteStarterSetup(HandyModuleEditorContext currentContext)
+            {
+                try
+                {
+                    string message = RunStarterSetup(currentContext);
+                    if (string.IsNullOrWhiteSpace(message))
+                    {
+                        status.style.display = DisplayStyle.None;
+                        return;
+                    }
+
+                    status.text = message;
+                    status.messageType = HelpBoxMessageType.Info;
+                    status.style.display = DisplayStyle.Flex;
+                }
+                catch (Exception exception)
+                {
+                    Debug.LogException(exception);
+                    status.text = exception.Message;
+                    status.messageType = HelpBoxMessageType.Error;
+                    status.style.display = DisplayStyle.Flex;
+                }
+            }
+        }
 
         private static void ApplyRootStyle(VisualElement root)
         {

@@ -1,4 +1,5 @@
 using System.IO;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,15 +11,17 @@ namespace IndieGabo.HandyTools.ScreenShooter
     [GlobalConfig("Resources/ScreenShooter")]
     public sealed class ScreenShooterConfig : HandyGlobalConfig<ScreenShooterConfig>
     {
-        private const string DefaultOutputDirectory = "Screenshots";
+        private const string _defaultOutputDirectory = "Screenshots";
 
         #region Fields
 
+        [BoxGroup("Input")]
         [SerializeField]
         private InputAction _shootInputAction = CreateDefaultShootInputAction();
 
+        [BoxGroup("Output")]
         [SerializeField]
-        private string _outputDirectoryPath = DefaultOutputDirectory;
+        private string _outputDirectoryPath = _defaultOutputDirectory;
 
         #endregion
 
@@ -52,7 +55,7 @@ namespace IndieGabo.HandyTools.ScreenShooter
                 {
                     SetFieldValue(
                         nameof(_outputDirectoryPath),
-                        DefaultOutputDirectory
+                        _defaultOutputDirectory
                     );
                 }
 
@@ -80,7 +83,7 @@ namespace IndieGabo.HandyTools.ScreenShooter
 
             if (string.IsNullOrWhiteSpace(_outputDirectoryPath))
             {
-                _outputDirectoryPath = DefaultOutputDirectory;
+                _outputDirectoryPath = _defaultOutputDirectory;
             }
         }
 
@@ -113,7 +116,7 @@ namespace IndieGabo.HandyTools.ScreenShooter
             string normalizedPath = (configuredPath ?? string.Empty).Trim();
             if (string.IsNullOrWhiteSpace(normalizedPath))
             {
-                return DefaultOutputDirectory;
+                return _defaultOutputDirectory;
             }
 
             return normalizedPath.Replace('\\', '/');

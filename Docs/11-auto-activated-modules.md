@@ -66,24 +66,33 @@ types rather than a runtime service object.
 
 ### Responsibilities
 
-Pooling provides generic object pooling primitives and pool initializer support.
+Pooling provides definition-driven object pooling, independent runtime owners,
+and optional identifier-based pool registry lookup.
 
 ### Runtime Entry Points
 
 - `Runtime/Scripts/Pooling/PoolingModuleDefinition.cs`
 - `Runtime/Scripts/Pooling/PoolingModuleBootstrapper.cs`
+- `Runtime/Scripts/Pooling/PoolIdentifier.cs`
+- `Runtime/Scripts/Pooling/PoolRegistry.cs`
 - `Runtime/Scripts/Pooling/HandyPool.cs`
+- `Runtime/Scripts/Pooling/HandyPoolRuntime.cs`
+- `Runtime/Scripts/Pooling/IHandyPool.cs`
 - `Runtime/Scripts/Pooling/IPoolSubject.cs`
 - `Runtime/Scripts/Pooling/HandyPoolInitializer.cs`
 
-The bootstrapper body is empty because actual pool creation is driven by scene
-initializers and consumers rather than by a global startup singleton.
+The bootstrapper resets `PoolRegistry` for a clean runtime session. Actual pool
+creation is still driven by scene initializers and direct consumers rather than
+by a global spawned singleton.
 
 ### Notes for AI Agents
 
 - Do not add fake bootstrap-time runtime objects just to justify the module.
+- Preserve the split between asset definitions and runtime owners.
 - Preserve the hardened pool lifecycle: clear pools on dismiss, destroy tracked
   created subjects, and avoid unnecessary prewarm allocations.
+- Use `PoolIdentifier` and `PoolRegistry` only when the caller truly benefits
+  from identifier-based lookup instead of prefab references.
 
 ## Identifying
 

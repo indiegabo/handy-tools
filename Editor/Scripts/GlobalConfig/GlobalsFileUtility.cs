@@ -9,10 +9,22 @@ namespace IndieGabo.HandyTools.Editor.GlobalConfig
 {
     /// <summary>
     /// Editor-only utilities for the GlobalConfig system.
-    /// Ensures file existence and sync with AssetDatabase.
+    /// Provides explicit file creation and existence checks for the project
+    /// globals file.
     /// </summary>
     public static class GlobalsFileUtility
     {
+        /// <summary>
+        /// Checks whether the project globals file already exists.
+        /// </summary>
+        /// <returns>
+        /// True when the project provides Assets/Resources/globals.json.
+        /// </returns>
+        public static bool DoesGlobalsFileExist()
+        {
+            return File.Exists(GlobalsJsonProvider.GetProjectFilePath());
+        }
+
         #region Ensure
 
         /// <summary>

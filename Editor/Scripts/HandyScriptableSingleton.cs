@@ -4,8 +4,18 @@ using UnityEditor;
 
 namespace IndieGabo.HandyTools.Editor
 {
+    /// <summary>
+    /// Base ScriptableSingleton that exposes reflection-based field assignment
+    /// with automatic persistence.
+    /// </summary>
+    /// <typeparam name="T">Concrete singleton type.</typeparam>
     public class HandyScriptableSingleton<T> : ScriptableSingleton<T> where T : ScriptableSingleton<T>, new()
     {
+        /// <summary>
+        /// Assigns a field by name and persists the singleton asset.
+        /// </summary>
+        /// <param name="fieldName">Field name to update.</param>
+        /// <param name="value">Value assigned to the field.</param>
         protected virtual void SetFieldValue(string fieldName, object value)
         {
             FieldInfo field = this.GetType().GetField(

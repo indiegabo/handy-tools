@@ -2,8 +2,16 @@ using System;
 
 namespace IndieGabo.HandyTools.Utils
 {
+    /// <summary>
+    /// Converts between System.Guid and HandyTools SerializableGuid values.
+    /// </summary>
     public static class GuidExtensions
     {
+        /// <summary>
+        /// Converts one System.Guid into the package serializable layout.
+        /// </summary>
+        /// <param name="systemGuid">GUID value to convert.</param>
+        /// <returns>The equivalent SerializableGuid.</returns>
         public static SerializableGuid ToSerializableGuid(this Guid systemGuid)
         {
             byte[] bytes = systemGuid.ToByteArray();
@@ -15,6 +23,11 @@ namespace IndieGabo.HandyTools.Utils
             );
         }
 
+        /// <summary>
+        /// Converts one SerializableGuid into the standard Guid layout.
+        /// </summary>
+        /// <param name="serializableGuid">Serializable GUID value.</param>
+        /// <returns>The equivalent System.Guid.</returns>
         public static Guid ToSystemGuid(this SerializableGuid serializableGuid)
         {
             byte[] bytes = new byte[16];

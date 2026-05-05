@@ -5,12 +5,13 @@ using UnityEngine.UIElements;
 
 namespace IndieGabo.HandyTools.UITooling
 {
+    /// <summary>
+    /// UI Toolkit element that toggles between a start button and a simple
+    /// name-entry form.
+    /// </summary>
     [UxmlElement("NamedItemCreationForm")]
     public partial class NamedItemCreationForm : VisualElement
     {
-        [SerializeField]
-        VisualTreeAsset _template;
-
         static readonly string TemplatePath
             = "UI Toolkit/Tooling/NamedItemCreationForm_Template";
 
@@ -25,6 +26,9 @@ namespace IndieGabo.HandyTools.UITooling
 
         private Func<string, bool> _saveValidation = null;
 
+        /// <summary>
+        /// Creates the visual tree used by the named item creation form.
+        /// </summary>
         public NamedItemCreationForm()
         {
             var templateAsset = Resources.Load<VisualTreeAsset>($"{TemplatePath}");
@@ -43,6 +47,11 @@ namespace IndieGabo.HandyTools.UITooling
             Add(_mainContainer);
         }
 
+        /// <summary>
+        /// Initializes callbacks and labels used by the form.
+        /// </summary>
+        /// <param name="saveValidation">Validation callback invoked on save.</param>
+        /// <param name="labels">Custom labels used by the buttons.</param>
         public void Initialize(Func<string, bool> saveValidation = null, LabelsStruct labels = default)
         {
             _saveValidation = saveValidation;
@@ -95,6 +104,10 @@ namespace IndieGabo.HandyTools.UITooling
             }
         }
 
+        /// <summary>
+        /// Switches the form between editing and collapsed states.
+        /// </summary>
+        /// <param name="isActive">True to show the editing form.</param>
         public void ActivateForm(bool isActive)
         {
             if (isActive)
@@ -111,6 +124,9 @@ namespace IndieGabo.HandyTools.UITooling
             }
         }
 
+        /// <summary>
+        /// Stores the button labels used by the form.
+        /// </summary>
         public struct LabelsStruct
         {
             public string start;

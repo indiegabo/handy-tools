@@ -55,6 +55,17 @@ Preferred homes:
   ownership,
 - or an internal support folder such as `GlobalConfig/JsonTree`.
 
+## Recording Unapproved Candidates
+
+Do not turn a feature idea into a new module only because it sounds useful.
+
+- Record module ideas in `../../../Docs/planned-modules.md` using the existing
+  candidate-module and research-notes format.
+- Treat that document as a research backlog, not as approval.
+- Promote a candidate only after a focused study shows that the feature needs
+  package-level ownership, has recurring real workloads, and is stronger than
+  keeping the code inside an existing module or inside `Utils`.
+
 ## Editor Integration Rules
 
 - Reuse `HandyToolsModulesWindow` for configurable modules.

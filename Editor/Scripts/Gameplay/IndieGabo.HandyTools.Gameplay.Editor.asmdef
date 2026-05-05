@@ -4,7 +4,8 @@
     "references": [
         "IndieGabo.HandyTools.Runtime",
         "IndieGabo.HandyTools.Editor",
-        "IndieGabo.HandyTools.Gameplay"
+        "IndieGabo.HandyTools.Gameplay",
+        "IndieGabo.HandyTools.SaveSystem"
     ],
     "includePlatforms": [
         "Editor"

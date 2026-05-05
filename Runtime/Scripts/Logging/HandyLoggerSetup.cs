@@ -1,15 +1,24 @@
 using UnityEngine;
+using Sirenix.OdinInspector;
 using static UnityEngine.ColorUtility;
 
 namespace IndieGabo.HandyTools.Logger
 {
+    /// <summary>
+    /// Global color configuration used by the runtime logger formatting.
+    /// </summary>
     [GlobalConfig("Resources/Logging")]
     public class HandyLoggerSetup : HandyGlobalConfig<HandyLoggerSetup>
     {
         #region Fields
 
+        [BoxGroup("Colors")]
         [SerializeField] private Color _successColor = new(84, 166, 84); // Green
+
+        [BoxGroup("Colors")]
         [SerializeField] private Color _warningColor = new(215, 202, 60); // Yellow
+
+        [BoxGroup("Colors")]
         [SerializeField] private Color _errorColor = new(224, 100, 100); // Red
 
         #endregion

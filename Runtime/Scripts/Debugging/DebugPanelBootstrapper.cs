@@ -12,8 +12,8 @@ namespace IndieGabo.HandyTools.Debugging
     /// </summary>
     public static class DebugPanelBootstrapper
     {
-        private const string PanelResourcePath = "UI/Debug Panel/DebugPanel";
-        private const string BootstrappedPanelName = "[HandyTools] Debug Panel";
+        private const string _panelResourcePath = "UI/Debug Panel/DebugPanel";
+        private const string _bootstrappedPanelName = "[HandyTools] Debug Panel";
 
         /// <summary>
         /// Gets whether the panel may exist in the current runtime target.
@@ -49,19 +49,19 @@ namespace IndieGabo.HandyTools.Debugging
             if (existingPanels.Length > 0) return;
 
             DebugPanel prefab = Resources.Load<DebugPanel>(
-                PanelResourcePath
+                _panelResourcePath
             );
 
             if (prefab == null)
             {
                 Debug.LogWarning(
-                    $"[{nameof(DebugPanelBootstrapper)}] Debug panel prefab was not found at '{PanelResourcePath}'."
+                    $"[{nameof(DebugPanelBootstrapper)}] Debug panel prefab was not found at '{_panelResourcePath}'."
                 );
                 return;
             }
 
             var panel = UnityEngine.Object.Instantiate(prefab);
-            panel.gameObject.name = BootstrappedPanelName;
+            panel.gameObject.name = _bootstrappedPanelName;
             UnityEngine.Object.DontDestroyOnLoad(panel.gameObject);
             panel.Initialize(config);
 

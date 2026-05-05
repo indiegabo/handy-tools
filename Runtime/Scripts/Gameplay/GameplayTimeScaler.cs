@@ -1,4 +1,3 @@
-using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace IndieGabo.HandyTools.Gameplay
@@ -13,8 +12,8 @@ namespace IndieGabo.HandyTools.Gameplay
         /// Transitions time scale to zero.
         /// </summary>
         /// <param name="duration">Transition duration in seconds.</param>
-        /// <returns>An asynchronous task that completes when the transition ends.</returns>
-        public static UniTask Freeze(float duration = 0f)
+        /// <returns>An awaitable that completes when the transition ends.</returns>
+        public static Awaitable Freeze(float duration = 0f)
         {
             return TransitionIntoTimeScale(0f, duration);
         }
@@ -23,8 +22,8 @@ namespace IndieGabo.HandyTools.Gameplay
         /// Transitions time scale back to one.
         /// </summary>
         /// <param name="duration">Transition duration in seconds.</param>
-        /// <returns>An asynchronous task that completes when the transition ends.</returns>
-        public static UniTask Unfreeze(float duration = 0f)
+        /// <returns>An awaitable that completes when the transition ends.</returns>
+        public static Awaitable Unfreeze(float duration = 0f)
         {
             return TransitionIntoTimeScale(1f, duration);
         }
@@ -34,8 +33,8 @@ namespace IndieGabo.HandyTools.Gameplay
         /// </summary>
         /// <param name="targetTimeScale">Target time scale value.</param>
         /// <param name="duration">Transition duration in seconds.</param>
-        /// <returns>An asynchronous task that completes when the transition ends.</returns>
-        private static async UniTask TransitionIntoTimeScale(
+        /// <returns>An awaitable that completes when the transition ends.</returns>
+        private static async Awaitable TransitionIntoTimeScale(
             float targetTimeScale,
             float duration
         )
@@ -60,7 +59,7 @@ namespace IndieGabo.HandyTools.Gameplay
                     easedProgress
                 );
 
-                await UniTask.NextFrame();
+                await Awaitable.NextFrameAsync();
             }
 
             Time.timeScale = targetTimeScale;

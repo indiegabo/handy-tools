@@ -121,7 +121,7 @@ namespace IndieGabo.HandyTools.Debugging
 
         private void CacheServices()
         {
-            ServiceLocator.Global.TryGet(out _gameplayService);
+            ServiceLocator.TryGet(out _gameplayService);
         }
 
         #endregion
@@ -238,7 +238,7 @@ namespace IndieGabo.HandyTools.Debugging
             if (_gameplayService != null && _gameplayService.IsOn)
             {
                 _pausedGameplayService = true;
-                _ = _gameplayService.PauseGameplay();
+                _ = _gameplayService.PauseGameplay(this);
                 return;
             }
 
@@ -259,7 +259,7 @@ namespace IndieGabo.HandyTools.Debugging
 
                 if (_gameplayService != null)
                 {
-                    _ = _gameplayService.ResumeGameplay();
+                    _ = _gameplayService.ResumeGameplay(this);
                 }
             }
 

@@ -21,6 +21,13 @@ namespace IndieGabo.HandyTools.Editor.Steam
             SteamModuleDefinition.Dependencies;
 
         /// <inheritdoc />
+        protected override bool SupportsStarterSetup => true;
+
+        /// <inheritdoc />
+        protected override string StarterSetupDescription =>
+            "Create steam_appid.txt at the project root so local startup and debugging work outside the Steam client.";
+
+        /// <inheritdoc />
         protected override void BuildPanel(VisualElement root, HandyModuleEditorContext context)
         {
             root.Add(CreateIntroLabel(
@@ -38,6 +45,13 @@ namespace IndieGabo.HandyTools.Editor.Steam
                 "When this module is active, HandyTools creates the SteamManager object before scene logic consumes Steamworks APIs.",
                 HelpBoxMessageType.Info
             ));
+        }
+
+        /// <inheritdoc />
+        protected override string RunStarterSetup(HandyModuleEditorContext context)
+        {
+            _ = context;
+            return SteamModuleStarterSetup.Run();
         }
 
         private static Label CreateIntroLabel(string text)
@@ -85,7 +99,7 @@ namespace IndieGabo.HandyTools.Editor.Steam
 
         private static string GetSteamAppIdFilePath()
         {
-            return Path.GetFullPath(Path.Combine(Application.dataPath, "..", "steam_appid.txt"));
+            return SteamModuleStarterSetup.GetSteamAppIdFilePath();
         }
     }
 }

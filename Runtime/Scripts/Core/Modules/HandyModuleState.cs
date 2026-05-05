@@ -1,4 +1,5 @@
 using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace IndieGabo.HandyTools.Modules
@@ -9,7 +10,10 @@ namespace IndieGabo.HandyTools.Modules
     [Serializable]
     public sealed class HandyModuleState
     {
+        [BoxGroup("Module")]
         [SerializeField] private string _moduleId;
+
+        [BoxGroup("Module")]
         [SerializeField] private bool _isActive;
 
         /// <summary>

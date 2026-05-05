@@ -1,8 +1,12 @@
 using UnityEngine;
+using Sirenix.OdinInspector;
 using static UnityEngine.ColorUtility;
 
 namespace IndieGabo.HandyTools.Logger
 {
+    /// <summary>
+    /// Runtime logging façade that formats module-scoped messages with colors.
+    /// </summary>
     public class HandyLogger : HandyBehaviour
     {
         #region Static
@@ -109,7 +113,7 @@ namespace IndieGabo.HandyTools.Logger
 
         #region Inspector
 
-        [Header("Settings")]
+        [BoxGroup("Settings")]
         [SerializeField]
         private bool _shouldLog = true;
         public bool ShouldLog { get => _shouldLog; set => _shouldLog = value; }

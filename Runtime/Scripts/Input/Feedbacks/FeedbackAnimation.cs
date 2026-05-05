@@ -1,15 +1,21 @@
 using IndieGabo.HandyTools.Utils;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace IndieGabo.HandyTools.HandyInputSystem.Feedbacks
 {
     [System.Serializable]
+    /// <summary>
+    /// Stores animation data variants for one named feedback animation.
+    /// </summary>
     public class FeedbackAnimation
     {
+        [BoxGroup("Animation")]
         [SerializeField]
         private AnimationRegistry _registry = new();
 
+        [BoxGroup("Animation")]
         public string name;
 
         /// <summary>

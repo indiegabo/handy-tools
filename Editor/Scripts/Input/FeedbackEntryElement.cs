@@ -13,6 +13,9 @@ using IndieGabo.HandyTools.UITooling;
 
 namespace IndieGabo.HandyTools.Editor
 {
+    /// <summary>
+    /// UI Toolkit element used to edit one feedback entry and its animations.
+    /// </summary>
     public class FeedbackEntryElement : VisualElement
     {
         static readonly string TemplatePath
@@ -31,6 +34,9 @@ namespace IndieGabo.HandyTools.Editor
         private FeedbackEntry _entry;
         private string _currentControlSchemeName;
 
+        /// <summary>
+        /// Creates the visual tree used to edit one feedback entry.
+        /// </summary>
         public FeedbackEntryElement()
         {
             var templateAsset = Resources.Load<VisualTreeAsset>($"{TemplatePath}");
@@ -64,6 +70,10 @@ namespace IndieGabo.HandyTools.Editor
             Add(_mainContainer);
         }
 
+        /// <summary>
+        /// Loads one feedback entry into the editor element.
+        /// </summary>
+        /// <param name="entry">Feedback entry to edit.</param>
         public void LoadEntry(FeedbackEntry entry)
         {
             if (string.IsNullOrEmpty(_currentControlSchemeName))
@@ -107,6 +117,10 @@ namespace IndieGabo.HandyTools.Editor
             ActivateView(true);
         }
 
+        /// <summary>
+        /// Sets the control scheme currently being edited.
+        /// </summary>
+        /// <param name="controlSchemeName">Control scheme name to target.</param>
         public void SetControlSchemeName(string controlSchemeName)
         {
             _currentControlSchemeName = controlSchemeName;
@@ -128,6 +142,9 @@ namespace IndieGabo.HandyTools.Editor
             SetPreviewImage(sprite);
         }
 
+        /// <summary>
+        /// Clears the currently loaded scheme-specific data from the element.
+        /// </summary>
         public void ClearSchemeData()
         {
             _entry = null;

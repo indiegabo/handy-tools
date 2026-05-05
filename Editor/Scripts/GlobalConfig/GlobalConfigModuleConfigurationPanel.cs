@@ -39,9 +39,23 @@ namespace IndieGabo.HandyTools.Editor.GlobalConfig
             GlobalConfigModuleDefinition.Dependencies;
 
         /// <inheritdoc />
+        protected override bool SupportsStarterSetup => true;
+
+        /// <inheritdoc />
+        protected override string StarterSetupDescription =>
+            "Create Assets/Resources/globals.json so the module has an explicit project-side globals document to edit.";
+
+        /// <inheritdoc />
         protected override void BuildPanel(VisualElement root, HandyModuleEditorContext context)
         {
-            GlobalsFileUtility.EnsureGlobalsFileExists();
+            _ = context;
+
+            if (!GlobalsFileUtility.DoesGlobalsFileExist())
+            {
+                root.Add(CreateMissingGlobalsHelpBox());
+                return;
+            }
+
             Globals.LoadFromGlobals();
 
             VisualTreeAsset visualTreeAsset = Resources.Load<VisualTreeAsset>(
@@ -67,6 +81,21 @@ namespace IndieGabo.HandyTools.Editor.GlobalConfig
             WireHandlers();
             RefreshRootList();
             SelectFirstRootIfAny();
+        }
+
+        /// <inheritdoc />
+        protected override string RunStarterSetup(HandyModuleEditorContext context)
+        {
+            _ = context;
+            return GlobalConfigModuleStarterSetup.Run();
+        }
+
+        private static HelpBox CreateMissingGlobalsHelpBox()
+        {
+            return new HelpBox(
+                "The project does not provide Assets/Resources/globals.json yet. Run Starter Setup to create the editable globals file before opening the Globals editor surface.",
+                HelpBoxMessageType.Warning
+            );
         }
 
         private void CacheReferences(VisualElement root)

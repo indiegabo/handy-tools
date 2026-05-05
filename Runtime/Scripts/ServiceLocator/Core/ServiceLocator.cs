@@ -1,307 +1,231 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 namespace IndieGabo.HandyTools.HandyServiceLocator
 {
-    public class ServiceLocator : MonoBehaviour
+    /// <summary>
+    /// Provides access to the global HandyTools service registry.
+    /// </summary>
+    public static class ServiceLocator
     {
-        const string k_GlobalServiceLocatorName = "ServiceLocator [Global]";
-        const string k_SceneServiceLocatorName = "ServiceLocator [Scene]";
-
-        static ServiceLocator _global;
-        static Dictionary<Scene, ServiceLocator> _scenesContainer = new();
-        static List<GameObject> _tmpSceneGameObjects = new();
-
-        readonly ServiceManager _services = new();
-
-        internal void ConfigureAsScene()
-        {
-            Scene scene = gameObject.scene;
-
-            if (_scenesContainer.ContainsKey(scene))
-            {
-                Debug.LogError("<color=#FFFFFF>[Handy Service Locator]</color> ServiceLocator already configured as scene");
-                return;
-            }
-
-            _scenesContainer.Add(scene, this);
-        }
-
-        public static ServiceLocator Global => _global;
+        private static ServiceManager _global = new();
 
         /// <summary>
-        /// Gets the <see cref="ServiceLocator"/> which is responsible for the scene that <paramref name="monoBehaviour"/> is in.
-        /// If none is found, it tries to find one in the scene by looking for a
-        /// <see cref="ServiceLocatorSceneBootstrapper"/> and calling <see cref="ServiceLocatorSceneBootstrapper.BootstrapOnDemand"/>.
-        /// If still none is found, it returns the global <see cref="ServiceLocator"/>.
+        /// Registers the default service for its generic type.
         /// </summary>
-        /// <param name="monoBehaviour">The MonoBehaviour to search from.</param>
-        /// <returns>The <see cref="ServiceLocator"/> responsible for the scene, or the global one if none is found.</returns>
-        public static ServiceLocator For(MonoBehaviour monoBehaviour)
+        /// <typeparam name="T">Service type to register.</typeparam>
+        /// <param name="service">Service instance to register.</param>
+        public static void Register<T>(T service) where T : class
         {
-            var componentInParent = monoBehaviour.GetComponentInParent<ServiceLocator>();
-            if (componentInParent != null)
-            {
-                return componentInParent;
-            }
-
-            var inTheScene = ForSceneOf(monoBehaviour);
-            if (inTheScene != null)
-            {
-                return inTheScene;
-            }
-
-            return _global;
+            _global.Register(service);
         }
 
         /// <summary>
-        /// Gets the <see cref="ServiceLocator"/> which is responsible for the scene that <paramref name="monoBehaviour"/> is in.
-        /// If none is found, it tries to find one in the scene by looking for a
-        /// <see cref="ServiceLocatorSceneBootstrapper"/> and calling <see cref="ServiceLocatorSceneBootstrapper.BootstrapOnDemand"/>.
-        /// If still none is found, it returns the global <see cref="ServiceLocator"/>.
+        /// Registers a service using an explicit identifier and type.
         /// </summary>
-        /// <param name="monoBehaviour">The MonoBehaviour to search from.</param>
-        /// <returns>The <see cref="ServiceLocator"/> responsible for the scene, or the global one if none is found.</returns>
-        public static ServiceLocator ForSceneOf(MonoBehaviour monoBehaviour)
+        /// <typeparam name="T">Service type to register.</typeparam>
+        /// <param name="identifier">Registration identifier.</param>
+        /// <param name="service">Service instance to register.</param>
+        public static void Register<T>(ServiceIdentifier identifier, T service) where T : class
         {
-            Scene scene = monoBehaviour.gameObject.scene;
-
-            if (_scenesContainer.TryGetValue(scene, out ServiceLocator container) && container != monoBehaviour)
-            {
-                return container;
-            }
-
-            _tmpSceneGameObjects.Clear();
-
-            scene.GetRootGameObjects(_tmpSceneGameObjects);
-
-            foreach (GameObject go in _tmpSceneGameObjects.Where(go => go.GetComponent<ServiceLocator>() != null))
-            {
-                if (go.TryGetComponent(out ServiceLocatorSceneBootstrapper bootstrapper) && bootstrapper.Container != monoBehaviour)
-                {
-                    bootstrapper.BootstrapOnDemand();
-                    return bootstrapper.Container;
-                }
-            }
-
-            return _global;
+            _global.Register(identifier, service);
         }
 
         /// <summary>
-        /// Registers a service with the given instance and type in the current scope.
+        /// Registers a service using an explicit string key and type.
         /// </summary>
-        /// <typeparam name="T">The type of the service to register</typeparam>
-        /// <param name="service">The instance of the service to register</param>
-        /// <returns>The current ServiceLocator, for chaining</returns>
-        public ServiceLocator Register<T>(T service) where T : class
+        /// <typeparam name="T">Service type to register.</typeparam>
+        /// <param name="name">Registration name.</param>
+        /// <param name="service">Service instance to register.</param>
+        public static void Register<T>(string name, T service) where T : class
         {
-            _services.Register(service);
-            return this;
+            _global.Register(name, service);
         }
 
         /// <summary>
-        /// Registers a service with the given instance and type in the current scope and any parent scopes.
+        /// Registers a service using a GUID identifier and type.
         /// </summary>
-        /// <param name="type">The type of the service to register</param>
-        /// <param name="service">The instance of the service to register</param>
-        public ServiceLocator Register(Type type, object service)
+        /// <typeparam name="T">Service type to register.</typeparam>
+        /// <param name="identifier">GUID identifier.</param>
+        /// <param name="service">Service instance to register.</param>
+        public static void Register<T>(System.Guid identifier, T service) where T : class
         {
-            _services.Register(type, service);
-            return this;
+            _global.Register(identifier, service);
         }
 
         /// <summary>
-        /// Registers a service with the given instance and name in the current scope and any parent scopes.
+        /// Removes a typed service registration when the stored instance matches.
         /// </summary>
-        /// <param name="name">The name of the service to register</param>
-        /// <param name="service">The instance of the service to register</param>
-        /// <typeparam name="T">The type of the service to register</typeparam>
-        public ServiceLocator Register<T>(string name, T service) where T : class
+        /// <typeparam name="T">Service type to remove.</typeparam>
+        /// <param name="service">Service instance being removed.</param>
+        /// <returns>True when the registration was removed.</returns>
+        public static bool Deregister<T>(T service) where T : class
         {
-            _services.Register(name, service);
-            return this;
+            return _global.Deregister(service);
         }
 
         /// <summary>
-        /// Deregisters a service with the given instance from the current scope and any parent scopes.
+        /// Removes a named service registration.
         /// </summary>
-        /// <param name="service">The instance of the service to deregister</param>
-        /// <returns>This ServiceLocator instance</returns>
-        public ServiceLocator Deregister<T>(T service) where T : class
+        /// <typeparam name="T">Service type associated with the identifier.</typeparam>
+        /// <param name="identifier">Registration identifier to remove.</param>
+        /// <returns>True when the registration was removed.</returns>
+        public static bool Deregister<T>(ServiceIdentifier identifier) where T : class
         {
-            _services.Deregister(service);
-            return this;
+            return _global.Deregister<T>(identifier);
         }
 
         /// <summary>
-        /// Deregisters a service with the given type from the current scope and any parent scopes.
+        /// Removes a named service registration.
         /// </summary>
-        /// <param name="type">The type of the service to deregister</param>
-        public ServiceLocator Deregister(Type type)
+        /// <typeparam name="T">Service type associated with the name.</typeparam>
+        /// <param name="name">Registration name to remove.</param>
+        /// <returns>True when the registration was removed.</returns>
+        public static bool Deregister<T>(string name) where T : class
         {
-            _services.Deregister(type);
-            return this;
+            return _global.Deregister<T>(name);
         }
 
         /// <summary>
-        /// Deregisters a service with the given name from the current scope and any parent scopes.
+        /// Removes a GUID-keyed service registration.
         /// </summary>
-        /// <param name="name">The name of the service to deregister</param>
-        /// <returns>This ServiceLocator instance</returns>
-        public ServiceLocator Deregister(string name)
+        /// <typeparam name="T">Service type associated with the identifier.</typeparam>
+        /// <param name="identifier">GUID identifier to remove.</param>
+        /// <returns>True when the registration was removed.</returns>
+        public static bool Deregister<T>(System.Guid identifier) where T : class
         {
-            _services.Deregister(name);
-            return this;
+            return _global.Deregister<T>(identifier);
         }
 
         /// <summary>
-        /// Gets a service of type T from the current scope and any parent scopes.
+        /// Attempts to retrieve the default globally registered service.
         /// </summary>
-        /// <param name="service">The retrieved service, or null if none was found</param>
-        /// <typeparam name="T">The type of service to retrieve</typeparam>
-        /// <returns>This ServiceLocator instance</returns>
-        /// <exception cref="ArgumentException">If the service was not registered</exception>
-        public ServiceLocator Get<T>(out T service) where T : class
+        /// <typeparam name="T">Expected service type.</typeparam>
+        /// <param name="service">Resolved service instance when found.</param>
+        /// <returns>True when a default service exists for the type.</returns>
+        public static bool TryGet<T>(out T service) where T : class
         {
-            if (TryGetFromRegistry(out service)) return this;
-
-            if (TryGetNextInHierarchy(out ServiceLocator container))
-            {
-                container.Get(out service);
-                return this;
-            }
-
-            throw new ArgumentException($"ServiceLocator.Get: Service of type {typeof(T).FullName} not registered");
+            return _global.TryGet(out service);
         }
 
         /// <summary>
-        /// Gets a service of type T with the given name from the current scope and any parent scopes.
+        /// Attempts to retrieve the default globally registered service.
         /// </summary>
-        /// <param name="name">The name of the service to retrieve</param>
-        /// <param name="service">The retrieved service, or null if none was found</param>
-        /// <typeparam name="T">The type of service to retrieve</typeparam>
-        /// <returns>This ServiceLocator instance</returns>
-        /// <exception cref="ArgumentException">If the service was not registered</exception>
-        public ServiceLocator Get<T>(string name, out T service) where T : class
+        /// <typeparam name="T">Expected service type.</typeparam>
+        /// <param name="service">Default service instance when found.</param>
+        /// <returns>True when a default service exists for the type.</returns>
+        public static bool TryGetFirst<T>(out T service) where T : class
         {
-            if (TryGetFromRegistry(name, out service)) return this;
-
-            if (TryGetNextInHierarchy(out ServiceLocator container))
-            {
-                container.Get(out service);
-                return this;
-            }
-
-            throw new ArgumentException($"ServiceLocator.Get: Service of type {typeof(T).FullName} with name {name} not registered");
+            return _global.TryGetFirst(out service);
         }
 
         /// <summary>
-        /// Attempts to retrieve a service of type T from the current scope and any parent scopes.
+        /// Copies the default and identified services of the requested type
+        /// into the provided list.
         /// </summary>
-        /// <param name="service">The retrieved service, or null if none was found</param>
-        /// <typeparam name="T">The type of service to retrieve</typeparam>
-        /// <returns>True if the service was found, false otherwise</returns>
-        public bool TryGet<T>(out T service) where T : class
+        /// <typeparam name="T">Expected service type.</typeparam>
+        /// <param name="services">Destination list that receives the services.</param>
+        /// <returns>The number of copied services.</returns>
+        public static int GetAll<T>(List<T> services) where T : class
         {
-            if (TryGetFromRegistry(out service)) return true;
-
-            if (TryGetNextInHierarchy(out ServiceLocator container))
-            {
-                return container.TryGet(out service);
-            }
-
-            return false;
+            return _global.GetAll(services);
         }
 
         /// <summary>
-        /// Attempts to retrieve a service of type T from the current scope with the given name.
+        /// Attempts to retrieve a globally registered named service.
         /// </summary>
-        /// <typeparam name="T">The type of service to retrieve</typeparam>
-        /// <param name="name">The name of the service to retrieve</param>
-        /// <param name="service">The retrieved service, or null if none was found</param>
-        /// <returns>True if the service was found, false otherwise</returns>
-        public bool TryGet<T>(string name, out T service) where T : class
+        /// <typeparam name="T">Expected service type.</typeparam>
+        /// <param name="identifier">Registration identifier.</param>
+        /// <param name="service">Resolved service instance when found.</param>
+        /// <returns>True when a matching service exists.</returns>
+        public static bool TryGet<T>(ServiceIdentifier identifier, out T service) where T : class
         {
-            if (TryGetFromRegistry(name, out service)) return true;
-
-            if (TryGetNextInHierarchy(out ServiceLocator container))
-            {
-                return container.TryGet(out service);
-            }
-
-            return false;
-        }
-
-        private static void GenerateGlobal()
-        {
-            var container = new GameObject(k_GlobalServiceLocatorName, typeof(ServiceLocator));
-            DontDestroyOnLoad(container);
-            _global = container.GetComponent<ServiceLocator>();
-        }
-
-        private bool TryGetFromRegistry<T>(out T service) where T : class
-        {
-            return _services.TryGet(out service);
-        }
-
-        private bool TryGetFromRegistry<T>(string name, out T service) where T : class
-        {
-            return _services.TryGet(name, out service);
-        }
-
-        private bool TryGetNextInHierarchy(out ServiceLocator container)
-        {
-            if (this == _global)
-            {
-                container = null;
-                return false;
-            }
-
-            if (transform.parent != null)
-            {
-                container = transform.parent.GetComponentInParent<ServiceLocator>();
-                return container != null;
-            }
-            else
-            {
-                container = ForSceneOf(this);
-                return container != null;
-            }
-        }
-
-        private void OnDestroy()
-        {
-            if (_global == this)
-            {
-                _global = null;
-            }
-            else if (_scenesContainer.ContainsValue(this))
-            {
-                _scenesContainer.Remove(gameObject.scene);
-            }
+            return _global.TryGet(identifier, out service);
         }
 
         /// <summary>
-        /// Rebuilds the global service locator container for a new runtime
-        /// session.
+        /// Attempts to retrieve a globally registered named service.
+        /// </summary>
+        /// <typeparam name="T">Expected service type.</typeparam>
+        /// <param name="name">Registration name.</param>
+        /// <param name="service">Resolved service instance when found.</param>
+        /// <returns>True when a matching service exists.</returns>
+        public static bool TryGet<T>(string name, out T service) where T : class
+        {
+            return _global.TryGet(name, out service);
+        }
+
+        /// <summary>
+        /// Attempts to retrieve a GUID-keyed service.
+        /// </summary>
+        /// <typeparam name="T">Expected service type.</typeparam>
+        /// <param name="identifier">GUID identifier.</param>
+        /// <param name="service">Resolved service instance when found.</param>
+        /// <returns>True when a matching service exists.</returns>
+        public static bool TryGet<T>(System.Guid identifier, out T service) where T : class
+        {
+            return _global.TryGet(identifier, out service);
+        }
+
+        /// <summary>
+        /// Resolves the required default globally registered service.
+        /// </summary>
+        /// <typeparam name="T">Expected service type.</typeparam>
+        /// <returns>The registered service instance.</returns>
+        public static T GetRequired<T>() where T : class
+        {
+            return _global.GetRequired<T>();
+        }
+
+        /// <summary>
+        /// Resolves the required default globally registered service.
+        /// </summary>
+        /// <typeparam name="T">Expected service type.</typeparam>
+        /// <returns>The default registered service instance.</returns>
+        public static T GetFirstRequired<T>() where T : class
+        {
+            return _global.GetFirstRequired<T>();
+        }
+
+        /// <summary>
+        /// Resolves a required globally registered named service.
+        /// </summary>
+        /// <typeparam name="T">Expected service type.</typeparam>
+        /// <param name="identifier">Registration identifier.</param>
+        /// <returns>The registered named service instance.</returns>
+        public static T GetRequired<T>(ServiceIdentifier identifier) where T : class
+        {
+            return _global.GetRequired<T>(identifier);
+        }
+
+        /// <summary>
+        /// Resolves a required globally registered named service.
+        /// </summary>
+        /// <typeparam name="T">Expected service type.</typeparam>
+        /// <param name="name">Registration name.</param>
+        /// <returns>The registered named service instance.</returns>
+        public static T GetRequired<T>(string name) where T : class
+        {
+            return _global.GetRequired<T>(name);
+        }
+
+        /// <summary>
+        /// Resolves a required GUID-keyed service.
+        /// </summary>
+        /// <typeparam name="T">Expected service type.</typeparam>
+        /// <param name="identifier">GUID identifier.</param>
+        /// <returns>The registered named service instance.</returns>
+        public static T GetRequired<T>(System.Guid identifier) where T : class
+        {
+            return _global.GetRequired<T>(identifier);
+        }
+
+        /// <summary>
+        /// Rebuilds the global service registry for a new runtime session.
         /// </summary>
         public static void BootstrapGlobal()
         {
-            if (_global != null)
-            {
-                Destroy(_global.gameObject);
-            }
-
-            GenerateGlobal();
-            _scenesContainer.Clear();
-            _tmpSceneGameObjects.Clear();
+            _global = new ServiceManager();
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -309,14 +233,5 @@ namespace IndieGabo.HandyTools.HandyServiceLocator
         {
             BootstrapGlobal();
         }
-
-#if UNITY_EDITOR
-        [MenuItem("GameObject/Handy Service Locator/Add Scene", false, 100)]
-        public static GameObject AddSceneServiceLocator()
-        {
-            var go = new GameObject(k_SceneServiceLocatorName, typeof(ServiceLocatorSceneBootstrapper));
-            return go;
-        }
-#endif
     }
 }

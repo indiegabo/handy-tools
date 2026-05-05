@@ -39,6 +39,51 @@ These are invoked by name through `HandyModuleRuntimeLoader`, not through the
 optional module contract. That makes HandyBus and ServiceLocator mandatory
 kernel infrastructure rather than user-managed modules.
 
+## HandyBus Contract
+
+HandyBus is a typed static event bus.
+
+- Each closed `EventBus<T>` registers itself lazily with `EventBusUtil` on
+  first use.
+- `EventBusUtil` clears all previously used buses on runtime reset and editor
+  play mode exit boundaries.
+- Subscription lifetime should be owned through the returned
+  `EventSubscription<T>` token rather than raw string keys or domain IDs.
+
+Read [HandyBus Guide](08-handybus-guide.md) for the developer-facing API,
+usage examples, and dispatch rules.
+
+## Service Locator Contract
+
+The service locator is a single global runtime registry.
+
+- Each service type can have one default unnamed registration.
+- Additional instances of the same service type must be registered with a
+  `ServiceIdentifier`.
+- `TryGet<T>()` and `GetRequired<T>()` resolve only the default unnamed
+  registration.
+- `TryGet<T>(identifier)` and `GetRequired<T>(identifier)` resolve one
+  identified registration.
+
+Read [Service Locator Guide](07-service-locator-guide.md) for the full
+developer-facing API contract and examples.
+
+## Pooling Contract
+
+Pooling is definition-driven but runtime-instance-based.
+
+- `HandyPool<T>` is a definition asset, not the globally shared mutable pool
+  owner.
+- `HandyPoolRuntime<T>` owns one independent set of active subpools for one
+  scene owner or runtime context.
+- Identified active subpools register with `PoolRegistry` and resolve by
+  `PoolIdentifier`.
+- Dismissing a runtime clears pooled inactive subjects and destroys the tracked
+  active subjects created by that runtime.
+
+Read [Pooling Guide](09-pooling-guide.md) for the developer-facing API,
+ownership rules, and identifier guidance.
+
 ## Optional Module Discovery
 
 Optional modules implement `IHandyModuleBootstrapper`.
@@ -112,5 +157,9 @@ Feature-specific configuration belongs to the owning module or support slice.
   `IHandyModuleBootstrapper`, and compiles into an assembly that will be loaded
   into the current AppDomain.
 - If you change load order, explain why in the matching module documentation.
+- If you change service registration semantics, update the service locator
+  guide in the same change.
+- If you change event subscription semantics, update the HandyBus guide in the
+  same change.
 
-Continue with [Editor Setup and Configuration](02-editor-setup-and-configuration.md).
+Continue with [Service Locator Guide](07-service-locator-guide.md).

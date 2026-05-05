@@ -1,5 +1,5 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
-    <Style src="project://database/Assets/HandyTools/Editor/Resources/UI%20Toolkit/HandySheet_Style.uss?fileID=7433441132597879392&amp;guid=2ff946a34c4d1234cb53ca8734142f3c&amp;type=3#HandySheet_Style" />
+    <Style src="project://database/Assets/HandyTools/Editor/Resources/UI%20Toolkit/HandySheet_Style.uss?fileID=7433441132597879392&amp;guid=83bf243909024ba1809e01a95515d1da&amp;type=3#HandySheet_Style" />
     <engine:VisualElement name="container-action-asset" class="handy-container">
         <engine:Label text="Input Action Asset:" class="handy-top-label" />
         <editor:ObjectField name="field-action-asset" binding-path="_actionAsset" enabled="false" />

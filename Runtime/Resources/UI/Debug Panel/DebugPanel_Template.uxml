@@ -1,5 +1,5 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/HandyTools/Resources/UI/Debug%20Panel/General.uss?fileID=7433441132597879392&amp;guid=7ea7b5347e04d6c4c98d6bf8cdec206a&amp;type=3#General" />
+    <Style src="project://database/Assets/HandyTools/Resources/UI/Debug%20Panel/General.uss?fileID=7433441132597879392&amp;guid=3165759e76f241a8ad233fe5238095ae&amp;type=3#General" />
     <engine:VisualElement name="main-container" class="debug-panel-overlay" style="display: none; width: 100%; height: 100%;">
         <engine:VisualElement name="panel-container" class="debug-panel-window">
             <engine:VisualElement name="header" class="debug-panel-header">
