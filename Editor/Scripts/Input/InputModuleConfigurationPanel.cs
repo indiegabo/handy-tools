@@ -53,6 +53,8 @@ namespace IndieGabo.HandyTools.Editor.Input
             HelpBox prefabHelpBox = new(string.Empty, HelpBoxMessageType.None);
             prefabHelpBox.style.marginTop = 6f;
             prefabHelpBox.style.marginBottom = 2f;
+            ObjectField playerManagerField = CreatePlayerManagerField(config, prefabHelpBox);
+            SliderInt playerCountField = CreatePlayerCountField(config, modeLabel);
 
             root.Add(CreateIntroLabel());
             if (!hadExistingConfig)
@@ -60,11 +62,18 @@ namespace IndieGabo.HandyTools.Editor.Input
                 root.Add(CreateNewConfigHelpBox());
             }
 
-            root.Add(CreatePlayerManagerField(config, prefabHelpBox));
-            root.Add(CreatePlayerCountField(config, modeLabel));
+            root.Add(playerManagerField);
+            root.Add(playerCountField);
             root.Add(modeLabel);
             root.Add(prefabHelpBox);
 
+            RegisterProjectInputConfigSync(
+                root,
+                playerManagerField,
+                playerCountField,
+                modeLabel,
+                prefabHelpBox
+            );
             RefreshPrefabState(config, prefabHelpBox);
         }
 
@@ -99,11 +108,54 @@ namespace IndieGabo.HandyTools.Editor.Input
             field.style.marginBottom = 6f;
             field.RegisterValueChangedCallback(changeEvent =>
             {
-                config.PlayerManagerPrefab = changeEvent.newValue as PlayerManager;
+                PlayerManager playerManager = ResolvePlayerManagerReference(
+                    changeEvent.newValue
+                );
+                if (playerManager != changeEvent.newValue)
+                {
+                    field.SetValueWithoutNotify(playerManager);
+                }
+
+                config.PlayerManagerPrefab = playerManager;
                 AssetDatabase.SaveAssets();
                 RefreshPrefabState(config, prefabHelpBox);
             });
             return field;
+        }
+
+        private static void RegisterProjectInputConfigSync(
+            VisualElement root,
+            ObjectField playerManagerField,
+            SliderInt playerCountField,
+            Label modeLabel,
+            HelpBox prefabHelpBox
+        )
+        {
+            void HandleProjectInputConfigUpdated()
+            {
+                ProjectInputConfig.ReloadInstance();
+                if (!ProjectInputConfig.TryGetExisting(out ProjectInputConfig config))
+                {
+                    return;
+                }
+
+                int sanitizedPlayerCount = Mathf.Clamp(config.MaxNumberOfPlayers, 1, 8);
+                playerManagerField.SetValueWithoutNotify(config.PlayerManagerPrefab);
+                playerCountField.SetValueWithoutNotify(sanitizedPlayerCount);
+                RefreshModeLabel(modeLabel, sanitizedPlayerCount);
+                RefreshPrefabState(config, prefabHelpBox);
+            }
+
+            void HandleDetachFromPanel(DetachFromPanelEvent _)
+            {
+                InputModuleStarterSetup.ProjectInputConfigUpdated -=
+                    HandleProjectInputConfigUpdated;
+                root.UnregisterCallback<DetachFromPanelEvent>(HandleDetachFromPanel);
+            }
+
+            InputModuleStarterSetup.ProjectInputConfigUpdated +=
+                HandleProjectInputConfigUpdated;
+            root.RegisterCallback<DetachFromPanelEvent>(HandleDetachFromPanel);
         }
 
         private static SliderInt CreatePlayerCountField(
@@ -144,6 +196,26 @@ namespace IndieGabo.HandyTools.Editor.Input
             label.text = maxNumberOfPlayers <= 1
                 ? "Mode: Single Player"
                 : "Mode: Multiplayer";
+        }
+
+        private static PlayerManager ResolvePlayerManagerReference(Object candidate)
+        {
+            if (candidate is PlayerManager playerManager)
+            {
+                return playerManager;
+            }
+
+            if (candidate is GameObject gameObject)
+            {
+                return gameObject.GetComponent<PlayerManager>();
+            }
+
+            if (candidate is Component component)
+            {
+                return component.GetComponent<PlayerManager>();
+            }
+
+            return null;
         }
 
         private static void RefreshPrefabState(ProjectInputConfig config, HelpBox prefabHelpBox)

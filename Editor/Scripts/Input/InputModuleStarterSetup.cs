@@ -14,6 +14,8 @@ namespace IndieGabo.HandyTools.Editor.Input
     {
         public const string ProjectFolder = "Assets/_Project/Input";
 
+        public static event Action ProjectInputConfigUpdated;
+
         private const string _defaultPlayerManagerPrefabPath =
             ProjectFolder + "/Player Manager.prefab";
         private const string _packageName = "HandyInputStarter";
@@ -216,6 +218,7 @@ namespace IndieGabo.HandyTools.Editor.Input
             EditorUtility.SetDirty(inputConfig);
             AssetDatabase.SaveAssetIfDirty(inputConfig);
             AssetDatabase.SaveAssets();
+            ProjectInputConfigUpdated?.Invoke();
         }
 
         private static bool TryAssignImportedPlayerManager()
