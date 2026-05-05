@@ -63,7 +63,9 @@ namespace IndieGabo.HandyTools.Editor.Modules
             container.style.paddingTop = 6f;
             container.style.paddingBottom = 6f;
             container.style.flexShrink = 0f;
-            container.style.backgroundColor = new Color32(0x38, 0x38, 0x38, 0xFF);
+            container.style.backgroundColor = new StyleColor(
+                new Color32(0x38, 0x38, 0x38, 0xFF)
+            );
             container.style.borderLeftWidth = 1f;
             container.style.borderRightWidth = 1f;
             container.style.borderTopWidth = 1f;
