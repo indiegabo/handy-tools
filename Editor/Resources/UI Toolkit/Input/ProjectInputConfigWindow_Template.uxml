@@ -2,11 +2,11 @@
     <Style src="project://database/Assets/HandyTools/Editor/Resources/UI%20Toolkit/HandySheet_Style.uss?fileID=7433441132597879392&amp;guid=83bf243909024ba1809e01a95515d1da&amp;type=3#HandySheet_Style" />
     <engine:VisualElement name="container-player-manager" class="handy-container" style="flex-grow: 0;">
         <engine:Label text="Player Manager Prefab" emoji-fallback-support="false" class="handy-top-label" />
-        <editor:ObjectField name="field-player-manager-prefab" type="IndieGabo.HandyTools.HandyInputSystem.PlayerManager, IndieGabo.HandyTools.Input" />
+        <engine:VisualElement name="field-player-manager-prefab-host" />
     </engine:VisualElement>
     <engine:VisualElement name="container-number-of-players" class="handy-container" style="flex-grow: 0;">
-        <engine:Label text="Max number of players" class="handy-top-label" />
+        <engine:Label text="Max Number Of Players" class="handy-top-label" />
         <engine:SliderInt value="1" high-value="8" low-value="1" fill="false" show-input-field="true" inverted="false" name="field-max-number-of-players" />
-        <engine:Label text="Singleplayer" name="label-type-hint" style="margin-top: -1px; margin-left: 5px; -unity-font-style: italic; font-size: 10px;" />
+        <engine:Label text="Mode: Single Player" name="label-type-hint" style="margin-top: -1px; margin-left: 5px; -unity-font-style: italic; font-size: 10px;" />
     </engine:VisualElement>
 </engine:UXML>

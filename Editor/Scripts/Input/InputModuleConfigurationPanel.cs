@@ -49,13 +49,11 @@ namespace IndieGabo.HandyTools.Editor.Input
                 AssetDatabase.SaveAssets();
             }
 
-            Label modeLabel = CreateModeLabel(sanitizedPlayerCount);
+            SerializedObject serializedConfig = new(config);
             HelpBox prefabHelpBox = new(string.Empty, HelpBoxMessageType.None);
             ApplyInformativeBoxStyle(prefabHelpBox);
             prefabHelpBox.style.marginTop = 6f;
             prefabHelpBox.style.marginBottom = 2f;
-            ObjectField playerManagerField = CreatePlayerManagerField(config, prefabHelpBox);
-            SliderInt playerCountField = CreatePlayerCountField(config, modeLabel);
 
             root.Add(CreateIntroLabel());
             if (!hadExistingConfig)
@@ -63,13 +61,29 @@ namespace IndieGabo.HandyTools.Editor.Input
                 root.Add(CreateNewConfigHelpBox());
             }
 
-            root.Add(playerManagerField);
-            root.Add(playerCountField);
-            root.Add(modeLabel);
+            VisualElement templateRoot = CreateConfigFieldsRoot(
+                config,
+                serializedConfig,
+                prefabHelpBox,
+                sanitizedPlayerCount,
+                out IMGUIContainer playerManagerField,
+                out SliderInt playerCountField,
+                out Label modeLabel
+            );
+
+            root.Add(templateRoot);
             root.Add(prefabHelpBox);
+
+            if (playerManagerField == null
+                || playerCountField == null
+                || modeLabel == null)
+            {
+                return;
+            }
 
             RegisterProjectInputConfigSync(
                 root,
+                serializedConfig,
                 playerManagerField,
                 playerCountField,
                 modeLabel,
@@ -95,38 +109,150 @@ namespace IndieGabo.HandyTools.Editor.Input
             return label;
         }
 
-        private static ObjectField CreatePlayerManagerField(
+        private static VisualElement CreateConfigFieldsRoot(
             ProjectInputConfig config,
-            HelpBox prefabHelpBox
+            SerializedObject serializedConfig,
+            HelpBox prefabHelpBox,
+            int sanitizedPlayerCount,
+            out IMGUIContainer playerManagerField,
+            out SliderInt playerCountField,
+            out Label modeLabel
         )
         {
-            ObjectField field = new("Player Manager Prefab")
+            VisualTreeAsset visualTreeAsset = Resources.Load<VisualTreeAsset>(
+                "UI Toolkit/Input/ProjectInputConfigWindow_Template"
+            );
+
+            if (visualTreeAsset == null)
             {
-                objectType = typeof(PlayerManager),
-                allowSceneObjects = false,
-                value = config.PlayerManagerPrefab,
-            };
-            field.style.marginBottom = 6f;
-            field.RegisterValueChangedCallback(changeEvent =>
-            {
-                PlayerManager playerManager = ResolvePlayerManagerReference(
-                    changeEvent.newValue
+                playerManagerField = null;
+                playerCountField = null;
+                modeLabel = null;
+
+                HelpBox helpBox = new(
+                    "The Input UI template could not be loaded from Resources/UI Toolkit/Input/ProjectInputConfigWindow_Template.",
+                    HelpBoxMessageType.Error
                 );
-                if (playerManager != changeEvent.newValue)
+                ApplyInformativeBoxStyle(helpBox);
+                return helpBox;
+            }
+
+            VisualElement templateRoot = new();
+            visualTreeAsset.CloneTree(templateRoot);
+
+            VisualElement playerManagerContainer = templateRoot.Q<VisualElement>(
+                "container-player-manager"
+            );
+            VisualElement playerManagerFieldHost = templateRoot.Q<VisualElement>(
+                "field-player-manager-prefab-host"
+            );
+            VisualElement playerCountContainer = templateRoot.Q<VisualElement>(
+                "container-number-of-players"
+            );
+            playerCountField = templateRoot.Q<SliderInt>(
+                "field-max-number-of-players"
+            );
+            modeLabel = templateRoot.Q<Label>("label-type-hint");
+
+            if (playerManagerContainer == null
+                || playerManagerFieldHost == null
+                || playerCountContainer == null
+                || playerCountField == null
+                || modeLabel == null)
+            {
+                playerManagerField = null;
+                playerCountField = null;
+                modeLabel = null;
+
+                HelpBox helpBox = new(
+                    "The Input UI template is missing one or more required fields.",
+                    HelpBoxMessageType.Error
+                );
+                ApplyInformativeBoxStyle(helpBox);
+                return helpBox;
+            }
+
+            HandyModuleConfigurationPanelBase.ApplyConfigurableValueContainerStyle(
+                playerManagerContainer
+            );
+            HandyModuleConfigurationPanelBase.ApplyConfigurableValueContainerStyle(
+                playerCountContainer
+            );
+
+            SerializedProperty playerManagerProperty = serializedConfig.FindProperty(
+                "_playerManagerPrefab"
+            );
+
+            if (playerManagerProperty == null)
+            {
+                playerManagerField = null;
+                playerCountField = null;
+                modeLabel = null;
+
+                HelpBox helpBox = new(
+                    "The Input config is missing the serialized PlayerManager property.",
+                    HelpBoxMessageType.Error
+                );
+                ApplyInformativeBoxStyle(helpBox);
+                return helpBox;
+            }
+
+            playerManagerField = new IMGUIContainer(() =>
+            {
+                serializedConfig.Update();
+
+                PlayerManager currentPlayerManager =
+                    playerManagerProperty.objectReferenceValue as PlayerManager;
+
+                EditorGUI.BeginChangeCheck();
+                PlayerManager selectedPlayerManager = EditorGUILayout.ObjectField(
+                    GUIContent.none,
+                    currentPlayerManager,
+                    typeof(PlayerManager),
+                    false
+                ) as PlayerManager;
+
+                if (!EditorGUI.EndChangeCheck())
                 {
-                    field.SetValueWithoutNotify(playerManager);
+                    return;
                 }
 
-                config.PlayerManagerPrefab = playerManager;
+                playerManagerProperty.objectReferenceValue = selectedPlayerManager;
+                serializedConfig.ApplyModifiedProperties();
                 AssetDatabase.SaveAssets();
-                RefreshPrefabState(config, prefabHelpBox);
+                RefreshPrefabState(
+                    serializedConfig.targetObject as ProjectInputConfig,
+                    prefabHelpBox
+                );
             });
-            return field;
+            playerManagerField.style.marginBottom = 0f;
+            playerManagerFieldHost.Add(playerManagerField);
+
+            SliderInt resolvedPlayerCountField = playerCountField;
+            Label resolvedModeLabel = modeLabel;
+
+            playerCountField.SetValueWithoutNotify(sanitizedPlayerCount);
+            playerCountField.RegisterValueChangedCallback(changeEvent =>
+            {
+                int sanitizedValue = Mathf.Clamp(changeEvent.newValue, 1, 8);
+                if (sanitizedValue != changeEvent.newValue)
+                {
+                    resolvedPlayerCountField.SetValueWithoutNotify(sanitizedValue);
+                }
+
+                config.MaxNumberOfPlayers = sanitizedValue;
+                AssetDatabase.SaveAssets();
+                RefreshModeLabel(resolvedModeLabel, sanitizedValue);
+            });
+
+            RefreshModeLabel(resolvedModeLabel, sanitizedPlayerCount);
+            return templateRoot;
         }
 
         private static void RegisterProjectInputConfigSync(
             VisualElement root,
-            ObjectField playerManagerField,
+            SerializedObject serializedConfig,
+            IMGUIContainer playerManagerField,
             SliderInt playerCountField,
             Label modeLabel,
             HelpBox prefabHelpBox
@@ -141,7 +267,8 @@ namespace IndieGabo.HandyTools.Editor.Input
                 }
 
                 int sanitizedPlayerCount = Mathf.Clamp(config.MaxNumberOfPlayers, 1, 8);
-                playerManagerField.SetValueWithoutNotify(config.PlayerManagerPrefab);
+                serializedConfig.Update();
+                playerManagerField.MarkDirtyRepaint();
                 playerCountField.SetValueWithoutNotify(sanitizedPlayerCount);
                 RefreshModeLabel(modeLabel, sanitizedPlayerCount);
                 RefreshPrefabState(config, prefabHelpBox);
@@ -159,64 +286,11 @@ namespace IndieGabo.HandyTools.Editor.Input
             root.RegisterCallback<DetachFromPanelEvent>(HandleDetachFromPanel);
         }
 
-        private static SliderInt CreatePlayerCountField(
-            ProjectInputConfig config,
-            Label modeLabel
-        )
-        {
-            SliderInt field = new("Max Number Of Players", 1, 8);
-            field.showInputField = true;
-            field.SetValueWithoutNotify(Mathf.Clamp(config.MaxNumberOfPlayers, 1, 8));
-            field.style.marginBottom = 6f;
-            field.RegisterValueChangedCallback(changeEvent =>
-            {
-                int sanitizedValue = Mathf.Clamp(changeEvent.newValue, 1, 8);
-                if (sanitizedValue != changeEvent.newValue)
-                {
-                    field.SetValueWithoutNotify(sanitizedValue);
-                }
-
-                config.MaxNumberOfPlayers = sanitizedValue;
-                AssetDatabase.SaveAssets();
-                RefreshModeLabel(modeLabel, sanitizedValue);
-            });
-            return field;
-        }
-
-        private static Label CreateModeLabel(int maxNumberOfPlayers)
-        {
-            Label label = new();
-            label.style.unityFontStyleAndWeight = FontStyle.Bold;
-            label.style.marginBottom = 6f;
-            RefreshModeLabel(label, maxNumberOfPlayers);
-            return label;
-        }
-
         private static void RefreshModeLabel(Label label, int maxNumberOfPlayers)
         {
             label.text = maxNumberOfPlayers <= 1
                 ? "Mode: Single Player"
                 : "Mode: Multiplayer";
-        }
-
-        private static PlayerManager ResolvePlayerManagerReference(Object candidate)
-        {
-            if (candidate is PlayerManager playerManager)
-            {
-                return playerManager;
-            }
-
-            if (candidate is GameObject gameObject)
-            {
-                return gameObject.GetComponent<PlayerManager>();
-            }
-
-            if (candidate is Component component)
-            {
-                return component.GetComponent<PlayerManager>();
-            }
-
-            return null;
         }
 
         private static void RefreshPrefabState(ProjectInputConfig config, HelpBox prefabHelpBox)

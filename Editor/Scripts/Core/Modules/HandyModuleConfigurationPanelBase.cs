@@ -55,7 +55,7 @@ namespace IndieGabo.HandyTools.Editor.Modules
         /// controls across module panels.
         /// </summary>
         /// <param name="container">Container to style.</param>
-        internal static void ApplyConfigurableValueContainerStyle(VisualElement container)
+        protected internal static void ApplyConfigurableValueContainerStyle(VisualElement container)
         {
             container.style.marginBottom = 6f;
             container.style.paddingLeft = 8f;
@@ -88,7 +88,7 @@ namespace IndieGabo.HandyTools.Editor.Modules
         /// <returns>
         /// The styled wrapper that contains the provided value element.
         /// </returns>
-        internal static VisualElement WrapConfigurableValueElement(VisualElement valueElement)
+        protected internal static VisualElement WrapConfigurableValueElement(VisualElement valueElement)
         {
             VisualElement container = new();
             ApplyConfigurableValueContainerStyle(container);
