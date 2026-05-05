@@ -1,5 +1,5 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
-    <Style src="project://database/Assets/HandyTools/Editor/Resources/UI%20Toolkit/HandySheet_Style.uss?fileID=7433441132597879392&amp;guid=83bf243909024ba1809e01a95515d1da&amp;type=3#HandySheet_Style" />
+    <Style src="../HandySheet_Style.uss" />
     <engine:VisualElement name="container-auto-load" class="handy-container-horizontal" style="flex-grow: 0;">
         <engine:Toggle label="Auto-load on bootstrap?" name="field-auto-load" style="width: 100%;" />
     </engine:VisualElement>

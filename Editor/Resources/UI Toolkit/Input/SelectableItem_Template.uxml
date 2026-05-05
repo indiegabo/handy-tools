@@ -1,5 +1,5 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
-    <Style src="project://database/Assets/HandyTools/Editor/Resources/UI%20Toolkit/HandySheet_Style.uss?fileID=7433441132597879392&amp;guid=83bf243909024ba1809e01a95515d1da&amp;type=3#HandySheet_Style" />
+    <Style src="../HandySheet_Style.uss" />
     <engine:VisualElement name="container" style="background-color: rgba(36, 36, 36, 0.28); justify-content: center; align-items: flex-start; padding-right: 5px; padding-left: 5px; padding-top: 10px; padding-bottom: 10px;">
         <engine:Label text="My action name" name="label-name" style="font-size: 12px;" />
     </engine:VisualElement>

@@ -1,5 +1,5 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
-    <Style src="project://database/Assets/HandyTools/Editor/Resources/UI%20Toolkit/HandySheet_Style.uss?fileID=7433441132597879392&amp;guid=83bf243909024ba1809e01a95515d1da&amp;type=3#HandySheet_Style" />
+    <Style src="../../HandySheet_Style.uss" />
     <engine:VisualElement name="container" style="flex-grow: 0; flex-direction: row;">
         <engine:VisualElement style="flex-grow: 0; width: 10px; background-color: rgba(0, 0, 0, 0.28);" />
         <engine:Foldout text="Animation Name" value="true" name="foldout" focusable="false" enabled="true" style="padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px; flex-grow: 1;">
