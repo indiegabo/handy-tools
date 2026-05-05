@@ -84,9 +84,11 @@ instantiated runtime manager as `DontDestroyOnLoad`.
 
 Use `HandyTools/Modules/Input` to configure the player manager prefab and the
 maximum player count. The panel also exposes a `Starter Setup` button that
-imports the module-owned Input starter package into `Assets/_Project/Input`,
-materializes the module configuration asset when needed, and assigns the
-default `PlayerManager` prefab to `ProjectInputConfig`.
+creates `ProjectInputConfig` automatically when the project does not have it
+yet, so manual configuration is always available. `Starter Setup` remains an
+optional shortcut that imports the module-owned Input starter package into
+`Assets/_Project/Input`, assigns the default `PlayerManager` prefab, and resets
+the player count to `1`.
 Input-owned support types such as rebinders and feedback containers also live
 in the Input slice.
 

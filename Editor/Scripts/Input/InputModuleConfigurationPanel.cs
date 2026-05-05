@@ -34,10 +34,12 @@ namespace IndieGabo.HandyTools.Editor.Input
             _ = context;
 
             ProjectInputConfig.ReloadInstance();
-            if (!ProjectInputConfig.TryGetExisting(out ProjectInputConfig config))
+            bool hadExistingConfig = ProjectInputConfig.TryGetExisting(
+                out ProjectInputConfig config
+            );
+            if (!hadExistingConfig)
             {
-                root.Add(CreateMissingConfigHelpBox());
-                return;
+                config = ProjectInputConfig.GetOrCreateForEditor();
             }
 
             int sanitizedPlayerCount = Mathf.Clamp(config.MaxNumberOfPlayers, 1, 8);
@@ -53,6 +55,11 @@ namespace IndieGabo.HandyTools.Editor.Input
             prefabHelpBox.style.marginBottom = 2f;
 
             root.Add(CreateIntroLabel());
+            if (!hadExistingConfig)
+            {
+                root.Add(CreateNewConfigHelpBox());
+            }
+
             root.Add(CreatePlayerManagerField(config, prefabHelpBox));
             root.Add(CreatePlayerCountField(config, modeLabel));
             root.Add(modeLabel);
@@ -154,11 +161,11 @@ namespace IndieGabo.HandyTools.Editor.Input
             prefabHelpBox.messageType = HelpBoxMessageType.Info;
         }
 
-        private static HelpBox CreateMissingConfigHelpBox()
+        private static HelpBox CreateNewConfigHelpBox()
         {
             return new HelpBox(
-                "The project does not provide ProjectInputConfig.asset yet. Run Starter Setup to import the default Input project assets before editing the module configuration.",
-                HelpBoxMessageType.Warning
+                "ProjectInputConfig.asset did not exist yet, so the editor created it in Assets/Resources/HandyTools. You can configure the module manually now, or run Starter Setup to import the default Input starter assets.",
+                HelpBoxMessageType.Info
             );
         }
     }

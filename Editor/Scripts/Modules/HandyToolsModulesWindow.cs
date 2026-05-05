@@ -200,6 +200,7 @@ namespace IndieGabo.HandyTools.Editor.Modules
             VisualElement body = new();
             body.style.flexDirection = FlexDirection.Row;
             body.style.flexGrow = 1f;
+            body.style.minHeight = 0f;
 
             body.Add(CreateSidebar());
             body.Add(CreateContentHost(registration));
@@ -242,14 +243,15 @@ namespace IndieGabo.HandyTools.Editor.Modules
 
         private static VisualElement CreateContentHost(ModulePanelRegistration registration)
         {
-            VisualElement contentHost = new();
+            ScrollView contentHost = new(ScrollViewMode.Vertical);
             contentHost.style.flexGrow = 1f;
             contentHost.style.minWidth = 320f;
+            contentHost.style.minHeight = 0f;
 
             HandyModuleEditorContext context = new(HandyModuleSettings.Instance);
             IHandyModuleConfigurationPanel panel = registration.PanelFactory();
             VisualElement panelRoot = panel.CreatePanel(context);
-            panelRoot.style.flexGrow = 1f;
+            panelRoot.style.flexShrink = 0f;
             contentHost.Add(panelRoot);
 
             return contentHost;

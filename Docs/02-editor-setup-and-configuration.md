@@ -25,7 +25,8 @@ Important behaviors:
   every load.
 - It removes unavailable scripting defines before applying setup defaults.
 - It runs the Input module starter setup so the default project-side input
-  assets are available under `Assets/_Project/Input`.
+  assets are available under `Assets/_Project/Input` when the project wants
+  the package-provided starter stack.
 - It runs the Steam module starter setup so `steam_appid.txt` exists in the
   project root.
 
@@ -71,9 +72,11 @@ The package uses a combination of `Resources` assets and project files.
 
 ## Starter Setup Surface
 
-- Input starter setup imports the module-owned starter package and materializes
-  the default Player Manager stack under `Assets/_Project/Input`, then assigns
-  the imported prefab to `Assets/Resources/HandyTools/ProjectInputConfig.asset`.
+- Input starter setup is optional. The Input panel can create
+  `Assets/Resources/HandyTools/ProjectInputConfig.asset` on demand for manual
+  configuration, while Starter Setup imports the module-owned default Player
+  Manager stack under `Assets/_Project/Input`, assigns the imported prefab, and
+  resets the player count to `1`.
 - Globals starter setup creates `Assets/Resources/globals.json` when the
   project does not provide it yet.
 - Steam starter setup writes `steam_appid.txt` to the project root when the

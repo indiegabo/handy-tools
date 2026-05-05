@@ -58,6 +58,7 @@ namespace IndieGabo.HandyTools.Editor.Modules
             ApplyRootStyle(root);
 
             HandyModuleDependencyGateElement gate = new(Descriptor, () => Dependencies, context);
+            gate.style.flexShrink = 0f;
             root.Add(gate);
 
             Label lockLabel = new();
@@ -70,6 +71,7 @@ namespace IndieGabo.HandyTools.Editor.Modules
             VisualElement content = new();
             content.AddToClassList("handy-module-panel__content");
             content.style.flexDirection = FlexDirection.Column;
+            content.style.flexShrink = 0f;
             content.SetEnabled(gate.CanEditConfiguration);
             BuildPanel(content, context);
             content.Add(CreateStarterSetupSection(context));
@@ -174,6 +176,7 @@ namespace IndieGabo.HandyTools.Editor.Modules
         private static void ApplyRootStyle(VisualElement root)
         {
             root.style.flexDirection = FlexDirection.Column;
+            root.style.flexShrink = 0f;
         }
 
         private static void ApplyLockLabelStyle(Label lockLabel)
@@ -181,6 +184,7 @@ namespace IndieGabo.HandyTools.Editor.Modules
             lockLabel.style.marginTop = 10f;
             lockLabel.style.marginBottom = 2f;
             lockLabel.style.whiteSpace = WhiteSpace.Normal;
+            lockLabel.style.flexShrink = 0f;
             lockLabel.style.color = EditorGUIUtility.isProSkin
                 ? new Color(0.96f, 0.74f, 0.28f)
                 : new Color(0.55f, 0.36f, 0.02f);
@@ -202,6 +206,7 @@ namespace IndieGabo.HandyTools.Editor.Modules
             container.style.paddingRight = 12f;
             container.style.paddingTop = 12f;
             container.style.paddingBottom = 12f;
+            container.style.flexShrink = 0f;
             container.style.backgroundColor = backgroundColor;
             container.style.borderLeftWidth = 1f;
             container.style.borderRightWidth = 1f;

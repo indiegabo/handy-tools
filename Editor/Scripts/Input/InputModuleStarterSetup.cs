@@ -14,6 +14,8 @@ namespace IndieGabo.HandyTools.Editor.Input
     {
         public const string ProjectFolder = "Assets/_Project/Input";
 
+        private const string _defaultPlayerManagerPrefabPath =
+            ProjectFolder + "/Player Manager.prefab";
         private const string _packageName = "HandyInputStarter";
         private const string _developmentPackageRelativePath =
             "Assets/HandyTools/Runtime/Resources";
@@ -28,6 +30,7 @@ namespace IndieGabo.HandyTools.Editor.Input
 
         private static bool _isImportPending;
         private static bool _requestScriptReloadAfterCompletion;
+        private static int _pendingResolveAttempts;
 
 #if HANDY_TOOLS_DEVELOPMENT
         /// <summary>
@@ -101,18 +104,45 @@ namespace IndieGabo.HandyTools.Editor.Input
         /// </returns>
         public static PlayerManager FindPlayerManager()
         {
+            GameObject defaultPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(
+                _defaultPlayerManagerPrefabPath
+            );
+            if (defaultPrefab != null)
+            {
+                PlayerManager defaultPlayerManager = defaultPrefab.GetComponent<PlayerManager>();
+                if (defaultPlayerManager != null)
+                {
+                    return defaultPlayerManager;
+                }
+            }
+
             string[] guids = AssetDatabase.FindAssets(
-                "Player Manager",
+                "t:Prefab",
                 new[] { ProjectFolder }
             );
 
-            if (guids.Length == 0)
+            foreach (string guid in guids)
             {
-                return null;
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                if (string.IsNullOrEmpty(path))
+                {
+                    continue;
+                }
+
+                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                if (prefab == null)
+                {
+                    continue;
+                }
+
+                PlayerManager playerManager = prefab.GetComponent<PlayerManager>();
+                if (playerManager != null)
+                {
+                    return playerManager;
+                }
             }
 
-            string path = AssetDatabase.GUIDToAssetPath(guids[0]);
-            return AssetDatabase.LoadAssetAtPath<PlayerManager>(path);
+            return null;
         }
 
         private static void RegisterImportCallbacks()
@@ -139,20 +169,15 @@ namespace IndieGabo.HandyTools.Editor.Input
             _ = packageName;
             _isImportPending = false;
             UnregisterImportCallbacks();
+            AssetDatabase.Refresh();
+            _pendingResolveAttempts = 0;
 
-            PlayerManager playerManager = FindPlayerManager();
-            if (playerManager == null)
+            if (TryAssignImportedPlayerManager())
             {
-                Debug.LogWarning(
-                    $"{nameof(InputModuleStarterSetup)} could not resolve the "
-                    + $"{nameof(PlayerManager)} prefab after importing the starter assets."
-                );
-                MaybeRequestScriptReload();
                 return;
             }
 
-            AssignPlayerManager(playerManager);
-            MaybeRequestScriptReload();
+            EditorApplication.delayCall += TryAssignImportedPlayerManagerWithRetry;
         }
 
         private static void OnImportCancelled(string packageName)
@@ -187,9 +212,49 @@ namespace IndieGabo.HandyTools.Editor.Input
             ProjectInputConfig.ReloadInstance();
             ProjectInputConfig inputConfig = ProjectInputConfig.GetOrCreateForEditor();
             inputConfig.PlayerManagerPrefab = playerManager;
+            inputConfig.MaxNumberOfPlayers = 1;
             EditorUtility.SetDirty(inputConfig);
             AssetDatabase.SaveAssetIfDirty(inputConfig);
             AssetDatabase.SaveAssets();
+        }
+
+        private static bool TryAssignImportedPlayerManager()
+        {
+            PlayerManager playerManager = FindPlayerManager();
+            if (playerManager == null)
+            {
+                return false;
+            }
+
+            AssignPlayerManager(playerManager);
+            MaybeRequestScriptReload();
+            return true;
+        }
+
+        private static void TryAssignImportedPlayerManagerWithRetry()
+        {
+            EditorApplication.delayCall -= TryAssignImportedPlayerManagerWithRetry;
+            AssetDatabase.Refresh();
+
+            if (TryAssignImportedPlayerManager())
+            {
+                _pendingResolveAttempts = 0;
+                return;
+            }
+
+            _pendingResolveAttempts++;
+            if (_pendingResolveAttempts < 3)
+            {
+                EditorApplication.delayCall += TryAssignImportedPlayerManagerWithRetry;
+                return;
+            }
+
+            _pendingResolveAttempts = 0;
+            Debug.LogWarning(
+                $"{nameof(InputModuleStarterSetup)} could not resolve the "
+                + $"{nameof(PlayerManager)} prefab after importing the starter assets."
+            );
+            MaybeRequestScriptReload();
         }
 
         private static void MaybeRequestScriptReload()
