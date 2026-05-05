@@ -38,16 +38,63 @@ namespace IndieGabo.HandyTools.Editor.Modules
             "Starter setup is not available for this module yet.";
 
         /// <summary>
-        /// Applies the default internal spacing used by informational module
-        /// help boxes.
+        /// Applies the shared spacing used by module help boxes regardless of
+        /// whether they are informational, warning, or error states.
         /// </summary>
         /// <param name="helpBox">Help box to style.</param>
-        protected static void ApplyInformationalHelpBoxStyle(HelpBox helpBox)
+        protected static void ApplyInformativeBoxStyle(HelpBox helpBox)
         {
             helpBox.style.paddingLeft = 12f;
             helpBox.style.paddingRight = 12f;
             helpBox.style.paddingTop = 10f;
             helpBox.style.paddingBottom = 10f;
+        }
+
+        /// <summary>
+        /// Applies the shared container style used for configurable value
+        /// controls across module panels.
+        /// </summary>
+        /// <param name="container">Container to style.</param>
+        internal static void ApplyConfigurableValueContainerStyle(VisualElement container)
+        {
+            container.style.marginBottom = 6f;
+            container.style.paddingLeft = 8f;
+            container.style.paddingRight = 8f;
+            container.style.paddingTop = 6f;
+            container.style.paddingBottom = 6f;
+            container.style.flexShrink = 0f;
+            container.style.backgroundColor = new Color32(0x38, 0x38, 0x38, 0xFF);
+            container.style.borderLeftWidth = 1f;
+            container.style.borderRightWidth = 1f;
+            container.style.borderTopWidth = 1f;
+            container.style.borderBottomWidth = 1f;
+            container.style.borderLeftColor = new Color(0.30f, 0.30f, 0.30f, 1f);
+            container.style.borderRightColor = new Color(0.30f, 0.30f, 0.30f, 1f);
+            container.style.borderTopColor = new Color(0.30f, 0.30f, 0.30f, 1f);
+            container.style.borderBottomColor = new Color(0.30f, 0.30f, 0.30f, 1f);
+            container.style.borderTopLeftRadius = 6f;
+            container.style.borderTopRightRadius = 6f;
+            container.style.borderBottomLeftRadius = 6f;
+            container.style.borderBottomRightRadius = 6f;
+        }
+
+        /// <summary>
+        /// Wraps a configurable value control inside the shared module-panel
+        /// container style.
+        /// </summary>
+        /// <param name="valueElement">Control element to wrap.</param>
+        /// <returns>
+        /// The styled wrapper that contains the provided value element.
+        /// </returns>
+        internal static VisualElement WrapConfigurableValueElement(VisualElement valueElement)
+        {
+            VisualElement container = new();
+            ApplyConfigurableValueContainerStyle(container);
+
+            valueElement.style.marginTop = 0f;
+            valueElement.style.marginBottom = 0f;
+            container.Add(valueElement);
+            return container;
         }
 
         /// <inheritdoc />
@@ -74,6 +121,7 @@ namespace IndieGabo.HandyTools.Editor.Modules
             content.style.flexShrink = 0f;
             content.SetEnabled(gate.CanEditConfiguration);
             BuildPanel(content, context);
+            WrapDirectConfigurableValueElements(content);
             content.Add(CreateStarterSetupSection(context));
             contentContainer.Add(content);
             root.Add(contentContainer);
@@ -109,6 +157,58 @@ namespace IndieGabo.HandyTools.Editor.Modules
             return StarterSetupUnavailableMessage;
         }
 
+        private static void WrapDirectConfigurableValueElements(VisualElement root)
+        {
+            List<VisualElement> configurableElements = new();
+
+            for (int index = 0; index < root.childCount; index++)
+            {
+                VisualElement child = root[index];
+                if (!IsConfigurableValueElement(child))
+                {
+                    continue;
+                }
+
+                configurableElements.Add(child);
+            }
+
+            for (int index = 0; index < configurableElements.Count; index++)
+            {
+                VisualElement child = configurableElements[index];
+                int childIndex = root.IndexOf(child);
+                if (childIndex < 0)
+                {
+                    continue;
+                }
+
+                root.RemoveAt(childIndex);
+                root.Insert(childIndex, WrapConfigurableValueElement(child));
+            }
+        }
+
+        private static bool IsConfigurableValueElement(VisualElement element)
+        {
+            return element is IMGUIContainer || InheritsFromGenericBaseField(element.GetType());
+        }
+
+        private static bool InheritsFromGenericBaseField(Type type)
+        {
+            Type currentType = type;
+
+            while (currentType != null)
+            {
+                if (currentType.IsGenericType
+                    && currentType.GetGenericTypeDefinition() == typeof(BaseField<>))
+                {
+                    return true;
+                }
+
+                currentType = currentType.BaseType;
+            }
+
+            return false;
+        }
+
         private VisualElement CreateStarterSetupSection(HandyModuleEditorContext context)
         {
             VisualElement section = new();
@@ -128,12 +228,12 @@ namespace IndieGabo.HandyTools.Editor.Modules
                     ? HelpBoxMessageType.Info
                     : HelpBoxMessageType.Warning
             );
-            ApplyInformationalHelpBoxStyle(description);
+            ApplyInformativeBoxStyle(description);
             description.style.marginBottom = 8f;
             section.Add(description);
 
             HelpBox status = new(string.Empty, HelpBoxMessageType.None);
-            ApplyInformationalHelpBoxStyle(status);
+            ApplyInformativeBoxStyle(status);
             status.style.display = DisplayStyle.None;
             section.Add(status);
 

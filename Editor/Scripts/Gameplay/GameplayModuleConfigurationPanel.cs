@@ -76,7 +76,7 @@ namespace IndieGabo.HandyTools.Editor.Gameplay
         private static HelpBox CreateInfoBox(string text, HelpBoxMessageType messageType)
         {
             HelpBox helpBox = new(text, messageType);
-            ApplyInformationalHelpBoxStyle(helpBox);
+            ApplyInformativeBoxStyle(helpBox);
             helpBox.style.marginBottom = 6f;
             return helpBox;
         }

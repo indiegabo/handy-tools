@@ -27,6 +27,7 @@ namespace IndieGabo.HandyTools.Editor.ScreenShooter
             ScreenShooterConfig config = ScreenShooterConfig.Instance;
 
             HelpBox resolvedPathHelpBox = new(string.Empty, HelpBoxMessageType.None);
+            ApplyInformativeBoxStyle(resolvedPathHelpBox);
             resolvedPathHelpBox.style.marginBottom = 6f;
 
             root.Add(CreateIntroLabel(
@@ -50,6 +51,7 @@ namespace IndieGabo.HandyTools.Editor.ScreenShooter
         private static HelpBox CreateInfoBox(string text, HelpBoxMessageType messageType)
         {
             HelpBox helpBox = new(text, messageType);
+            ApplyInformativeBoxStyle(helpBox);
             helpBox.style.marginBottom = 6f;
             return helpBox;
         }
@@ -62,10 +64,12 @@ namespace IndieGabo.HandyTools.Editor.ScreenShooter
 
             if (shootInputActionProperty == null)
             {
-                return new HelpBox(
+                HelpBox helpBox = new(
                     "The standalone screenshot InputAction could not be loaded.",
                     HelpBoxMessageType.Error
                 );
+                ApplyInformativeBoxStyle(helpBox);
+                return helpBox;
             }
 
             IMGUIContainer field = new(() =>

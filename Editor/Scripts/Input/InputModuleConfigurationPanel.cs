@@ -51,6 +51,7 @@ namespace IndieGabo.HandyTools.Editor.Input
 
             Label modeLabel = CreateModeLabel(sanitizedPlayerCount);
             HelpBox prefabHelpBox = new(string.Empty, HelpBoxMessageType.None);
+            ApplyInformativeBoxStyle(prefabHelpBox);
             prefabHelpBox.style.marginTop = 6f;
             prefabHelpBox.style.marginBottom = 2f;
             ObjectField playerManagerField = CreatePlayerManagerField(config, prefabHelpBox);
@@ -235,10 +236,12 @@ namespace IndieGabo.HandyTools.Editor.Input
 
         private static HelpBox CreateNewConfigHelpBox()
         {
-            return new HelpBox(
+            HelpBox helpBox = new(
                 "ProjectInputConfig.asset did not exist yet, so the editor created it in Assets/Resources/HandyTools. You can configure the module manually now, or run Starter Setup to import the default Input starter assets.",
                 HelpBoxMessageType.Info
             );
+            ApplyInformativeBoxStyle(helpBox);
+            return helpBox;
         }
     }
 }

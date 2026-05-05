@@ -51,7 +51,7 @@ namespace IndieGabo.HandyTools.Editor.Modules
             _activationToggle = new Toggle("Activate Module?");
             ApplyToggleStyle(_activationToggle);
             _activationToggle.RegisterValueChangedCallback(OnActivationChanged);
-            Add(_activationToggle);
+            Add(HandyModuleConfigurationPanelBase.WrapConfigurableValueElement(_activationToggle));
 
             _statusLabel = new Label();
             _statusLabel.AddToClassList("handy-module-gate__status");
@@ -260,7 +260,7 @@ namespace IndieGabo.HandyTools.Editor.Modules
 
         private static void ApplyToggleStyle(Toggle activationToggle)
         {
-            activationToggle.style.marginBottom = 10f;
+            activationToggle.style.marginBottom = 0f;
         }
 
         private static void ApplyStatusStyle(Label statusLabel)

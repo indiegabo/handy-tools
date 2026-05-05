@@ -105,10 +105,12 @@ namespace IndieGabo.HandyTools.Editor.Debugging
 
             if (openCloseInputActionProperty == null)
             {
-                return new HelpBox(
+                HelpBox helpBox = new(
                     "The standalone debug panel InputAction could not be loaded.",
                     HelpBoxMessageType.Error
                 );
+                ApplyInformativeBoxStyle(helpBox);
+                return helpBox;
             }
 
             IMGUIContainer field = new(() =>
@@ -157,10 +159,12 @@ namespace IndieGabo.HandyTools.Editor.Debugging
 
         private static HelpBox CreateBuildAvailabilityLabel()
         {
-            return new HelpBox(
+            HelpBox helpBox = new(
                 "The runtime debug panel is available in the editor and development or debug builds.",
                 HelpBoxMessageType.Info
             );
+            ApplyInformativeBoxStyle(helpBox);
+            return helpBox;
         }
     }
 }

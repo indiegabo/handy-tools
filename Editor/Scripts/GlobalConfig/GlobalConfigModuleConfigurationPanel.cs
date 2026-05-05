@@ -64,10 +64,12 @@ namespace IndieGabo.HandyTools.Editor.GlobalConfig
 
             if (visualTreeAsset == null)
             {
-                root.Add(new HelpBox(
+                HelpBox helpBox = new(
                     "GlobalConfig UI template could not be loaded from Resources/UI Toolkit/GlobalConfig/GlobalsEditorWindow.",
                     HelpBoxMessageType.Error
-                ));
+                );
+                ApplyInformativeBoxStyle(helpBox);
+                root.Add(helpBox);
                 return;
             }
 
@@ -92,10 +94,12 @@ namespace IndieGabo.HandyTools.Editor.GlobalConfig
 
         private static HelpBox CreateMissingGlobalsHelpBox()
         {
-            return new HelpBox(
+            HelpBox helpBox = new(
                 "The project does not provide Assets/Resources/globals.json yet. Run Starter Setup to create the editable globals file before opening the Globals editor surface.",
                 HelpBoxMessageType.Warning
             );
+            ApplyInformativeBoxStyle(helpBox);
+            return helpBox;
         }
 
         private void CacheReferences(VisualElement root)

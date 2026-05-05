@@ -115,6 +115,7 @@ namespace IndieGabo.HandyTools.Editor.SaveSystem
                 string.Empty,
                 HelpBoxMessageType.Info
             );
+            ApplyInformativeBoxStyle(encryptionHelpBox);
             encryptionHelpBox.style.marginTop = 4f;
             encryptionHelpBox.style.marginBottom = 6f;
 
