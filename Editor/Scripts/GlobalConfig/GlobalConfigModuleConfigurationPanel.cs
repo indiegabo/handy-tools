@@ -3,14 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using IndieGabo.HandyTools.Editor.Modules;
-using IndieGabo.HandyTools.GlobalConfig;
-using IndieGabo.HandyTools.GlobalConfig.JsonTree;
+using IndieGabo.HandyTools.GlobalConfigModule;
+using IndieGabo.HandyTools.GlobalConfigModule.JsonTree;
 using IndieGabo.HandyTools.Modules;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace IndieGabo.HandyTools.Editor.GlobalConfig
+namespace IndieGabo.HandyTools.Editor.GlobalConfigModule
 {
     /// <summary>
     /// UI Toolkit configuration panel for the GlobalConfig module.

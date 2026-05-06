@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.Gameplay
+namespace IndieGabo.HandyTools.GameplayModule
 {
     /// <summary>
     /// Provides local gameplay time-scale transitions without relying on a

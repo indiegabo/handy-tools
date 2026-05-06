@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using IndieGabo.HandyTools.Modules;
 
-namespace IndieGabo.HandyTools.HandyInputSystem
+namespace IndieGabo.HandyTools.HandyInputSystemModule
 {
     /// <summary>
     /// Centralizes metadata and dependency rules for the Input module.

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using IndieGabo.HandyTools.Modules;
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.Logger
+namespace IndieGabo.HandyTools.LoggerModule
 {
     /// <summary>
     /// Opt-in runtime bootstrapper for the Logging module.

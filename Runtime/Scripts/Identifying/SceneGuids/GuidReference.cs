@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-namespace IndieGabo.HandyTools.Identifying.SceneGuids
+namespace IndieGabo.HandyTools.IdentifyingModule.SceneGuids
 {
     /// <summary>
     /// Stores a scene-object GUID and resolves it to a loaded GameObject when

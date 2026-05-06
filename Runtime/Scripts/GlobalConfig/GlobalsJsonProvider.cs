@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-namespace IndieGabo.HandyTools.GlobalConfig
+namespace IndieGabo.HandyTools.GlobalConfigModule
 {
     /// <summary>
     /// Centralized loader for globals JSON content.
@@ -19,10 +19,10 @@ namespace IndieGabo.HandyTools.GlobalConfig
         /// <summary>
         /// Tries to load the globals JSON from Resources.
         /// </summary>
-        private static string TryLoadFromResources()
+        private static string? TryLoadFromResources()
         {
-            var text = Resources.Load<TextAsset>("globals");
-            return text != null ? text.text : null;
+            TextAsset text = Resources.Load<TextAsset>("globals");
+            return text?.text;
         }
 
         /// <summary>

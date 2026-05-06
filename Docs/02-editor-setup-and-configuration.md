@@ -6,12 +6,11 @@ those entry points fit together and where configuration data is stored.
 
 ## Main Editor Menus
 
-| Menu path                                    | Purpose                                                                |
-| -------------------------------------------- | ---------------------------------------------------------------------- |
-| `HandyTools/Complete Setup`                  | Runs the one-time project setup flow                                   |
-| `HandyTools/Modules/Configuration`           | Opens the shared modules configuration window                          |
-| `HandyTools/Modules/<Module Name>`           | Opens the shared modules window preselected on one configurable module |
-| `HandyTools/Configuration/Scripting Defines` | Opens the managed scripting define window                              |
+| Menu path                                     | Purpose                                       |
+| --------------------------------------------- | --------------------------------------------- |
+| `Handy Tools/Complete Setup`                  | Runs the one-time project setup flow          |
+| `Handy Tools/Modules`                         | Opens the shared modules configuration window |
+| `Handy Tools/Configuration/Scripting Defines` | Opens the managed scripting define window     |
 
 ## One-Time Setup Flow
 
@@ -28,7 +27,7 @@ Important behaviors:
   assets are available under `Assets/_Project/Input` when the project wants
   the package-provided starter stack.
 - It runs the Steam module starter setup so `steam_appid.txt` exists in the
-  project root.
+  project root for local App ID discovery.
 
 ## Shared Modules Window
 
@@ -37,7 +36,7 @@ Configurable modules are surfaced through a single editor window:
 - `Editor/Scripts/Modules/HandyToolsModulesWindow.cs`
 
 That window registers each configurable panel explicitly and routes the module
-submenu entries back into the same shared host. The current configurable set is:
+selection through the same shared host. The current configurable set is:
 
 - Input
 - Gameplay
@@ -52,6 +51,9 @@ Each configurable module can also expose a `Starter Setup` action inside its
 panel. Starter setups create the project-side assets or files that a module
 needs before its runtime bootstrap becomes useful.
 
+There are no longer per-module submenu entries under `Modules`. Open
+`Handy Tools/Modules` once and switch modules from the left sidebar.
+
 Auto-activated modules do not appear in this window because they do not own a
 dedicated configuration surface.
 
@@ -59,16 +61,16 @@ dedicated configuration surface.
 
 The package uses a combination of `Resources` assets and project files.
 
-| Owner             | Data location                                                   | Notes                                              |
-| ----------------- | --------------------------------------------------------------- | -------------------------------------------------- |
-| Module activation | `Assets/Resources/HandyTools/Modules/HandyModuleSettings.asset` | Stores explicit activation overrides               |
-| Input             | `Assets/Resources/HandyTools/ProjectInputConfig.asset`          | Player manager prefab and player count             |
-| Save System       | `Assets/Resources/SaveSystem/SaveSystemConfig.asset`            | Slot strategy, auto boot, encryption options       |
-| Logging           | `Assets/Resources/Logging/HandyLoggerSetup.asset`               | Runtime/editor log colors                          |
-| Debugging         | `Assets/Resources/Debugging/DebugPanel.asset`                   | Debug panel enable state and embedded input action |
-| ScreenShooter     | `Assets/Resources/ScreenShooter/ScreenShooterConfig.asset`      | Embedded input action and output path              |
-| Globals           | `Assets/Resources/globals`                                      | JSON file edited through the Globals panel         |
-| Steam             | `steam_appid.txt` at project root                               | Editor panel surfaces status and hardcoded app id  |
+| Owner             | Data location                                                   | Notes                                                                                                      |
+| ----------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Module activation | `Assets/Resources/HandyTools/Modules/HandyModuleSettings.asset` | Stores explicit activation overrides                                                                       |
+| Input             | `Assets/Resources/HandyTools/ProjectInputConfig.asset`          | Player manager prefab and player count                                                                     |
+| Save System       | `Assets/Resources/SaveSystem/SaveSystemConfig.asset`            | Slot strategy, auto boot, encryption options                                                               |
+| Logging           | `Assets/Resources/Logging/HandyLoggerSetup.asset`               | Runtime/editor log colors                                                                                  |
+| Debugging         | `Assets/Resources/Debugging/DebugPanel.asset`                   | Debug panel enable state and embedded input action                                                         |
+| ScreenShooter     | `Assets/Resources/ScreenShooter/ScreenShooterConfig.asset`      | Embedded input action and output path                                                                      |
+| Globals           | `Assets/Resources/globals`                                      | JSON file edited through the Globals panel                                                                 |
+| Steam             | `steam_appid.txt` at project root                               | Editor panel surfaces status and hardcoded app id; runtime still requires the Steam client to be reachable |
 
 ## Starter Setup Surface
 
@@ -80,7 +82,8 @@ The package uses a combination of `Resources` assets and project files.
 - Globals starter setup creates `Assets/Resources/globals.json` when the
   project does not provide it yet.
 - Steam starter setup writes `steam_appid.txt` to the project root when the
-  file is missing.
+  file is missing. This only covers local App ID discovery; Steamworks still
+  requires the Steam client to be reachable from the Unity process.
 - Modules that do not yet own project-side starter assets show the Starter
   Setup section as unavailable.
 

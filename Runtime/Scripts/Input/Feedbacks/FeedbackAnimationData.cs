@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.HandyInputSystem.Feedbacks
+namespace IndieGabo.HandyTools.HandyInputSystemModule.Feedbacks
 {
     [System.Serializable]
     /// <summary>

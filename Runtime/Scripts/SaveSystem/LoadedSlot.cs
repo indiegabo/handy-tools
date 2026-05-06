@@ -2,7 +2,7 @@
 using IndieGabo.HandyTools.Utils;
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.SaveSystem
+namespace IndieGabo.HandyTools.SaveSystemModule
 {
     /// <summary>
     /// Represents a loaded slot file. <br />
@@ -16,7 +16,7 @@ namespace IndieGabo.HandyTools.SaveSystem
         #region Static
 
         /// <summary>
-        /// The guid used to store the <see cref="SaveSystem.SlotInfo"/> in the
+        /// The guid used to store the <see cref="SaveSystemModule.SlotInfo"/> in the
         /// slot file.
         /// </summary>
         public readonly static string SlotInfoKey = "SlotInfo";
@@ -39,7 +39,7 @@ namespace IndieGabo.HandyTools.SaveSystem
         public string FilePath => _filePath;
 
         /// <summary>
-        /// The <see cref="SaveSystem.SlotInfo"/> of the loaded slot.
+        /// The <see cref="SaveSystemModule.SlotInfo"/> of the loaded slot.
         /// </summary>
         public SlotInfo SlotInfo => _slotInfo;
 

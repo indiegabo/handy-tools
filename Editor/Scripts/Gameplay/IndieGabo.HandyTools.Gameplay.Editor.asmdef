@@ -1,6 +1,6 @@
 {
     "name": "IndieGabo.HandyTools.Gameplay.Editor",
-    "rootNamespace": "IndieGabo.HandyTools.Editor.Gameplay",
+    "rootNamespace": "IndieGabo.HandyTools.Editor.GameplayModule",
     "references": [
         "IndieGabo.HandyTools.Runtime",
         "IndieGabo.HandyTools.Editor",

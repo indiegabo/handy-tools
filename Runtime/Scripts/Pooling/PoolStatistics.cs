@@ -1,6 +1,6 @@
 using System;
 
-namespace IndieGabo.HandyTools.Pooling
+namespace IndieGabo.HandyTools.PoolingModule
 {
     /// <summary>
     /// Captures the current runtime counters for one active subpool.

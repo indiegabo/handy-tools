@@ -1,10 +1,10 @@
-using IndieGabo.HandyTools.HandyServiceLocator;
-using IndieGabo.HandyTools.Logger;
+using IndieGabo.HandyTools.HandyServiceLocatorModule;
+using IndieGabo.HandyTools.LoggerModule;
 using IndieGabo.HandyTools.Utils;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.SaveSystem
+namespace IndieGabo.HandyTools.SaveSystemModule
 {
     /// <summary>
     /// Base behaviour for scene entities that persist typed save data through

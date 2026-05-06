@@ -1,9 +1,9 @@
 using UnityEngine;
 using UnityEditor;
 using System.IO;
-using IndieGabo.HandyTools.Logger;
-using IndieGabo.HandyTools.Editor.Input;
-using IndieGabo.HandyTools.Editor.Steam;
+using IndieGabo.HandyTools.LoggerModule;
+using IndieGabo.HandyTools.Editor.InputModule;
+using IndieGabo.HandyTools.Editor.SteamModule;
 
 namespace IndieGabo.HandyTools.Editor.ProjectSetup
 {
@@ -26,7 +26,7 @@ namespace IndieGabo.HandyTools.Editor.ProjectSetup
         /// <summary>
         /// Executes the default HandyTools project setup flow.
         /// </summary>
-        [MenuItem("HandyTools/Complete Setup", false, 1000)]
+        [MenuItem("Handy Tools/Complete Setup", false, 1000)]
         public static void Setup()
         {
             File.WriteAllText(AnchorFilePath, "");

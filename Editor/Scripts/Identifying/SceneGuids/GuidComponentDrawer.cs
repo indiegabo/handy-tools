@@ -1,7 +1,7 @@
-﻿using IndieGabo.HandyTools.Identifying.SceneGuids;
+﻿using IndieGabo.HandyTools.IdentifyingModule.SceneGuids;
 using UnityEditor;
 
-namespace IndieGabo.HandyTools.Editor.Identifying.SceneGuids
+namespace IndieGabo.HandyTools.Editor.IdentifyingModule.SceneGuids
 {
     /// <summary>
     /// Displays the resolved GUID owned by a <see cref="GuidComponent"/>.

@@ -1,10 +1,10 @@
-using IndieGabo.HandyTools.Gameplay;
-using IndieGabo.HandyTools.HandyBus;
-using IndieGabo.HandyTools.HandyServiceLocator;
+using IndieGabo.HandyTools.GameplayModule;
+using IndieGabo.HandyTools.HandyBusModule;
+using IndieGabo.HandyTools.HandyServiceLocatorModule;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace IndieGabo.HandyTools.Debugging
+namespace IndieGabo.HandyTools.DebuggingModule
 {
     [DebugPanelSection]
     /// <summary>
@@ -39,7 +39,7 @@ namespace IndieGabo.HandyTools.Debugging
         {
             base.Initialize(panel);
             ServiceLocator.TryGet(out _gameplayService);
-            _eventSubscription = EventBus<GameplayStatusChangeEvent>.Subscribe(
+            _eventSubscription = HandyBus<GameplayStatusChangeEvent>.Subscribe(
                 OnGameplayEvent
             );
         }

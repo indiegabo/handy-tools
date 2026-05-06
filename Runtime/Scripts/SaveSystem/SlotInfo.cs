@@ -4,7 +4,7 @@ using UnityEngine;
 
 using static IndieGabo.HandyTools.Utils.Time;
 
-namespace IndieGabo.HandyTools.SaveSystem
+namespace IndieGabo.HandyTools.SaveSystemModule
 {
     [Serializable]
     /// <summary>

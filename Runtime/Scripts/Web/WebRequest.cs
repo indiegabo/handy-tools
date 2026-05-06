@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
 
-namespace IndieGabo.HandyTools.Web
+namespace IndieGabo.HandyTools.WebModule
 {
     public class WebRequest
     {

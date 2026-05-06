@@ -1,8 +1,8 @@
 #if UNITY_EDITOR
-using IndieGabo.HandyTools.GlobalConfig;
+using IndieGabo.HandyTools.GlobalConfigModule;
 using UnityEditor;
 
-namespace IndieGabo.HandyTools.Editor.GlobalConfig
+namespace IndieGabo.HandyTools.Editor.GlobalConfigModule
 {
     /// <summary>
     /// Performs the project-side starter setup flow for the GlobalConfig

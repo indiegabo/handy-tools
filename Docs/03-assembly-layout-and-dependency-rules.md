@@ -15,6 +15,8 @@ These rules define the package shape:
   module-specific asmdefs.
 - Optional editor features must own their package dependencies in matching
   module editor asmdefs.
+- Module-owned namespaces must end with `Module`, and subnamespaces should stay
+  rooted from that module namespace.
 - The main Utils asmdef must remain free of module-owned or optional-package
   dependencies.
 
@@ -31,6 +33,11 @@ Examples:
 - `IndieGabo.HandyTools.Rendering` owns URP-specific references.
 - `IndieGabo.HandyTools.Web` owns web request helpers without polluting the
   root runtime asmdef.
+
+Those asmdef names are assembly identities, not necessarily the public C#
+namespace roots. The current runtime namespaces are `SaveSystemModule`,
+`HandyInputSystemModule`, `RenderingModule`, `WebModule`, and other `*Module`
+variants.
 
 ## Editor Assembly Strategy
 
@@ -49,13 +56,13 @@ Examples:
 
 Use this rule of thumb before adding a new file:
 
-| Code shape | Recommended home |
-| --- | --- |
-| Mandatory startup infrastructure | Kernel under `Runtime/Scripts/Core`, `EventBus`, or `ServiceLocator` |
-| Feature with explicit activation, load order, or runtime bootstrap | Module-specific runtime asmdef |
-| Feature with package-specific editor UI | Matching module editor asmdef |
-| Pure helper with no bootstrap and no optional package ownership | `Utils` or owner module support folder |
-| Helper tied to one module but not to module startup | Module-owned support code, not global Utils |
+| Code shape                                                         | Recommended home                                                     |
+| ------------------------------------------------------------------ | -------------------------------------------------------------------- |
+| Mandatory startup infrastructure                                   | Kernel under `Runtime/Scripts/Core`, `EventBus`, or `ServiceLocator` |
+| Feature with explicit activation, load order, or runtime bootstrap | Module-specific runtime asmdef                                       |
+| Feature with package-specific editor UI                            | Matching module editor asmdef                                        |
+| Pure helper with no bootstrap and no optional package ownership    | `Utils` or owner module support folder                               |
+| Helper tied to one module but not to module startup                | Module-owned support code, not global Utils                          |
 
 ## Dependency Ownership Rules
 

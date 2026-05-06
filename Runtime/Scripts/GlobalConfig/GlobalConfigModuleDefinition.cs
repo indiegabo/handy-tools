@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using IndieGabo.HandyTools.Modules;
 
-namespace IndieGabo.HandyTools.GlobalConfig
+namespace IndieGabo.HandyTools.GlobalConfigModule
 {
     /// <summary>
     /// Centralizes metadata and dependency rules for the GlobalConfig module.

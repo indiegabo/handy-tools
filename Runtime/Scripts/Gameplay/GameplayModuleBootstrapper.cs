@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using IndieGabo.HandyTools.Modules;
 
-namespace IndieGabo.HandyTools.Gameplay
+namespace IndieGabo.HandyTools.GameplayModule
 {
     /// <summary>
     /// Opt-in runtime bootstrapper for the Gameplay module.

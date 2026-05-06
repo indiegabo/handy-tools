@@ -4,12 +4,12 @@ using UnityEngine.InputSystem;
 using UnityEngine.Events;
 using System.Collections.Generic;
 using UnityEngine.UI;
-using IndieGabo.HandyTools.Input.Bindings;
-using IndieGabo.HandyTools.HandyServiceLocator;
-using IndieGabo.HandyTools.HandyInputSystem;
+using IndieGabo.HandyTools.HandyInputSystemModule.Bindings;
+using IndieGabo.HandyTools.HandyServiceLocatorModule;
+using IndieGabo.HandyTools.HandyInputSystemModule;
 using static UnityEngine.InputSystem.InputActionRebindingExtensions;
 
-namespace IndieGabo.HandyTools.Input.UI
+namespace IndieGabo.HandyTools.HandyInputSystemModule.RuntimeUI
 {
     /// <summary>
     /// Coordinates a group of rebinding rows for the currently active control

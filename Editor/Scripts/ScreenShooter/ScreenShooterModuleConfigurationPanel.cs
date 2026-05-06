@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using IndieGabo.HandyTools.Editor.Modules;
 using IndieGabo.HandyTools.Modules;
-using IndieGabo.HandyTools.ScreenShooter;
+using IndieGabo.HandyTools.ScreenShooterModule;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace IndieGabo.HandyTools.Editor.ScreenShooter
+namespace IndieGabo.HandyTools.Editor.ScreenShooterModule
 {
     /// <summary>
     /// UI Toolkit configuration panel for the ScreenShooter module.

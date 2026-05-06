@@ -81,11 +81,11 @@ There is no built-in countdown-based auto-return.
 ## Example 1: Start, Interrupt, Resume, Stop
 
 ```csharp
-using IndieGabo.HandyTools.Gameplay;
-using IndieGabo.HandyTools.HandyServiceLocator;
+using IndieGabo.HandyTools.GameplayModule;
+using IndieGabo.HandyTools.HandyServiceLocatorModule;
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.Gameplay
+namespace IndieGabo.HandyTools.GameplayModule
 {
     public sealed class GameplayFlowExample : MonoBehaviour
     {
@@ -155,11 +155,11 @@ belong to the same gameplay run.
 - `TransitionIndex` increments for each completed transition inside that run.
 
 ```csharp
-using IndieGabo.HandyTools.Gameplay;
-using IndieGabo.HandyTools.HandyBus;
+using IndieGabo.HandyTools.GameplayModule;
+using IndieGabo.HandyTools.HandyBusModule;
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.Gameplay
+namespace IndieGabo.HandyTools.GameplayModule
 {
     public sealed class GameplayEventExample : MonoBehaviour
     {
@@ -167,7 +167,7 @@ namespace IndieGabo.HandyTools.Gameplay
 
         private void OnEnable()
         {
-            _subscription = EventBus<GameplayStatusChangeEvent>
+            _subscription = HandyBus<GameplayStatusChangeEvent>
                 .Subscribe(OnGameplayStatusChanged);
         }
 
@@ -211,7 +211,7 @@ Use this when:
 - or the module should work even when no save slot is loaded.
 
 ```csharp
-using IndieGabo.HandyTools.Gameplay;
+using IndieGabo.HandyTools.GameplayModule;
 
 float totalGameplayTime = GameplayLocalUserData.TotalGameplayTime;
 ```
@@ -243,8 +243,8 @@ runtime, Gameplay falls back to `Local User Data`.
 This is the intended ownership pattern for interruptions.
 
 ```csharp
-using IndieGabo.HandyTools.Gameplay;
-using IndieGabo.HandyTools.HandyServiceLocator;
+using IndieGabo.HandyTools.GameplayModule;
+using IndieGabo.HandyTools.HandyServiceLocatorModule;
 using UnityEngine;
 
 namespace IndieGabo.HandyTools.UI
@@ -286,8 +286,8 @@ Gameplay owns one global service instance bootstrapped by the module.
 Use the service locator to resolve it:
 
 ```csharp
-using IndieGabo.HandyTools.Gameplay;
-using IndieGabo.HandyTools.HandyServiceLocator;
+using IndieGabo.HandyTools.GameplayModule;
+using IndieGabo.HandyTools.HandyServiceLocatorModule;
 
 GameplayService gameplayService = ServiceLocator.GetRequired<GameplayService>();
 ```
@@ -297,7 +297,7 @@ module will not create a duplicate runtime object.
 
 ## Editor Workflow
 
-Use `HandyTools/Modules/Gameplay` to configure the module.
+Use `Handy Tools/Modules` and select `Gameplay` to configure the module.
 
 The panel currently exposes:
 

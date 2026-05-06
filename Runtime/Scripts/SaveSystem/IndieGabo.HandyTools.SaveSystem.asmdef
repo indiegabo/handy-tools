@@ -1,6 +1,6 @@
 {
     "name": "IndieGabo.HandyTools.SaveSystem",
-    "rootNamespace": "IndieGabo.HandyTools.SaveSystem",
+    "rootNamespace": "IndieGabo.HandyTools.SaveSystemModule",
     "references": [
         "IndieGabo.HandyTools.Runtime",
         "IndieGabo.HandyTools.Logger",

@@ -1,12 +1,12 @@
 using System;
-using IndieGabo.HandyTools.Editor.Debugging;
-using IndieGabo.HandyTools.Editor.Gameplay;
-using IndieGabo.HandyTools.Editor.GlobalConfig;
-using IndieGabo.HandyTools.Editor.Input;
-using IndieGabo.HandyTools.Editor.Logger;
-using IndieGabo.HandyTools.Editor.SaveSystem;
-using IndieGabo.HandyTools.Editor.ScreenShooter;
-using IndieGabo.HandyTools.Editor.Steam;
+using IndieGabo.HandyTools.Editor.DebuggingModule;
+using IndieGabo.HandyTools.Editor.GameplayModule;
+using IndieGabo.HandyTools.Editor.GlobalConfigModule;
+using IndieGabo.HandyTools.Editor.InputModule;
+using IndieGabo.HandyTools.Editor.LoggerModule;
+using IndieGabo.HandyTools.Editor.SaveSystemModule;
+using IndieGabo.HandyTools.Editor.ScreenShooterModule;
+using IndieGabo.HandyTools.Editor.SteamModule;
 using IndieGabo.HandyTools.Modules;
 using Sirenix.OdinInspector;
 using UnityEditor;
@@ -52,55 +52,8 @@ namespace IndieGabo.HandyTools.Editor.Modules
         [MenuItem(HandyToolsEditorMenuPaths.Modules, false, 1)]
         private static void OpenWindow()
         {
-            OpenAndSelect(null);
-        }
-
-        [MenuItem(HandyToolsEditorMenuPaths.Input, false, 10)]
-        private static void OpenInput()
-        {
-            OpenAndSelect(_inputModuleId);
-        }
-
-        [MenuItem(HandyToolsEditorMenuPaths.Gameplay, false, 11)]
-        private static void OpenGameplay()
-        {
-            OpenAndSelect(_gameplayModuleId);
-        }
-
-        [MenuItem(HandyToolsEditorMenuPaths.SaveSystem, false, 12)]
-        private static void OpenSaveSystem()
-        {
-            OpenAndSelect(_saveSystemModuleId);
-        }
-
-        [MenuItem(HandyToolsEditorMenuPaths.Debugging, false, 13)]
-        private static void OpenDebugging()
-        {
-            OpenAndSelect(_debuggingModuleId);
-        }
-
-        [MenuItem(HandyToolsEditorMenuPaths.Logging, false, 14)]
-        private static void OpenLogging()
-        {
-            OpenAndSelect(_loggingModuleId);
-        }
-
-        [MenuItem(HandyToolsEditorMenuPaths.Globals, false, 15)]
-        private static void OpenGlobals()
-        {
-            OpenAndSelect(_globalConfigModuleId);
-        }
-
-        [MenuItem(HandyToolsEditorMenuPaths.Steam, false, 16)]
-        private static void OpenSteam()
-        {
-            OpenAndSelect(_steamModuleId);
-        }
-
-        [MenuItem(HandyToolsEditorMenuPaths.ScreenShooter, false, 17)]
-        private static void OpenScreenShooter()
-        {
-            OpenAndSelect(_screenShooterModuleId);
+            HandyToolsModulesWindow window = GetWindow<HandyToolsModulesWindow>();
+            window.Show();
         }
 
         /// <summary>

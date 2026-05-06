@@ -4,7 +4,7 @@ using IndieGabo.HandyTools.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace IndieGabo.HandyTools.HandyInputSystem.Feedbacks
+namespace IndieGabo.HandyTools.HandyInputSystemModule.Feedbacks
 {
     /// <summary>
     /// A dictionary of <see cref="FeedbackEntry"/> for a <see cref="InputAction"/>.

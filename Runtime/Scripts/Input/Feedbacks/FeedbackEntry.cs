@@ -4,7 +4,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace IndieGabo.HandyTools.HandyInputSystem.Feedbacks
+namespace IndieGabo.HandyTools.HandyInputSystemModule.Feedbacks
 {
     /// <summary>
     /// Visual feedbacks for an action mapped in an <see cref="InputActionAsset"/>.     

@@ -1,13 +1,13 @@
 
 using UnityEngine;
 using UnityEngine.UIElements;
-using IndieGabo.HandyTools.HandyInputSystem.Feedbacks;
+using IndieGabo.HandyTools.HandyInputSystemModule.Feedbacks;
 using UnityEditor.UIElements;
 using UnityEditor;
 using System.Collections.Generic;
 using System;
 using System.Linq;
-using IndieGabo.HandyTools.Logger;
+using IndieGabo.HandyTools.LoggerModule;
 using UnityEngine.InputSystem;
 using IndieGabo.HandyTools.UITooling;
 

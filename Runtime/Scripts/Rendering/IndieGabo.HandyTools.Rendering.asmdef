@@ -1,6 +1,6 @@
 {
     "name": "IndieGabo.HandyTools.Rendering",
-    "rootNamespace": "IndieGabo.HandyTools.Rendering",
+    "rootNamespace": "IndieGabo.HandyTools.RenderingModule",
     "references": [
         "IndieGabo.HandyTools.Runtime",
         "Unity.RenderPipelines.Universal.Runtime",

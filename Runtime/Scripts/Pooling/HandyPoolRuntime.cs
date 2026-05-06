@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
-namespace IndieGabo.HandyTools.Pooling
+namespace IndieGabo.HandyTools.PoolingModule
 {
     /// <summary>
     /// Owns one independent runtime instance for a pool definition asset.

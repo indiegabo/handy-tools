@@ -1,6 +1,6 @@
 #nullable enable
 using System;
-using IndieGabo.HandyTools.GlobalConfig.JsonTree;
+using IndieGabo.HandyTools.GlobalConfigModule.JsonTree;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -8,7 +8,7 @@ using System.IO;
 using UnityEditor;
 #endif
 
-namespace IndieGabo.HandyTools.GlobalConfig
+namespace IndieGabo.HandyTools.GlobalConfigModule
 {
     /// <summary>
     /// Static facade over a single JsonValueTree instance that mirrors the

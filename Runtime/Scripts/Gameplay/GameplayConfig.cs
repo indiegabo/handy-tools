@@ -1,7 +1,7 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.Gameplay
+namespace IndieGabo.HandyTools.GameplayModule
 {
     /// <summary>
     /// Stores configurable gameplay module policies shared by runtime owners.

@@ -1,7 +1,7 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.Pooling
+namespace IndieGabo.HandyTools.PoolingModule
 {
     /// <summary>
     /// Connects a MonoBehaviour lifecycle to a HandyPool so the pool can be

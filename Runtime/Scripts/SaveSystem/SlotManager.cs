@@ -1,9 +1,9 @@
 using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
-using IndieGabo.HandyTools.HandyBus;
+using IndieGabo.HandyTools.HandyBusModule;
 
-namespace IndieGabo.HandyTools.SaveSystem
+namespace IndieGabo.HandyTools.SaveSystemModule
 {
     /// <summary>
     /// Manages slots files in the persistent data path.
@@ -258,7 +258,7 @@ namespace IndieGabo.HandyTools.SaveSystem
                 _loadedSlot.Persist();
             }
 
-            EventBus<SlotEvent>.Raise(new SlotEvent
+            HandyBus<SlotEvent>.Raise(new SlotEvent
             {
                 slot = _loadedSlot,
                 eventType = SlotEvent.EventType.Releasing,
@@ -498,7 +498,7 @@ namespace IndieGabo.HandyTools.SaveSystem
             var settings = GenerateSettings(path);
             _loadedSlot = new LoadedSlot(settings);
 
-            EventBus<SlotEvent>.Raise(new SlotEvent
+            HandyBus<SlotEvent>.Raise(new SlotEvent
             {
                 slot = _loadedSlot,
                 eventType = SlotEvent.EventType.Loading,

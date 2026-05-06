@@ -1,6 +1,6 @@
 {
     "name": "IndieGabo.HandyTools.Steam.Editor",
-    "rootNamespace": "IndieGabo.HandyTools.Editor.Steam",
+    "rootNamespace": "IndieGabo.HandyTools.Editor.SteamModule",
     "references": [
         "IndieGabo.HandyTools.Runtime",
         "IndieGabo.HandyTools.Editor",

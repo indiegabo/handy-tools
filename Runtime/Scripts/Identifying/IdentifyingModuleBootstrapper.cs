@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using IndieGabo.HandyTools.Modules;
 
-namespace IndieGabo.HandyTools.Identifying
+namespace IndieGabo.HandyTools.IdentifyingModule
 {
     /// <summary>
     /// Runtime bootstrapper for the Identifying module.

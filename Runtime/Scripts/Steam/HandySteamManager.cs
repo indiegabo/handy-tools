@@ -17,7 +17,7 @@ using Steamworks;
 using System;
 #endif
 
-namespace IndieGabo.HandyTools.Steam
+namespace IndieGabo.HandyTools.SteamModule
 {
     //
     // The SteamManager provides a base implementation of Steamworks.NET on which you can build upon.
@@ -61,27 +61,13 @@ namespace IndieGabo.HandyTools.Steam
         protected static bool s_EverInitialized = false;
 
         protected static HandySteamManager s_instance;
-        protected static HandySteamManager Instance
-        {
-            get
-            {
-                if (s_instance == null)
-                {
-                    return new GameObject("SteamManager").AddComponent<HandySteamManager>();
-                }
-                else
-                {
-                    return s_instance;
-                }
-            }
-        }
 
         protected bool m_bInitialized = false;
         public static bool Initialized
         {
             get
             {
-                return Instance.m_bInitialized;
+                return s_instance != null && s_instance.m_bInitialized;
             }
         }
 
@@ -176,15 +162,52 @@ namespace IndieGabo.HandyTools.Steam
             // [*] Your App ID is not completely set up, i.e. in Release State: Unavailable, or it's missing default packages.
             // Valve's documentation for this is located here:
             // https://partner.steamgames.com/doc/sdk/api#initialization_and_shutdown
-            m_bInitialized = SteamAPI.Init();
+            ESteamAPIInitResult initResult = SteamAPI.InitEx(
+                out string steamErrorMessage
+            );
+            m_bInitialized = initResult
+                == ESteamAPIInitResult.k_ESteamAPIInitResult_OK;
+
             if (!m_bInitialized)
             {
-                Debug.LogError("[Steamworks.NET] SteamAPI_Init() failed. Refer to Valve's documentation or the comment above this line for more information.", this);
-
+                HandleInitializationFailure(initResult, steamErrorMessage);
                 return;
             }
 
             s_EverInitialized = true;
+        }
+
+        /// <summary>
+        /// Disables the runtime Steam manager for the current execution when
+        /// Steamworks cannot be initialized.
+        /// </summary>
+        /// <param name="initResult">Detailed Steamworks init result.</param>
+        /// <param name="steamErrorMessage">Detailed Steamworks init message.</param>
+        protected virtual void HandleInitializationFailure(
+            ESteamAPIInitResult initResult,
+            string steamErrorMessage
+        )
+        {
+            string detailedReason = string.IsNullOrWhiteSpace(steamErrorMessage)
+                ? initResult.ToString()
+                : $"{initResult}: {steamErrorMessage}";
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            Debug.LogWarning(
+                "[Steamworks.NET] SteamAPI_Init() failed. HandyTools disabled the Steam module for this run. "
+                + $"Reason: {detailedReason}. Ensure the Steam client is running under the same user context and keep steam_appid.txt next to the executable when launching outside Steam.",
+                this
+            );
+#else
+            Debug.LogError(
+                "[Steamworks.NET] SteamAPI_Init() failed. HandyTools disabled the Steam module for this run. "
+                + $"Reason: {detailedReason}. Refer to Valve's initialization requirements and confirm the Steam client, App ID, and account license are valid for this build.",
+                this
+            );
+#endif
+
+            s_instance = null;
+            Destroy(gameObject);
         }
 
         // This should only ever get called on first load and after an Assembly reload, You should never Disable the Steamworks Manager yourself.

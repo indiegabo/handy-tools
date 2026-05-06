@@ -1,6 +1,6 @@
 using System;
 
-namespace IndieGabo.HandyTools.HandyServiceLocator
+namespace IndieGabo.HandyTools.HandyServiceLocatorModule
 {
     /// <summary>
     /// Represents a stable identifier for named service registrations.

@@ -1,4 +1,4 @@
-namespace IndieGabo.HandyTools.Web
+namespace IndieGabo.HandyTools.WebModule
 {
     /// <summary>
     /// Controls the visibility of one request-loading indicator.

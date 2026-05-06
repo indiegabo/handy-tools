@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using IndieGabo.HandyTools.Modules;
 
-namespace IndieGabo.HandyTools.Rendering
+namespace IndieGabo.HandyTools.RenderingModule
 {
     /// <summary>
     /// Runtime bootstrapper for the Rendering module.

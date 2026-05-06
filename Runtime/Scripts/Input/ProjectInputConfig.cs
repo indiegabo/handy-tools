@@ -7,7 +7,7 @@ using Sirenix.OdinInspector;
 using UnityEditor;
 #endif
 
-namespace IndieGabo.HandyTools.HandyInputSystem
+namespace IndieGabo.HandyTools.HandyInputSystemModule
 {
     [CreateAssetMenu(fileName = "ProjectInputConfig", menuName = "HandyTools/Input/ProjectInputConfig")]
     /// <summary>
@@ -189,8 +189,7 @@ namespace IndieGabo.HandyTools.HandyInputSystem
             );
 
             if (FindObjectsByType<PlayerManager>(
-                FindObjectsInactive.Include,
-                FindObjectsSortMode.None
+                FindObjectsInactive.Include
             ).Length > 0)
             {
                 return;

@@ -78,7 +78,7 @@ it actually needs.
 ```csharp
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.Pooling
+namespace IndieGabo.HandyTools.PoolingModule
 {
   public sealed class ProjectileView
     : MonoBehaviour, IPoolSubject<ProjectileView>
@@ -119,10 +119,10 @@ Use it when one gameplay system owns the prefab reference and no other system
 needs global access.
 
 ```csharp
-using IndieGabo.HandyTools.Pooling;
+using IndieGabo.HandyTools.PoolingModule;
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.Gameplay
+namespace IndieGabo.HandyTools.GameplayModule
 {
   public sealed class ProjectileSpawner : MonoBehaviour
   {
@@ -171,10 +171,10 @@ Use `HandyPoolInitializer<TBehaviour>` when one component should own the pool
 lifecycle and the setup can stay mostly declarative.
 
 ```csharp
-using IndieGabo.HandyTools.Pooling;
+using IndieGabo.HandyTools.PoolingModule;
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.Gameplay
+namespace IndieGabo.HandyTools.GameplayModule
 {
   public sealed class EnemyVfxPoolInitializer
     : HandyPoolInitializer<EnemyVfxView>
@@ -202,9 +202,9 @@ multiple systems need to resolve the same active subpool.
 First, centralize the keys.
 
 ```csharp
-using IndieGabo.HandyTools.Pooling;
+using IndieGabo.HandyTools.PoolingModule;
 
-namespace IndieGabo.HandyTools.Gameplay
+namespace IndieGabo.HandyTools.GameplayModule
 {
   public static class ProjectilePoolKeys
   {
@@ -220,10 +220,10 @@ namespace IndieGabo.HandyTools.Gameplay
 Then create the identified subpool in the runtime owner.
 
 ```csharp
-using IndieGabo.HandyTools.Pooling;
+using IndieGabo.HandyTools.PoolingModule;
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.Gameplay
+namespace IndieGabo.HandyTools.GameplayModule
 {
   public sealed class ProjectilePoolHost : MonoBehaviour
   {
@@ -254,10 +254,10 @@ namespace IndieGabo.HandyTools.Gameplay
 Now a different system can resolve the active pool without holding the prefab.
 
 ```csharp
-using IndieGabo.HandyTools.Pooling;
+using IndieGabo.HandyTools.PoolingModule;
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.Gameplay
+namespace IndieGabo.HandyTools.GameplayModule
 {
   public sealed class WeaponSystem : MonoBehaviour
   {

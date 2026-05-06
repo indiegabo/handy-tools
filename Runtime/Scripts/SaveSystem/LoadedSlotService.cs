@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
-using IndieGabo.HandyTools.HandyBus;
-using IndieGabo.HandyTools.Logger;
+using IndieGabo.HandyTools.HandyBusModule;
+using IndieGabo.HandyTools.LoggerModule;
 using UnityEngine.Events;
 using UnityEngine;
 using IndieGabo.HandyTools.Utils;
 
-namespace IndieGabo.HandyTools.SaveSystem
+namespace IndieGabo.HandyTools.SaveSystemModule
 {
     /// <summary>
     /// Serves as a bridge between those who need to manage slots and the currently loaded slot.
@@ -32,7 +32,7 @@ namespace IndieGabo.HandyTools.SaveSystem
 
         protected virtual void OnEnable()
         {
-            _slotEventSubscription = EventBus<SlotEvent>.Subscribe(OnSlotEvent);
+            _slotEventSubscription = HandyBus<SlotEvent>.Subscribe(OnSlotEvent);
         }
 
         protected virtual void OnDisable()

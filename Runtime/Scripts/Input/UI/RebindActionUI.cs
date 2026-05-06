@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using IndieGabo.HandyTools.HandyInputSystem;
-using IndieGabo.HandyTools.HandyInputSystem.Feedbacks;
-using IndieGabo.HandyTools.HandyServiceLocator;
-using IndieGabo.HandyTools.Input.Bindings;
+using IndieGabo.HandyTools.HandyInputSystemModule;
+using IndieGabo.HandyTools.HandyInputSystemModule.Feedbacks;
+using IndieGabo.HandyTools.HandyServiceLocatorModule;
+using IndieGabo.HandyTools.HandyInputSystemModule.Bindings;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
@@ -12,7 +12,7 @@ using UnityEngine.Localization.Tables;
 using UnityEngine.UI;
 using static UnityEngine.InputSystem.InputActionRebindingExtensions;
 
-namespace IndieGabo.HandyTools.Input.UI
+namespace IndieGabo.HandyTools.HandyInputSystemModule.RuntimeUI
 {
     /// <summary>
     /// Binds one rebinding button row to the shared rebinding workflow and

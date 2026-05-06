@@ -1,6 +1,6 @@
 {
     "name": "IndieGabo.HandyTools.Identifying.Editor",
-    "rootNamespace": "IndieGabo.HandyTools.Editor.Identifying",
+    "rootNamespace": "IndieGabo.HandyTools.Editor.IdentifyingModule",
     "references": [
         "IndieGabo.HandyTools.Runtime",
         "IndieGabo.HandyTools.Editor",

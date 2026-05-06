@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace IndieGabo.HandyTools.Debugging
+namespace IndieGabo.HandyTools.DebuggingModule
 {
     /// <summary>
     /// Base contract for all debug panel sections.

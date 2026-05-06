@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace IndieGabo.HandyTools.GlobalConfig.JsonTree
+namespace IndieGabo.HandyTools.GlobalConfigModule.JsonTree
 {
     /// <summary>
     /// Hierarchical value tree backed by Newtonsoft.Json.

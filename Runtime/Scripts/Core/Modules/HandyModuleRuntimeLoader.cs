@@ -30,7 +30,7 @@ namespace IndieGabo.HandyTools.Modules
         {
             new(
                 "HandyBus",
-                "IndieGabo.HandyTools.HandyBus.EventBusUtil",
+                "IndieGabo.HandyTools.HandyBusModule.HandyBusUtil",
                 "Initialize"
             ),
             new(

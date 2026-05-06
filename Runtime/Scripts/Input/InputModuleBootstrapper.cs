@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using IndieGabo.HandyTools.Modules;
 
-namespace IndieGabo.HandyTools.HandyInputSystem
+namespace IndieGabo.HandyTools.HandyInputSystemModule
 {
     /// <summary>
     /// Opt-in runtime bootstrapper for the Input module.

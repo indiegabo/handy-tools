@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using IndieGabo.HandyTools.Modules;
 
-namespace IndieGabo.HandyTools.SaveSystem
+namespace IndieGabo.HandyTools.SaveSystemModule
 {
     /// <summary>
     /// Opt-in runtime bootstrapper for the SaveSystem module.

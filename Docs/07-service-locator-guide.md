@@ -18,8 +18,8 @@ Use default registration when a type has exactly one canonical runtime
 instance.
 
 ```csharp
-using IndieGabo.HandyTools.HandyServiceLocator;
-using IndieGabo.HandyTools.Gameplay;
+using IndieGabo.HandyTools.HandyServiceLocatorModule;
+using IndieGabo.HandyTools.GameplayModule;
 using UnityEngine;
 
 GameObject go = new("Gameplay Service");
@@ -35,7 +35,7 @@ If a second unnamed registration of the same type is attempted, the locator
 throws. That is intentional. Additional instances must be identified.
 
 ```csharp
-using IndieGabo.HandyTools.HandyServiceLocator;
+using IndieGabo.HandyTools.HandyServiceLocatorModule;
 
 PlayerInput playerOne = /* existing instance */;
 PlayerInput playerTwo = /* existing instance */;
@@ -62,8 +62,8 @@ GameplayService gameplayService = ServiceLocator.GetRequired<GameplayService>();
 Use identified APIs when more than one instance of a type may exist.
 
 ```csharp
-using IndieGabo.HandyTools.HandyInputSystem;
-using IndieGabo.HandyTools.HandyServiceLocator;
+using IndieGabo.HandyTools.HandyInputSystemModule;
+using IndieGabo.HandyTools.HandyServiceLocatorModule;
 using UnityEngine.InputSystem;
 
 PlayerInput playerTwo = ServiceLocator.GetRequired<PlayerInput>(
@@ -93,7 +93,7 @@ helpers and cached identifiers over ad-hoc string literals.
 
 ```csharp
 using System;
-using IndieGabo.HandyTools.HandyServiceLocator;
+using IndieGabo.HandyTools.HandyServiceLocatorModule;
 
 public static class GameplayServiceKeys
 {
@@ -123,8 +123,8 @@ player index, `InputUser.id`, and a persistent runtime GUID.
 
 ```csharp
 using System;
-using IndieGabo.HandyTools.HandyInputSystem;
-using IndieGabo.HandyTools.HandyServiceLocator;
+using IndieGabo.HandyTools.HandyInputSystemModule;
+using IndieGabo.HandyTools.HandyServiceLocatorModule;
 using UnityEngine.InputSystem;
 
 bool foundByIndex = ServiceLocator.TryGet(
@@ -151,9 +151,9 @@ the player registration so listeners can reconnect to the same `PlayerInput`
 through the locator.
 
 ```csharp
-using IndieGabo.HandyTools.HandyBus;
-using IndieGabo.HandyTools.HandyInputSystem;
-using IndieGabo.HandyTools.HandyServiceLocator;
+using IndieGabo.HandyTools.HandyBusModule;
+using IndieGabo.HandyTools.HandyInputSystemModule;
+using IndieGabo.HandyTools.HandyServiceLocatorModule;
 using UnityEngine.InputSystem;
 
 private EventBinding<PlayerJoinedEvent> _playerJoinedBinding;
@@ -161,12 +161,12 @@ private EventBinding<PlayerJoinedEvent> _playerJoinedBinding;
 private void OnEnable()
 {
     _playerJoinedBinding = new EventBinding<PlayerJoinedEvent>(OnPlayerJoined);
-    EventBus<PlayerJoinedEvent>.Register(_playerJoinedBinding);
+    HandyBus<PlayerJoinedEvent>.Register(_playerJoinedBinding);
 }
 
 private void OnDisable()
 {
-    EventBus<PlayerJoinedEvent>.Deregister(_playerJoinedBinding);
+    HandyBus<PlayerJoinedEvent>.Deregister(_playerJoinedBinding);
 }
 
 private void OnPlayerJoined(PlayerJoinedEvent @event)

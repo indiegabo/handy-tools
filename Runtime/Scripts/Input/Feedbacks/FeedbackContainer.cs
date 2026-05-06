@@ -5,7 +5,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace IndieGabo.HandyTools.HandyInputSystem.Feedbacks
+namespace IndieGabo.HandyTools.HandyInputSystemModule.Feedbacks
 {
     /// <summary>
     /// A ScriptableObject containing a dictionary of <see cref="FeedbackEntry"/>.

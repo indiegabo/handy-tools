@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace IndieGabo.HandyTools.Web
+namespace IndieGabo.HandyTools.WebModule
 {
     /// <summary>
     /// Delegate invoked when a web request starts processing.

@@ -1,7 +1,7 @@
 #nullable enable
 using System;
 
-namespace IndieGabo.HandyTools.GlobalConfig.JsonTree
+namespace IndieGabo.HandyTools.GlobalConfigModule.JsonTree
 {
     /// <summary>
     /// Strongly-typed symbolic key that represents an absolute path and type.

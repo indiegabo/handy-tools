@@ -1,6 +1,6 @@
 {
     "name": "IndieGabo.HandyTools.Steam",
-    "rootNamespace": "IndieGabo.HandyTools.Steam",
+    "rootNamespace": "IndieGabo.HandyTools.SteamModule",
     "references": [
         "IndieGabo.HandyTools.Runtime",
         "com.rlabrecque.steamworks.net"

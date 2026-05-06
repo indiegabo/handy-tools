@@ -1,8 +1,8 @@
 using System;
-using IndieGabo.HandyTools.HandyBus;
+using IndieGabo.HandyTools.HandyBusModule;
 using UnityEngine.InputSystem;
 
-namespace IndieGabo.HandyTools.HandyInputSystem
+namespace IndieGabo.HandyTools.HandyInputSystemModule
 {
     /// <summary>
     /// Published when one player joins the multiplayer input flow.

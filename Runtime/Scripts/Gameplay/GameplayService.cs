@@ -1,10 +1,10 @@
 using System;
-using IndieGabo.HandyTools.HandyBus;
-using IndieGabo.HandyTools.Logger;
+using IndieGabo.HandyTools.HandyBusModule;
+using IndieGabo.HandyTools.LoggerModule;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace IndieGabo.HandyTools.Gameplay
+namespace IndieGabo.HandyTools.GameplayModule
 {
     /// <summary>
     /// Coordinates the global gameplay lifecycle and time-scale transitions.
@@ -333,7 +333,7 @@ namespace IndieGabo.HandyTools.Gameplay
                 _currentSessionContext = sessionContext;
             }
 
-            EventBus<GameplayStatusChangeEvent>.Raise(
+            HandyBus<GameplayStatusChangeEvent>.Raise(
                 new()
                 {
                     PreviousStatus = previousStatus,

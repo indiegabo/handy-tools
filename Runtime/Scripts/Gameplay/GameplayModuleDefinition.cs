@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using IndieGabo.HandyTools.Modules;
 
-namespace IndieGabo.HandyTools.Gameplay
+namespace IndieGabo.HandyTools.GameplayModule
 {
     /// <summary>
     /// Centralizes metadata and dependency rules for the Gameplay module.

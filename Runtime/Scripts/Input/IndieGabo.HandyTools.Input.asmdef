@@ -1,6 +1,6 @@
 {
     "name": "IndieGabo.HandyTools.Input",
-    "rootNamespace": "IndieGabo.HandyTools.Input",
+    "rootNamespace": "IndieGabo.HandyTools.HandyInputSystemModule",
     "references": [
         "IndieGabo.HandyTools.Runtime",
         "IndieGabo.HandyTools.Logger",

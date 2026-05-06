@@ -1,6 +1,6 @@
 using System;
 
-namespace IndieGabo.HandyTools.Pooling
+namespace IndieGabo.HandyTools.PoolingModule
 {
     /// <summary>
     /// Represents a stable identifier for named pool registrations.

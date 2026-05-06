@@ -3,7 +3,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace IndieGabo.HandyTools.HandyInputSystem.Feedbacks
+namespace IndieGabo.HandyTools.HandyInputSystemModule.Feedbacks
 {
     [System.Serializable]
     /// <summary>

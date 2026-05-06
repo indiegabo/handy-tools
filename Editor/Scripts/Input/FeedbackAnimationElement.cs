@@ -1,7 +1,7 @@
 
 using UnityEngine;
 using UnityEngine.UIElements;
-using IndieGabo.HandyTools.HandyInputSystem.Feedbacks;
+using IndieGabo.HandyTools.HandyInputSystemModule.Feedbacks;
 using UnityEditor.UIElements;
 using UnityEditor;
 using System;

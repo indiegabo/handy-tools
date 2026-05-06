@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 
-namespace IndieGabo.HandyTools.HandyInputSystem
+namespace IndieGabo.HandyTools.HandyInputSystemModule
 {
     public static class UI
     {

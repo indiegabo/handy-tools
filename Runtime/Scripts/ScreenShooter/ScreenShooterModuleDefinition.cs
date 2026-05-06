@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using IndieGabo.HandyTools.Modules;
 
-namespace IndieGabo.HandyTools.ScreenShooter
+namespace IndieGabo.HandyTools.ScreenShooterModule
 {
     /// <summary>
     /// Centralizes metadata for the ScreenShooter module.

@@ -3,7 +3,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.Editor.Steam
+namespace IndieGabo.HandyTools.Editor.SteamModule
 {
     /// <summary>
     /// Performs the project-side starter setup flow for the Steam module.

@@ -2,11 +2,11 @@ using System.Collections.Generic;
 using System.IO;
 using IndieGabo.HandyTools.Editor.Modules;
 using IndieGabo.HandyTools.Modules;
-using IndieGabo.HandyTools.Steam;
+using IndieGabo.HandyTools.SteamModule;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace IndieGabo.HandyTools.Editor.Steam
+namespace IndieGabo.HandyTools.Editor.SteamModule
 {
     /// <summary>
     /// UI Toolkit configuration panel for the Steam module.

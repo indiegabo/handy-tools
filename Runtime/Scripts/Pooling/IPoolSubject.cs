@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.Pooling
+namespace IndieGabo.HandyTools.PoolingModule
 {
     /// <summary>
     /// Defines the lifecycle contract for objects managed by one pool.

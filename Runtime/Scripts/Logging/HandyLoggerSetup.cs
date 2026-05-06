@@ -2,7 +2,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using static UnityEngine.ColorUtility;
 
-namespace IndieGabo.HandyTools.Logger
+namespace IndieGabo.HandyTools.LoggerModule
 {
     /// <summary>
     /// Global color configuration used by the runtime logger formatting.

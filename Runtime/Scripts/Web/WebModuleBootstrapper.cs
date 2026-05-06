@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using IndieGabo.HandyTools.Modules;
 
-namespace IndieGabo.HandyTools.Web
+namespace IndieGabo.HandyTools.WebModule
 {
     /// <summary>
     /// Runtime bootstrapper for the Web module.

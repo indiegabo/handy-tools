@@ -1,8 +1,12 @@
 # Configurable Modules
 
 This document covers the HandyTools modules that appear in the shared modules
-window at `HandyTools/Modules/Configuration`. These modules are optional and
+window at `Handy Tools/Modules`. These modules are optional and
 default to inactive unless a project explicitly activates them.
+
+The `Modules` menu no longer exposes one submenu item per configurable module.
+Open the shared window once and use the left sidebar to select the module you
+want to configure.
 
 ## Summary Table
 
@@ -44,7 +48,7 @@ The logger setup asset is created through `HandyGlobalConfig` and resolves to
 
 ### Editor Workflow
 
-Use `HandyTools/Modules/Logging` or the shared modules window to change module
+Use `Handy Tools/Modules` and select `Logging` in the sidebar to change module
 activation and default colors.
 
 ### Notes for AI Agents
@@ -82,7 +86,7 @@ instantiated runtime manager as `DontDestroyOnLoad`.
 
 ### Editor Workflow
 
-Use `HandyTools/Modules/Input` to configure the player manager prefab and the
+Use `Handy Tools/Modules` and select `Input` to configure the player manager prefab and the
 maximum player count. The panel also exposes a `Starter Setup` button that
 creates `ProjectInputConfig` automatically when the project does not have it
 yet, so manual configuration is always available. `Starter Setup` remains an
@@ -133,7 +137,7 @@ persistence strategy.
 
 ### Editor Workflow
 
-Use `HandyTools/Modules/Gameplay` to manage activation and choose the gameplay
+Use `Handy Tools/Modules` and select `Gameplay` to manage activation and choose the gameplay
 time persistence strategy.
 
 - `Local User Data` stores accumulated gameplay time in machine-local user data.
@@ -189,7 +193,7 @@ the global service locator, and can pre-create indexed slots.
 
 ### Editor Workflow
 
-Use `HandyTools/Modules/Save System` to control auto boot, slot strategy,
+Use `Handy Tools/Modules` and select `Save System` to control auto boot, slot strategy,
 indexed slot limits, and encryption settings.
 
 ### Notes for AI Agents
@@ -224,7 +228,7 @@ are internal support code for this module and now live under the
 
 ### Editor Workflow
 
-Use `HandyTools/Modules/Globals` to edit the JSON tree, reload from disk, and
+Use `Handy Tools/Modules` and select `Globals` to edit the JSON tree, reload from disk, and
 save back to the `globals` resource file. The panel now exposes a `Starter
 Setup` button that creates `Assets/Resources/globals.json` explicitly when the
 project does not provide it yet, instead of silently creating the file while
@@ -263,7 +267,7 @@ runtime infrastructure.
 
 ### Editor Workflow
 
-Use `HandyTools/Modules/Debugging` to toggle the panel, control cursor and pause
+Use `Handy Tools/Modules` and select `Debugging` to toggle the panel, control cursor and pause
 behavior, and edit the embedded toggle `InputAction`.
 
 ### Notes for AI Agents
@@ -285,7 +289,9 @@ behavior, and edit the embedded toggle `InputAction`.
 
 Steam bootstraps the persistent Steamworks.NET manager for supported desktop
 targets and exposes editor visibility into the configured app id and project
-root `steam_appid.txt` file.
+root `steam_appid.txt` file. At runtime the manager uses `SteamAPI.InitEx` so
+initialization failures can report a concrete Steamworks reason instead of a
+generic failure message.
 
 ### Runtime Entry Points
 
@@ -294,19 +300,25 @@ root `steam_appid.txt` file.
 - `Runtime/Scripts/Steam/HandySteamManager.cs`
 
 The module uses dependency status to block activation on unsupported targets.
+If Steamworks cannot initialize, the transient manager destroys itself for that
+run instead of remaining half-initialized.
 
 ### Editor Workflow
 
-Use `HandyTools/Modules/Steam` to inspect the platform dependency state, the
+Use `Handy Tools/Modules` and select `Steam` to inspect the platform dependency state, the
 hardcoded app id, and whether `steam_appid.txt` exists in the project root.
 The panel also exposes a `Starter Setup` button that writes the file when the
-project still does not provide it.
+project still does not provide it. That file helps local launches outside the
+Steam client, but it does not replace the requirement for the Steam client to
+be running under the same OS user context as Unity.
 
 ### Notes for AI Agents
 
 - Do not assume Steam is available on mobile, WebGL, or unsupported desktop
   configurations.
 - Respect the dependency gate and keep platform messaging accurate.
+- Do not treat `steam_appid.txt` as sufficient proof that Steam will
+  initialize successfully.
 
 ## ScreenShooter
 
@@ -336,7 +348,7 @@ root.
 
 ### Editor Workflow
 
-Use `HandyTools/Modules/ScreenShooter` to edit the embedded trigger action and
+Use `Handy Tools/Modules` and select `ScreenShooter` to edit the embedded trigger action and
 the output directory.
 
 ### Notes for AI Agents

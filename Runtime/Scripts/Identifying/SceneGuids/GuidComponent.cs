@@ -7,7 +7,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
-namespace IndieGabo.HandyTools.Identifying.SceneGuids
+namespace IndieGabo.HandyTools.IdentifyingModule.SceneGuids
 {
     /// <summary>
     /// Assigns a stable scene GUID to a GameObject instance and keeps that GUID

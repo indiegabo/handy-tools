@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.HandyServiceLocator
+namespace IndieGabo.HandyTools.HandyServiceLocatorModule
 {
     /// <summary>
     /// Provides access to the global HandyTools service registry.

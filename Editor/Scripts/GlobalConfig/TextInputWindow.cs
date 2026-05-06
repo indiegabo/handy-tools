@@ -4,7 +4,7 @@ using System;
 using UnityEditor;
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.Editor.GlobalConfig
+namespace IndieGabo.HandyTools.Editor.GlobalConfigModule
 {
     /// <summary>
     /// Minimal helper window to capture text input (Unity lacks a prompt).

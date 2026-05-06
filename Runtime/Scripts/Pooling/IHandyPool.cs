@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.Pooling
+namespace IndieGabo.HandyTools.PoolingModule
 {
     /// <summary>
     /// Exposes the runtime contract of one active subpool.

@@ -1,10 +1,10 @@
-using IndieGabo.HandyTools.Gameplay;
-using IndieGabo.HandyTools.HandyServiceLocator;
+using IndieGabo.HandyTools.GameplayModule;
+using IndieGabo.HandyTools.HandyServiceLocatorModule;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
-namespace IndieGabo.HandyTools.Debugging
+namespace IndieGabo.HandyTools.DebuggingModule
 {
     /// <summary>
     /// Runtime host for the HandyTools debug panel.

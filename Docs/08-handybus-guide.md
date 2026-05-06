@@ -4,9 +4,22 @@ HandyBus is HandyTools' typed static event bus. It is designed for cheap event
 dispatch, predictable subscription lifetime, and safe runtime reset across
 editor play mode boundaries.
 
+## Migration Notes
+
+This guide reflects the current breaking namespace and API contract.
+
+- `using IndieGabo.HandyTools.HandyBus;` became
+  `using IndieGabo.HandyTools.HandyBusModule;`
+- `EventBus<T>` became `HandyBus<T>`
+- `EventBusUtil` became `HandyBusUtil`
+- `EventSubscription<T>` and `IEvent` did not change names
+
+The source files still live under `Runtime/Scripts/EventBus`, but the public
+namespace is now `IndieGabo.HandyTools.HandyBusModule`.
+
 ## Mental Model
 
-- `EventBus<T>` owns listeners for one event type.
+- `HandyBus<T>` owns listeners for one event type.
 - The subscription token returned by `Subscribe` is the listener identity.
 - The bus does not use string keys, GUIDs, or locator-style identifiers for
   subscriptions.
@@ -18,7 +31,7 @@ Own the subscription through an `EventSubscription<T>` field and dispose it
 when the owner is disabled or destroyed.
 
 ```csharp
-using IndieGabo.HandyTools.HandyBus;
+using IndieGabo.HandyTools.HandyBusModule;
 using UnityEngine;
 
 public sealed class GameplayStatusListener : MonoBehaviour
@@ -27,7 +40,7 @@ public sealed class GameplayStatusListener : MonoBehaviour
 
     private void OnEnable()
     {
-        _subscription = EventBus<GameplayStatusChangeEvent>
+        _subscription = HandyBus<GameplayStatusChangeEvent>
             .Subscribe(OnGameplayStatusChanged);
     }
 
@@ -52,21 +65,21 @@ easier to read and harder to misuse.
 Payload-aware callback:
 
 ```csharp
-EventSubscription<SlotEvent> subscription = EventBus<SlotEvent>
+EventSubscription<SlotEvent> subscription = HandyBus<SlotEvent>
     .Subscribe(OnSlotEvent);
 ```
 
 Payload-agnostic callback:
 
 ```csharp
-EventSubscription<SlotEvent> subscription = EventBus<SlotEvent>
+EventSubscription<SlotEvent> subscription = HandyBus<SlotEvent>
     .Subscribe(OnAnySlotEvent);
 ```
 
 Combined callback:
 
 ```csharp
-EventSubscription<SlotEvent> subscription = EventBus<SlotEvent>
+EventSubscription<SlotEvent> subscription = HandyBus<SlotEvent>
     .Subscribe(OnSlotEvent, OnAnySlotEvent);
 ```
 
@@ -76,7 +89,7 @@ Manual binding when one owner needs to add and remove callbacks dynamically:
 EventBinding<SlotEvent> binding = new(OnSlotEvent);
 binding.Add(OnAnySlotEvent);
 
-EventSubscription<SlotEvent> subscription = EventBus<SlotEvent>
+EventSubscription<SlotEvent> subscription = HandyBus<SlotEvent>
     .Subscribe(binding);
 ```
 
@@ -101,7 +114,7 @@ Any event type must implement `IEvent`.
 Use a `struct` when the event is small, value-like, and raised frequently.
 
 ```csharp
-using IndieGabo.HandyTools.HandyBus;
+using IndieGabo.HandyTools.HandyBusModule;
 
 public struct GameplayStatusChangeEvent : IEvent
 {
@@ -114,7 +127,7 @@ rare enough that allocation cost is not the primary concern.
 
 ```csharp
 using System;
-using IndieGabo.HandyTools.HandyBus;
+using IndieGabo.HandyTools.HandyBusModule;
 using UnityEngine.InputSystem;
 
 public class PlayerJoinedEvent : IEvent
@@ -130,7 +143,7 @@ public class PlayerJoinedEvent : IEvent
 Publishing remains intentionally direct.
 
 ```csharp
-EventBus<GameplayStatusChangeEvent>.Raise(
+HandyBus<GameplayStatusChangeEvent>.Raise(
     new GameplayStatusChangeEvent
     {
         Status = GameplayService.Status.On
@@ -143,7 +156,7 @@ with unrelated meanings that force every listener to branch on incidental data.
 
 ## Runtime Reset Model
 
-`EventBusUtil` no longer depends on scanning `Assembly-CSharp` to discover event
+`HandyBusUtil` no longer depends on scanning `Assembly-CSharp` to discover event
 types. Each closed bus registers itself lazily the first time it is used.
 
 That means:

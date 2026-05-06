@@ -2,7 +2,7 @@ using IndieGabo.HandyTools.Utils;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.SaveSystem
+namespace IndieGabo.HandyTools.SaveSystemModule
 {
     /// <summary>
     /// Global configuration for the runtime save system.

@@ -1,6 +1,6 @@
 using System;
 
-namespace IndieGabo.HandyTools.Debugging
+namespace IndieGabo.HandyTools.DebuggingModule
 {
     /// <summary>
     /// Marks a section as an explicit opt-in contributor for the debug panel.

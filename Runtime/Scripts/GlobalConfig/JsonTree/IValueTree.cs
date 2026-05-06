@@ -1,7 +1,7 @@
 #nullable enable
 using System;
 
-namespace IndieGabo.HandyTools.GlobalConfig.JsonTree
+namespace IndieGabo.HandyTools.GlobalConfigModule.JsonTree
 {
     /// <summary>
     /// Abstraction for value-tree operations by dot-path strings or KeyPath.

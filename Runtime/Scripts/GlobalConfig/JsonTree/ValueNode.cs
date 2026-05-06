@@ -1,7 +1,7 @@
 #nullable enable
 using System;
 
-namespace IndieGabo.HandyTools.GlobalConfig.JsonTree
+namespace IndieGabo.HandyTools.GlobalConfigModule.JsonTree
 {
     /// <summary>
     /// Base node for value trees. Holds name, parent, path and kind.

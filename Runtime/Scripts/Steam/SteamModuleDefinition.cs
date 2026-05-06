@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using IndieGabo.HandyTools.Modules;
 
-namespace IndieGabo.HandyTools.Steam
+namespace IndieGabo.HandyTools.SteamModule
 {
     /// <summary>
     /// Centralizes metadata and dependency rules for the Steam module.

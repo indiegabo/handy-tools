@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.Debugging
+namespace IndieGabo.HandyTools.DebuggingModule
 {
     /// <summary>
     /// Bootstraps the runtime debug panel when the current build and project

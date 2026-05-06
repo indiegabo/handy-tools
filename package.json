@@ -1,11 +1,11 @@
 {
   "name": "com.indiegabo.handy-tools",
-  "version": "3.0.7",
+  "version": "3.1.0",
   "displayName": "Handy Tools",
   "description": "A modular Unity toolkit with kernel infrastructure, configurable systems, editor workflows, and reusable runtime support for production projects.",
   "unity": "6000.4",
-  "documentationUrl": "https://indiegabo.github.io/handy-tools",
-  "changelogUrl": "https://indiegabo.github.io/handy-tools/documentation/CHANGELOG.html",
+  "documentationUrl": "https://github.com/indiegabo/handy-tools#readme",
+  "changelogUrl": "https://github.com/indiegabo/handy-tools/blob/main/CHANGELOG.md",
   "licensesUrl": "https://github.com/indiegabo/handy-tools/blob/main/LICENSE.md",
   "author": {
     "name": "IndieGabo",
@@ -23,8 +23,6 @@
   "scripts": {
     "release": "npm run release-it",
     "feature-finish-checklist": "echo Verify whether Assets/HandyTools/package.json description still matches the current package scope and update it if needed before releasing",
-    "pre-release": "npx auto-changelog -p && mv -f CHANGELOG.md ../../docfx_project/documentation/CHANGELOG.md && docfx ../../docfx_project/docfx.json && npm run feature-finish-checklist && echo Go create Unity .meta and any starter unitypackages before releasing",
-    "serve-docs": "docfx ../../docfx_project/docfx.json --serve",
-    "build-docs": "docfx ../../docfx_project/docfx.json"
+    "pre-release": "npx auto-changelog -p && npm run feature-finish-checklist && echo Go create Unity .meta and any starter unitypackages before releasing"
   }
 }

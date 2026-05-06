@@ -1,6 +1,6 @@
 {
     "name": "IndieGabo.HandyTools.GlobalConfig.Editor",
-    "rootNamespace": "IndieGabo.HandyTools.Editor.GlobalConfig",
+    "rootNamespace": "IndieGabo.HandyTools.Editor.GlobalConfigModule",
     "references": [
         "IndieGabo.HandyTools.Runtime",
         "IndieGabo.HandyTools.Editor",

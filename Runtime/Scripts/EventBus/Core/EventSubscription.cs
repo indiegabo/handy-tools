@@ -1,6 +1,6 @@
 using System;
 
-namespace IndieGabo.HandyTools.HandyBus
+namespace IndieGabo.HandyTools.HandyBusModule
 {
     /// <summary>
     /// Represents one subscription handle returned by the HandyBus.
@@ -21,13 +21,13 @@ namespace IndieGabo.HandyTools.HandyBus
         public bool IsValid => _binding != null;
 
         /// <summary>
-        /// Removes the subscription from the event bus.
+        /// Removes the subscription from the HandyBus.
         /// </summary>
         public void Dispose()
         {
             if (_binding != null)
             {
-                EventBus<T>.Deregister(_binding);
+                HandyBus<T>.Deregister(_binding);
             }
         }
     }

@@ -1,4 +1,4 @@
-namespace IndieGabo.HandyTools.Web
+namespace IndieGabo.HandyTools.WebModule
 {
     /// <summary>
     /// Exposes the base URL used by one API integration.

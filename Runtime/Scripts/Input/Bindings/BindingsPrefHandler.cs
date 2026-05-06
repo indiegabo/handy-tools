@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using IndieGabo.HandyTools.Logger;
+using IndieGabo.HandyTools.LoggerModule;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace IndieGabo.HandyTools.Input.Bindings
+namespace IndieGabo.HandyTools.HandyInputSystemModule.Bindings
 {
     public class BindingsPrefHandler : MonoBehaviour
     {

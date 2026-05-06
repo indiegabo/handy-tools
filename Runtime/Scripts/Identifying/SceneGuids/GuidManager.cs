@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.Identifying.SceneGuids
+namespace IndieGabo.HandyTools.IdentifyingModule.SceneGuids
 {
     /// <summary>
     /// Resolves scene GUIDs to currently loaded GameObjects and tracks lifecycle

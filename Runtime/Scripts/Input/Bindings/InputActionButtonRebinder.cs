@@ -4,9 +4,9 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine;
 using Sirenix.OdinInspector;
-using IndieGabo.HandyTools.Logger;
+using IndieGabo.HandyTools.LoggerModule;
 
-namespace IndieGabo.HandyTools.Input.Bindings
+namespace IndieGabo.HandyTools.HandyInputSystemModule.Bindings
 {
     public class InputActionButtonRebinder : HandyBehaviour
     {

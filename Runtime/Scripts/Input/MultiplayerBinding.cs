@@ -1,6 +1,6 @@
 using UnityEngine.InputSystem;
 
-namespace IndieGabo.HandyTools.HandyInputSystem
+namespace IndieGabo.HandyTools.HandyInputSystemModule
 {
     [System.Serializable]
     /// <summary>

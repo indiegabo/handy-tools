@@ -1,8 +1,8 @@
 using System;
-using IndieGabo.HandyTools.HandyServiceLocator;
+using IndieGabo.HandyTools.HandyServiceLocatorModule;
 using UnityEngine.InputSystem;
 
-namespace IndieGabo.HandyTools.HandyInputSystem
+namespace IndieGabo.HandyTools.HandyInputSystemModule
 {
     /// <summary>
     /// Provides the canonical service identifiers used by the input module.

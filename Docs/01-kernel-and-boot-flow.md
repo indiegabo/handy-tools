@@ -14,7 +14,7 @@ The kernel is primarily defined by these files:
 - `Runtime/Scripts/Core/Modules/HandyModuleDescriptor.cs`
 - `Runtime/Scripts/Core/Modules/HandyModuleSettings.cs`
 - `Runtime/Scripts/Core/Modules/IHandyModuleBootstrapper.cs`
-- `Runtime/Scripts/EventBus/Utils/EventBusUtil.cs`
+- `Runtime/Scripts/EventBus/Utils/EventBusUtil.cs` (`HandyBusUtil`)
 - `Runtime/Scripts/ServiceLocator/Core/ServiceLocator.cs`
 
 ## Startup Phases
@@ -32,20 +32,23 @@ The runtime boot sequence is intentionally split across Unity startup phases.
 Before optional modules are considered, the loader invokes two mandatory static
 bootstrap calls:
 
-- `IndieGabo.HandyTools.HandyBus.EventBusUtil.Initialize`
-- `IndieGabo.HandyTools.HandyServiceLocator.ServiceLocator.BootstrapGlobal`
+- `IndieGabo.HandyTools.HandyBusModule.HandyBusUtil.Initialize`
+- `IndieGabo.HandyTools.HandyServiceLocatorModule.ServiceLocator.BootstrapGlobal`
 
 These are invoked by name through `HandyModuleRuntimeLoader`, not through the
 optional module contract. That makes HandyBus and ServiceLocator mandatory
 kernel infrastructure rather than user-managed modules.
 
+Module-owned namespaces now follow the `*Module` convention even when the
+physical folder path keeps an older slice name such as `EventBus`.
+
 ## HandyBus Contract
 
 HandyBus is a typed static event bus.
 
-- Each closed `EventBus<T>` registers itself lazily with `EventBusUtil` on
+- Each closed `HandyBus<T>` registers itself lazily with `HandyBusUtil` on
   first use.
-- `EventBusUtil` clears all previously used buses on runtime reset and editor
+- `HandyBusUtil` clears all previously used buses on runtime reset and editor
   play mode exit boundaries.
 - Subscription lifetime should be owned through the returned
   `EventSubscription<T>` token rather than raw string keys or domain IDs.

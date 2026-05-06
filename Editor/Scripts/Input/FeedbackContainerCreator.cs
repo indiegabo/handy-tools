@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using IndieGabo.HandyTools.HandyInputSystem.Feedbacks;
-using IndieGabo.HandyTools.Logger;
+using IndieGabo.HandyTools.HandyInputSystemModule.Feedbacks;
+using IndieGabo.HandyTools.LoggerModule;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;

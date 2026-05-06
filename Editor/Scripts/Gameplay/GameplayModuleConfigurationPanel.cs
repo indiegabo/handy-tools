@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using IndieGabo.HandyTools.Editor.Modules;
-using IndieGabo.HandyTools.Gameplay;
+using IndieGabo.HandyTools.GameplayModule;
 using IndieGabo.HandyTools.Modules;
-using IndieGabo.HandyTools.SaveSystem;
+using IndieGabo.HandyTools.SaveSystemModule;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace IndieGabo.HandyTools.Editor.Gameplay
+namespace IndieGabo.HandyTools.Editor.GameplayModule
 {
     /// <summary>
     /// UI Toolkit configuration panel for the Gameplay module.

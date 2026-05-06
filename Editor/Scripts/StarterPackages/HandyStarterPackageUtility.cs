@@ -1,6 +1,6 @@
 using System.IO;
 using IndieGabo.HandyTools.Editor.PackageCreation;
-using IndieGabo.HandyTools.Logger;
+using IndieGabo.HandyTools.LoggerModule;
 using UnityEditor;
 
 namespace IndieGabo.HandyTools.Editor.StarterPackages

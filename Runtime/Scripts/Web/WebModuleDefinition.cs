@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using IndieGabo.HandyTools.Modules;
 
-namespace IndieGabo.HandyTools.Web
+namespace IndieGabo.HandyTools.WebModule
 {
     /// <summary>
     /// Centralizes metadata and dependency rules for the Web module.

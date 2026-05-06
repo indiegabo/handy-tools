@@ -4,13 +4,13 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine;
 using Sirenix.OdinInspector;
-using IndieGabo.HandyTools.Logger;
+using IndieGabo.HandyTools.LoggerModule;
 
 ////TODO: localization support
 
 ////TODO: deal with composites that have parts bound in different control schemes
 
-namespace IndieGabo.HandyTools.Input.Bindings
+namespace IndieGabo.HandyTools.HandyInputSystemModule.Bindings
 {
     /// <summary>
     /// A reusable component with a self-contained UI for rebinding a single action.

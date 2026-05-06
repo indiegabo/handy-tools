@@ -7,17 +7,17 @@ using UnityEditor;
 
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.HandyBus
+namespace IndieGabo.HandyTools.HandyBusModule
 {
     /// <summary>
-    /// Discovers event bus types and clears them during editor and runtime
+    /// Discovers HandyBus types and clears them during editor and runtime
     /// initialization boundaries.
     /// </summary>
-    public static class EventBusUtil
+    public static class HandyBusUtil
     {
         private static readonly Dictionary<Type, RegisteredBus> _registeredBuses = new();
         private static readonly List<Type> _eventTypes = new();
-        private static readonly List<Type> _eventBusTypes = new();
+        private static readonly List<Type> _handyBusTypes = new();
 
         /// <summary>
         /// Gets all registered event types.
@@ -25,9 +25,9 @@ namespace IndieGabo.HandyTools.HandyBus
         public static IReadOnlyList<Type> EventTypes => _eventTypes;
 
         /// <summary>
-        /// Gets all registered closed event bus types.
+        /// Gets all registered closed HandyBus types.
         /// </summary>
-        public static IReadOnlyList<Type> EventBusTypes => _eventBusTypes;
+        public static IReadOnlyList<Type> HandyBusTypes => _handyBusTypes;
 
 #if UNITY_EDITOR
         /// <summary>
@@ -36,7 +36,7 @@ namespace IndieGabo.HandyTools.HandyBus
         public static PlayModeStateChange PlayModeState { get; set; }
 
         /// <summary>
-        /// Hooks editor play mode transitions used to clear runtime event buses.
+        /// Hooks editor play mode transitions used to clear runtime HandyBus instances.
         /// </summary>
         [InitializeOnLoadMethod]
         public static void InitializeEditor()
@@ -57,7 +57,7 @@ namespace IndieGabo.HandyTools.HandyBus
 #endif
 
         /// <summary>
-        /// Clears all registered event bus state for a new runtime session.
+        /// Clears all registered HandyBus state for a new runtime session.
         /// </summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         public static void Initialize()
@@ -67,7 +67,7 @@ namespace IndieGabo.HandyTools.HandyBus
 
         internal static void RegisterBus(
             Type eventType,
-            Type eventBusType,
+            Type handyBusType,
             Action clearAction
         )
         {
@@ -76,9 +76,9 @@ namespace IndieGabo.HandyTools.HandyBus
                 throw new ArgumentNullException(nameof(eventType));
             }
 
-            if (eventBusType == null)
+            if (handyBusType == null)
             {
-                throw new ArgumentNullException(nameof(eventBusType));
+                throw new ArgumentNullException(nameof(handyBusType));
             }
 
             if (clearAction == null)
@@ -93,15 +93,15 @@ namespace IndieGabo.HandyTools.HandyBus
 
             _registeredBuses.Add(
                 eventType,
-                new RegisteredBus(eventBusType, clearAction)
+                new RegisteredBus(handyBusType, clearAction)
             );
 
             _eventTypes.Add(eventType);
-            _eventBusTypes.Add(eventBusType);
+            _handyBusTypes.Add(handyBusType);
         }
 
         /// <summary>
-        /// Clears all registered event bus bindings.
+        /// Clears all registered HandyBus bindings.
         /// </summary>
         public static void ClearAllBuses()
         {

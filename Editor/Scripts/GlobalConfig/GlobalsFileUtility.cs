@@ -1,11 +1,11 @@
 #nullable enable
 #if UNITY_EDITOR
 using System.IO;
-using IndieGabo.HandyTools.GlobalConfig;
+using IndieGabo.HandyTools.GlobalConfigModule;
 using UnityEditor;
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.Editor.GlobalConfig
+namespace IndieGabo.HandyTools.Editor.GlobalConfigModule
 {
     /// <summary>
     /// Editor-only utilities for the GlobalConfig system.

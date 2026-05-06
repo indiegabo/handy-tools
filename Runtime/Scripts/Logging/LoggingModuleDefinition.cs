@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using IndieGabo.HandyTools.Modules;
 
-namespace IndieGabo.HandyTools.Logger
+namespace IndieGabo.HandyTools.LoggerModule
 {
     /// <summary>
     /// Centralizes metadata and dependency rules for the Logging module.

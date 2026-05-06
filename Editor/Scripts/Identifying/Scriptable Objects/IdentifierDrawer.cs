@@ -3,7 +3,7 @@ using IndieGabo.HandyTools.Utils.Identifying;
 using UnityEditor;
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.Editor.Identifying
+namespace IndieGabo.HandyTools.Editor.IdentifyingModule
 {
     [CustomPropertyDrawer(typeof(Identifier))]
     /// <summary>

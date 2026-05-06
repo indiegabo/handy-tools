@@ -6,7 +6,7 @@ using UnityEngine.Rendering.Universal;
 using DG.Tweening;
 #endif
 
-namespace IndieGabo.HandyTools.Rendering.Extensions
+namespace IndieGabo.HandyTools.RenderingModule.Extensions
 {
     /// <summary>
     /// Provides light transition helpers, with optional DOTween-backed tweeners

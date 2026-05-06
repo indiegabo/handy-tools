@@ -1,6 +1,6 @@
 using IndieGabo.HandyTools.Utils;
 
-namespace IndieGabo.HandyTools.SaveSystem
+namespace IndieGabo.HandyTools.SaveSystemModule
 {
     /// <summary>
     /// Defines the contract required for entities managed by the save system.

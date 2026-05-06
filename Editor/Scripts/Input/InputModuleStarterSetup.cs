@@ -1,11 +1,11 @@
 using System;
 using System.IO;
 using IndieGabo.HandyTools.Editor.StarterPackages;
-using IndieGabo.HandyTools.HandyInputSystem;
+using IndieGabo.HandyTools.HandyInputSystemModule;
 using UnityEditor;
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.Editor.Input
+namespace IndieGabo.HandyTools.Editor.InputModule
 {
     /// <summary>
     /// Performs the project-side starter setup flow for the Input module.
@@ -39,7 +39,7 @@ namespace IndieGabo.HandyTools.Editor.Input
         /// Rebuilds the distributable Input starter unitypackage from the
         /// project-owned starter folder.
         /// </summary>
-        [MenuItem("HandyTools/Development/Create Input Starter Package", false, 9999)]
+        [MenuItem("Handy Tools/Development/Create Input Starter Package", false, 9999)]
         public static void CreateStarterPackage()
         {
             HandyStarterPackageUtility.CreatePackage(

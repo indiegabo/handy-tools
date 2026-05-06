@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using IndieGabo.HandyTools.Editor.Modules;
 using IndieGabo.HandyTools.Modules;
-using IndieGabo.HandyTools.SaveSystem;
+using IndieGabo.HandyTools.SaveSystemModule;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
-namespace IndieGabo.HandyTools.Editor.SaveSystem
+namespace IndieGabo.HandyTools.Editor.SaveSystemModule
 {
     /// <summary>
     /// UI Toolkit configuration panel for the SaveSystem module.

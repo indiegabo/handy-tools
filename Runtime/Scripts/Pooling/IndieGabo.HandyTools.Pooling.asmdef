@@ -1,6 +1,6 @@
 {
     "name": "IndieGabo.HandyTools.Pooling",
-    "rootNamespace": "IndieGabo.HandyTools.Pooling",
+    "rootNamespace": "IndieGabo.HandyTools.PoolingModule",
     "references": [
         "IndieGabo.HandyTools.Runtime"
     ],

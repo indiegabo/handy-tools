@@ -1,7 +1,7 @@
-using IndieGabo.HandyTools.HandyServiceLocator;
+using IndieGabo.HandyTools.HandyServiceLocatorModule;
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.SaveSystem
+namespace IndieGabo.HandyTools.SaveSystemModule
 {
     /// <summary>
     /// Creates the runtime SaveSystem services when automatic bootstrapping is
@@ -17,14 +17,14 @@ namespace IndieGabo.HandyTools.SaveSystem
             if (!SaveSystemModuleDefinition.IsActive) return;
             if (!SaveSystemConfig.Instance.ShouldAutoBoot) return;
 
-            var go = new GameObject("SaveSystem");
-            var slotManager = go.AddComponent<SlotManager>();
-            var lodedSloteService = go.AddComponent<LoadedSlotService>();
+            GameObject go = new("SaveSystem");
+            SlotManager slotManager = go.AddComponent<SlotManager>();
+            LoadedSlotService loadedSlotService = go.AddComponent<LoadedSlotService>();
 
             Object.DontDestroyOnLoad(go);
 
             ServiceLocator.Register(slotManager);
-            ServiceLocator.Register(lodedSloteService);
+            ServiceLocator.Register(loadedSlotService);
 
             if (SaveSystemConfig.Instance.EnsureIndexedSlots)
             {

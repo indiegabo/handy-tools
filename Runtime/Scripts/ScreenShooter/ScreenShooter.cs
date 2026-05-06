@@ -2,7 +2,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace IndieGabo.HandyTools.ScreenShooter
+namespace IndieGabo.HandyTools.ScreenShooterModule
 {
     /// <summary>
     /// Creates the runtime screenshot capturer when the module is active.

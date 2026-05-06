@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 
-namespace IndieGabo.HandyTools.HandyBus
+namespace IndieGabo.HandyTools.HandyBusModule
 {
     /// <summary>
-    /// Static event bus that stores and invokes bindings for one event type.
+    /// Static HandyBus that stores and invokes bindings for one event type.
     /// </summary>
     /// <typeparam name="T">Event type routed by the bus.</typeparam>
-    public static class EventBus<T> where T : IEvent
+    public static class HandyBus<T> where T : IEvent
     {
         private static readonly List<IEventBinding<T>> _bindings = new();
         private static readonly HashSet<IEventBinding<T>> _bindingLookup = new();
@@ -15,13 +15,13 @@ namespace IndieGabo.HandyTools.HandyBus
         private static readonly HashSet<IEventBinding<T>> _pendingRemovals = new();
         private static int _dispatchDepth;
 
-        static EventBus()
+        static HandyBus()
         {
-            EventBusUtil.RegisterBus(typeof(T), typeof(EventBus<T>), Clear);
+            HandyBusUtil.RegisterBus(typeof(T), typeof(HandyBus<T>), Clear);
         }
 
         /// <summary>
-        /// Registers one binding in the event bus.
+        /// Registers one binding in the HandyBus.
         /// </summary>
         /// <param name="binding">Binding to register.</param>
         public static void Register(IEventBinding<T> binding)
@@ -94,7 +94,7 @@ namespace IndieGabo.HandyTools.HandyBus
         }
 
         /// <summary>
-        /// Removes one binding from the event bus.
+        /// Removes one binding from the HandyBus.
         /// </summary>
         /// <param name="binding">Binding to remove.</param>
         public static void Deregister(IEventBinding<T> binding)

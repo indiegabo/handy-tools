@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using IndieGabo.HandyTools.Modules;
 
-namespace IndieGabo.HandyTools.Identifying
+namespace IndieGabo.HandyTools.IdentifyingModule
 {
     /// <summary>
     /// Centralizes metadata and dependency rules for the Identifying module.

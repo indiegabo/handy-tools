@@ -16,12 +16,13 @@ override their activation should do so through
 
 ## Summary Table
 
-| Module      | Id            | Default       | Load Order | Bootstrap Body |
-| ----------- | ------------- | ------------- | ---------- | -------------- |
-| Web         | `web`         | On when unset | `170`      | Empty          |
-| Pooling     | `pooling`     | On when unset | `180`      | Empty          |
-| Identifying | `identifying` | On when unset | `190`      | Empty          |
-| Rendering   | `rendering`   | On when unset | `195`      | Empty          |
+| Module           | Id                 | Default       | Load Order | Bootstrap Body   |
+| ---------------- | ------------------ | ------------- | ---------- | ---------------- |
+| Web              | `web`              | On when unset | `170`      | Empty            |
+| Pooling          | `pooling`          | On when unset | `180`      | Empty            |
+| Animation Events | `animation-events` | On when unset | `190`      | Registry refresh |
+| Identifying      | `identifying`      | On when unset | `190`      | Empty            |
+| Rendering        | `rendering`        | On when unset | `195`      | Empty            |
 
 ## Web
 
@@ -93,6 +94,42 @@ by a global spawned singleton.
   created subjects, and avoid unnecessary prewarm allocations.
 - Use `PoolIdentifier` and `PoolRegistry` only when the caller truly benefits
   from identifier-based lookup instead of prefab references.
+
+## Animation Events
+
+### Activation Profile
+
+- Activation mode: Optional
+- Active by default: Yes
+- Load order: `190`
+- Declared dependencies: none
+
+### Responsibilities
+
+Animation Events provides state-authored animation event dispatch for two use
+cases: local string callbacks routed to `AnimationEventReceiver`, and typed
+HandyBus dispatch routed through attributed `AnimatorBusEventBase` payloads.
+
+### Runtime Entry Points
+
+- `Runtime/Scripts/AnimationEvents/AnimationEventsModuleDefinition.cs`
+- `Runtime/Scripts/AnimationEvents/AnimationEventsModuleBootstrapper.cs`
+- `Runtime/Scripts/AnimationEvents/AnimationEventStateBehaviour.cs`
+- `Runtime/Scripts/AnimationEvents/AnimationEventBusStateBehaviour.cs`
+- `Runtime/Scripts/AnimationEvents/AnimationEventReceiver.cs`
+- `Runtime/Scripts/AnimationEvents/AnimatorBusEventRegistry.cs`
+
+The bootstrapper refreshes the attributed event registry so typed animation
+events can resolve without scene-local setup.
+
+### Notes for AI Agents
+
+- Preserve the one-behaviour-per-event authoring model. The trigger-time and
+  Animation Window workflow depend on that granularity.
+- Keep editor tooling in UI Toolkit unless Unity exposes no viable UI Toolkit
+  surface for a required Animator-host integration.
+- If new event metadata is added, update both the runtime registry and the
+  typed-event authoring documentation.
 
 ## Identifying
 

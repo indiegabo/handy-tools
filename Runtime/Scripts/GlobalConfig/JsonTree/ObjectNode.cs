@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace IndieGabo.HandyTools.GlobalConfig.JsonTree
+namespace IndieGabo.HandyTools.GlobalConfigModule.JsonTree
 {
     /// <summary>
     /// Object-shaped node: dictionary of named children.

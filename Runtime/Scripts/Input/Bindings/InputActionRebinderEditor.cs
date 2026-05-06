@@ -8,7 +8,7 @@ using UnityEngine.InputSystem.Utilities;
 
 ////TODO: support multi-object editing
 
-namespace IndieGabo.HandyTools.Input.Bindings.Editor
+namespace IndieGabo.HandyTools.HandyInputSystemModule.Bindings.Editor
 {
     /// <summary>
     /// A custom inspector for <see cref="InputActionRebinder"/> which provides a more convenient way for

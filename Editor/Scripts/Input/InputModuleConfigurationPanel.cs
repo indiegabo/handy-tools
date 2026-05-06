@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using IndieGabo.HandyTools.Editor.Modules;
-using IndieGabo.HandyTools.HandyInputSystem;
+using IndieGabo.HandyTools.HandyInputSystemModule;
 using IndieGabo.HandyTools.Modules;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace IndieGabo.HandyTools.Editor.Input
+namespace IndieGabo.HandyTools.Editor.InputModule
 {
     /// <summary>
     /// UI Toolkit configuration panel for the Input module.

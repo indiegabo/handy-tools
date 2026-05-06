@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using IndieGabo.HandyTools.Modules;
 
-namespace IndieGabo.HandyTools.ScreenShooter
+namespace IndieGabo.HandyTools.ScreenShooterModule
 {
     /// <summary>
     /// Opt-in runtime bootstrapper for the ScreenShooter module.

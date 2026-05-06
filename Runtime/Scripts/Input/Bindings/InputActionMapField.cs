@@ -4,7 +4,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace IndieGabo.HandyTools.Input.Bindings
+namespace IndieGabo.HandyTools.HandyInputSystemModule.Bindings
 {
     /// <summary>
     /// Serializes an action-map identifier selected from one InputActionAsset.

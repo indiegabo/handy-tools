@@ -1,12 +1,12 @@
 using IndieGabo.HandyTools.Editor.Modules;
-using IndieGabo.HandyTools.Logger;
+using IndieGabo.HandyTools.LoggerModule;
 using IndieGabo.HandyTools.Modules;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace IndieGabo.HandyTools.Editor.Logger
+namespace IndieGabo.HandyTools.Editor.LoggerModule
 {
     /// <summary>
     /// UI Toolkit configuration panel for the Logging module.

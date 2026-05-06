@@ -1,8 +1,8 @@
-﻿using IndieGabo.HandyTools.Identifying.SceneGuids;
+﻿using IndieGabo.HandyTools.IdentifyingModule.SceneGuids;
 using UnityEditor;
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.Editor.Identifying.SceneGuids
+namespace IndieGabo.HandyTools.Editor.IdentifyingModule.SceneGuids
 {
     /// <summary>
     /// Draws <see cref="GuidReference"/> fields as object selectors backed by

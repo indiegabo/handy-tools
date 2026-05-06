@@ -1,7 +1,7 @@
-using IndieGabo.HandyTools.HandyServiceLocator;
+using IndieGabo.HandyTools.HandyServiceLocatorModule;
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.Gameplay
+namespace IndieGabo.HandyTools.GameplayModule
 {
     /// <summary>
     /// Creates and registers the global gameplay service before runtime logic

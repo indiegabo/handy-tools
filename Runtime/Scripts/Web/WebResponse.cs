@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.Web
+namespace IndieGabo.HandyTools.WebModule
 {
     public class WebResponse
     {

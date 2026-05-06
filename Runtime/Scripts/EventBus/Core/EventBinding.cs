@@ -1,9 +1,9 @@
 using System;
 
-namespace IndieGabo.HandyTools.HandyBus
+namespace IndieGabo.HandyTools.HandyBusModule
 {
     /// <summary>
-    /// Defines the callbacks stored by one event bus binding.
+    /// Defines the callbacks stored by one HandyBus binding.
     /// </summary>
     /// <typeparam name="T">Event type handled by the binding.</typeparam>
     public interface IEventBinding<T>
@@ -20,7 +20,7 @@ namespace IndieGabo.HandyTools.HandyBus
     }
 
     /// <summary>
-    /// Default event binding implementation used by the event bus.
+    /// Default event binding implementation used by the HandyBus.
     /// </summary>
     /// <typeparam name="T">Event type handled by the binding.</typeparam>
     public class EventBinding<T> : IEventBinding<T> where T : IEvent

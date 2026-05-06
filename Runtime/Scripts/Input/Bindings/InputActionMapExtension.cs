@@ -1,7 +1,7 @@
-using IndieGabo.HandyTools.Logger;
+using IndieGabo.HandyTools.LoggerModule;
 using UnityEngine.InputSystem;
 
-namespace IndieGabo.HandyTools.Input.Bindings
+namespace IndieGabo.HandyTools.HandyInputSystemModule.Bindings
 {
     /// <summary>
     /// Adds helper operations for InputActionMap binding overrides.

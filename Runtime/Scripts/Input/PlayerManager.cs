@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using IndieGabo.HandyTools.HandyBus;
-using IndieGabo.HandyTools.HandyServiceLocator;
-using IndieGabo.HandyTools.Logger;
+using IndieGabo.HandyTools.HandyBusModule;
+using IndieGabo.HandyTools.HandyServiceLocatorModule;
+using IndieGabo.HandyTools.LoggerModule;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Users;
 
-namespace IndieGabo.HandyTools.HandyInputSystem
+namespace IndieGabo.HandyTools.HandyInputSystemModule
 {
     [RequireComponent(typeof(PlayerInputManager))]
     /// <summary>
@@ -354,7 +354,7 @@ namespace IndieGabo.HandyTools.HandyInputSystem
             playerInput.notificationBehavior
                 = PlayerNotifications.InvokeUnityEvents;
 
-            EventBus<PlayerJoinedEvent>.Raise(
+            HandyBus<PlayerJoinedEvent>.Raise(
                 new PlayerJoinedEvent()
                 {
                     playerIndex = playerInput.playerIndex,
@@ -411,7 +411,7 @@ namespace IndieGabo.HandyTools.HandyInputSystem
                 _playerInputsRegistry.Remove(playerInput.playerIndex);
             }
 
-            EventBus<PlayerLeftEvent>.Raise(
+            HandyBus<PlayerLeftEvent>.Raise(
                 new PlayerLeftEvent()
                 {
                     playerIndex = playerInput != null

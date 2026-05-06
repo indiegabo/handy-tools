@@ -1,6 +1,6 @@
 {
     "name": "IndieGabo.HandyTools.ScreenShooter.Editor",
-    "rootNamespace": "IndieGabo.HandyTools.Editor.ScreenShooter",
+    "rootNamespace": "IndieGabo.HandyTools.Editor.ScreenShooterModule",
     "references": [
         "IndieGabo.HandyTools.Runtime",
         "IndieGabo.HandyTools.Editor",

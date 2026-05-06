@@ -1,9 +1,9 @@
-using IndieGabo.HandyTools.HandyBus;
-using IndieGabo.HandyTools.HandyServiceLocator;
-using IndieGabo.HandyTools.SaveSystem;
+using IndieGabo.HandyTools.HandyBusModule;
+using IndieGabo.HandyTools.HandyServiceLocatorModule;
+using IndieGabo.HandyTools.SaveSystemModule;
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.Gameplay
+namespace IndieGabo.HandyTools.GameplayModule
 {
     /// <summary>
     /// Tracks active gameplay time and persists it according to the configured
@@ -25,7 +25,7 @@ namespace IndieGabo.HandyTools.Gameplay
         private void OnEnable()
         {
             GameplayConfig.ReloadInstance();
-            _gameplayEventSubscription = EventBus<GameplayStatusChangeEvent>
+            _gameplayEventSubscription = HandyBus<GameplayStatusChangeEvent>
                 .Subscribe(OnGameplayEvent);
         }
 

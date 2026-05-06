@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace IndieGabo.HandyTools.Gameplay
+namespace IndieGabo.HandyTools.GameplayModule
 {
     /// <summary>
     /// Persists gameplay-owned local user data outside the SaveSystem module.

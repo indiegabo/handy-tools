@@ -1,6 +1,6 @@
 {
     "name": "IndieGabo.HandyTools.Web",
-    "rootNamespace": "IndieGabo.HandyTools.Web",
+    "rootNamespace": "IndieGabo.HandyTools.WebModule",
     "references": [
         "IndieGabo.HandyTools.Runtime"
     ],

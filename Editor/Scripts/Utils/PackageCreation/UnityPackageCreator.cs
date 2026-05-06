@@ -1,7 +1,7 @@
 
 using System.IO;
 using System.Linq;
-using IndieGabo.HandyTools.Logger;
+using IndieGabo.HandyTools.LoggerModule;
 using UnityEditor;
 using UnityEngine;
 

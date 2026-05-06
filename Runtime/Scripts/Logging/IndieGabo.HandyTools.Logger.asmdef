@@ -1,6 +1,6 @@
 {
     "name": "IndieGabo.HandyTools.Logger",
-    "rootNamespace": "IndieGabo.HandyTools.Logger",
+    "rootNamespace": "IndieGabo.HandyTools.LoggerModule",
     "references": [
         "IndieGabo.HandyTools.Runtime"
     ],

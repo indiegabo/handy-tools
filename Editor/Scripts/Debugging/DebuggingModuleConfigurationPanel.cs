@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using IndieGabo.HandyTools.Editor.Modules;
-using IndieGabo.HandyTools.Debugging;
+using IndieGabo.HandyTools.DebuggingModule;
 using IndieGabo.HandyTools.Modules;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace IndieGabo.HandyTools.Editor.Debugging
+namespace IndieGabo.HandyTools.Editor.DebuggingModule
 {
     /// <summary>
     /// UI Toolkit configuration panel for the Debugging module.

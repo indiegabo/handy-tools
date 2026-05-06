@@ -6,7 +6,7 @@ using System.Reflection;
 using UnityEditor;
 #endif
 
-namespace IndieGabo.HandyTools.HandyInputSystem.Feedbacks
+namespace IndieGabo.HandyTools.HandyInputSystemModule.Feedbacks
 {
     /// <summary>
     /// Base ScriptableObject that exposes reflection-based field assignment for

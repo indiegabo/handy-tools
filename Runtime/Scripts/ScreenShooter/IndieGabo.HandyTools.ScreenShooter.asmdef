@@ -1,6 +1,6 @@
 {
     "name": "IndieGabo.HandyTools.ScreenShooter",
-    "rootNamespace": "IndieGabo.HandyTools.ScreenShooter",
+    "rootNamespace": "IndieGabo.HandyTools.ScreenShooterModule",
     "references": [
         "IndieGabo.HandyTools.Runtime",
         "Unity.InputSystem"

@@ -1,7 +1,7 @@
 using System;
-using IndieGabo.HandyTools.HandyBus;
+using IndieGabo.HandyTools.HandyBusModule;
 
-namespace IndieGabo.HandyTools.Gameplay
+namespace IndieGabo.HandyTools.GameplayModule
 {
     /// <summary>
     /// Published when the gameplay service changes its status.

@@ -4,7 +4,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace IndieGabo.HandyTools.Pooling
+namespace IndieGabo.HandyTools.PoolingModule
 {
     /// <summary>
     /// Base ScriptableObject pool definition that can spawn one or more
@@ -31,7 +31,7 @@ namespace IndieGabo.HandyTools.Pooling
 
         [BoxGroup("Entries")]
         [SerializeField]
-        [ListDrawerSettings(Expanded = true)]
+        [ListDrawerSettings(ShowFoldout = true, DefaultExpandedState = true)]
         private List<PoolEntryConfiguration> _entries = new();
 
         [BoxGroup("Events")]

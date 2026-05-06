@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace IndieGabo.HandyTools.HandyServiceLocator
+namespace IndieGabo.HandyTools.HandyServiceLocatorModule
 {
     /// <summary>
     /// Stores globally registered services for the HandyTools runtime.

@@ -1,4 +1,4 @@
-namespace IndieGabo.HandyTools.Pooling
+namespace IndieGabo.HandyTools.PoolingModule
 {
     /// <summary>
     /// Defines lifecycle hooks for components that create and dispose pools.

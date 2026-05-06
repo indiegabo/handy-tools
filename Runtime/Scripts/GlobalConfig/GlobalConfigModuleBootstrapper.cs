@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using IndieGabo.HandyTools.Modules;
 
-namespace IndieGabo.HandyTools.GlobalConfig
+namespace IndieGabo.HandyTools.GlobalConfigModule
 {
     /// <summary>
     /// Opt-in runtime bootstrapper for the GlobalConfig module.

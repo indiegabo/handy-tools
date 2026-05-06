@@ -1,7 +1,7 @@
 
-using IndieGabo.HandyTools.HandyBus;
+using IndieGabo.HandyTools.HandyBusModule;
 
-namespace IndieGabo.HandyTools.SaveSystem
+namespace IndieGabo.HandyTools.SaveSystemModule
 {
     /// <summary>
     /// Describes one save-slot lifecycle transition published through the event bus.

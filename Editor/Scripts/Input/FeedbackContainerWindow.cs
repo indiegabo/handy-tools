@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using IndieGabo.HandyTools.HandyInputSystem;
-using IndieGabo.HandyTools.HandyInputSystem.Feedbacks;
+using IndieGabo.HandyTools.HandyInputSystemModule;
+using IndieGabo.HandyTools.HandyInputSystemModule.Feedbacks;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;

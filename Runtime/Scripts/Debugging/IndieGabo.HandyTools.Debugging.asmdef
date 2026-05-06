@@ -1,6 +1,6 @@
 {
     "name": "IndieGabo.HandyTools.Debugging",
-    "rootNamespace": "IndieGabo.HandyTools.Debugging",
+    "rootNamespace": "IndieGabo.HandyTools.DebuggingModule",
     "references": [
         "IndieGabo.HandyTools.Runtime",
         "IndieGabo.HandyTools.Gameplay",
