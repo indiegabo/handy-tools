@@ -656,6 +656,7 @@ namespace IndieGabo.HandyTools.FSMModule
         protected void InitializeCharacterControllerProSupport()
         {
             CCPro.InitializeSupport();
+            NotifyCharacterControllerProRuntimeReady();
         }
 
         /// <summary>
@@ -789,15 +790,22 @@ namespace IndieGabo.HandyTools.FSMModule
             private readonly Action<IState, float> _postSimulationAction;
             private readonly Action<IState> _preFixedTickAction;
             private readonly Action<IState, float> _preSimulationAction;
+            private readonly Action<IState> _runtimeReadyAction;
             private readonly Action<IState, int> _tickIkAction;
 
             public CachedCharacterControllerProStateMethods(Type type)
             {
+                _runtimeReadyAction = CreateStateAction(type, "RuntimeReady");
                 _preFixedTickAction = CreateStateAction(type, "PreFixedTick");
                 _postFixedTickAction = CreateStateAction(type, "PostFixedTick");
                 _preSimulationAction = CreateStateAction<float>(type, "PreCharacterSimulation");
                 _postSimulationAction = CreateStateAction<float>(type, "PostCharacterSimulation");
                 _tickIkAction = CreateStateAction<int>(type, "TickIK");
+            }
+
+            public void InvokeRuntimeReady(IState state)
+            {
+                _runtimeReadyAction?.Invoke(state);
             }
 
             public void InvokePostFixedTick(IState state)
@@ -1209,6 +1217,24 @@ namespace IndieGabo.HandyTools.FSMModule
         }
 
         /// <summary>
+        /// Invokes the optional Character Controller Pro runtime-ready hook on
+        /// one state.
+        /// </summary>
+        /// <param name="state">The state that owns the hook.</param>
+        protected void TryExecuteCharacterControllerProRuntimeReady(IState state)
+        {
+            if (!IsCharacterControllerProState(state))
+            {
+                return;
+            }
+
+            TryExecuteCharacterControllerProStateAction(
+                state,
+                static (methods, currentState) => methods.InvokeRuntimeReady(currentState),
+                "RuntimeReady");
+        }
+
+        /// <summary>
         /// Invokes the optional Character Controller Pro post-fixed-tick hook on the current state.
         /// </summary>
         /// <param name="state">The state that owns the hook.</param>
@@ -1305,6 +1331,46 @@ namespace IndieGabo.HandyTools.FSMModule
             }
 
             TryExecuteCharacterControllerProTickIk(CurrentState, layerIndex);
+        }
+
+        /// <summary>
+        /// Notifies every loaded Character Controller Pro state that the brain
+        /// session runtime is ready.
+        /// </summary>
+        protected void NotifyCharacterControllerProRuntimeReady()
+        {
+            if (!UseCharacterControllerPro)
+            {
+                return;
+            }
+
+            List<IState> loadedStates = States.GetAllStates();
+
+            for (int index = 0; index < loadedStates.Count; index++)
+            {
+                TryExecuteCharacterControllerProRuntimeReady(loadedStates[index]);
+            }
+        }
+
+        private static bool IsCharacterControllerProState(IState state)
+        {
+            if (state == null)
+            {
+                return false;
+            }
+
+            Type[] interfaces = state.GetType().GetInterfaces();
+
+            for (int index = 0; index < interfaces.Length; index++)
+            {
+                if (interfaces[index].FullName
+                    == "IndieGabo.HandyTools.FSMModule.CCPro.ICCProState")
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private bool TryExecuteCharacterControllerProStateAction(

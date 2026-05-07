@@ -58,6 +58,16 @@ namespace IndieGabo.HandyTools.FSMModule.CCPro
             InvokeCCProAction(OnPreCharacterSimulationAction, dt);
         }
 
+        /// <summary>
+        /// Invokes the optional runtime-ready hook after the brain finished
+        /// initializing Character Controller Pro support for the current
+        /// machine session.
+        /// </summary>
+        public virtual void RuntimeReady()
+        {
+            InvokeCCProAction(OnRuntimeReadyAction);
+        }
+
         public void PostCharacterSimulation(float dt)
         {
             InvokeCCProAction(OnPostCharacterSimulationAction, dt);
@@ -80,6 +90,7 @@ namespace IndieGabo.HandyTools.FSMModule.CCPro
 
         protected UnityAction<float> OnPreCharacterSimulationAction { get; private set; }
         protected UnityAction<float> OnPostCharacterSimulationAction { get; private set; }
+        protected UnityAction OnRuntimeReadyAction { get; private set; }
         protected UnityAction OnPreFixedTickAction { get; private set; }
         protected UnityAction OnPostFixedTickAction { get; private set; }
         protected UnityAction<int> OnTickIKAction { get; private set; }
@@ -95,6 +106,7 @@ namespace IndieGabo.HandyTools.FSMModule.CCPro
         protected override void LoadActions(Type type)
         {
             base.LoadActions(type);
+            OnRuntimeReadyAction = GetDelegate<UnityAction>(type, "OnRuntimeReady");
             OnPreCharacterSimulationAction = GetDelegate<UnityAction<float>>(type, "OnPreCharacterSimulation");
             OnPostCharacterSimulationAction = GetDelegate<UnityAction<float>>(type, "OnPostCharacterSimulation");
             OnPreFixedTickAction = GetDelegate<UnityAction>(type, "OnPreFixedTick");

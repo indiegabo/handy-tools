@@ -160,10 +160,30 @@ read `CCProEnvironmentSource.CurrentSurfaceInfo` and
 `CCProEnvironmentSource.CurrentVolumeInfo`. Those runtime snapshots expose the
 resolved tag and `ReactionKey` alongside the modifier data.
 
+## Lifecycle Contract for CCPro States
+
+`OnInit` runs while `FSMBrain` is still inside `Awake`, before the brain
+finishes initializing Character Controller Pro session support.
+
+Treat `OnInit` as configuration-only setup. Use it for authored state data,
+input bindings, transition wiring, and other work that does not depend on the
+live CCPro runtime.
+
+If a state needs runtime-dependent actor data such as
+`CharacterActor.Forward`, `CharacterActor.DefaultBodySize`,
+`CharacterActor.BodySize`, `CharacterActor.Is2D`, or other values that depend
+on the live actor session, use `OnRuntimeReady()` instead.
+
+`OnRuntimeReady()` is dispatched after `FSMBrain` initializes Character
+Controller Pro support for the current machine session and before the first
+state entry of that session. It can run again if the machine is stopped and
+later reinitialized.
+
 ## Extra Hooks Recognized by the CCPro Bases
 
 In addition to `OnInit`, `OnEnter`, `OnExit`, `OnTick`, `OnFixedTick`, and `OnLateTick`, the CCPro bases recognize:
 
+- `OnRuntimeReady()`
 - `OnPreCharacterSimulation(float dt)`
 - `OnPostCharacterSimulation(float dt)`
 - `OnPreFixedTick()`

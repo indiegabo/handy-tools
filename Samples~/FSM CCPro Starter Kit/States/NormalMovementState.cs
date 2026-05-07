@@ -390,6 +390,28 @@ namespace IndieGabo.HandyTools.FSMModule.CCPro
                 MovementStats.VerticalMovement.availableNotGroundedJumps;
             WriteNotGroundedJumpsLeft(_notGroundedJumpsLeft);
 
+            // Transition priorities mirror the original demo: dash wins first, wall
+            // slide remains a lower-priority locomotion exit.
+            AddTransition(DashConditions, _dashState, 100);
+            AddTransition(
+                WallSlideConditions,
+                Brain.States.Get<WallSlideState>(),
+                10);
+            SortTransitions();
+        }
+
+        /// <summary>
+        /// Caches runtime-dependent actor values after the brain finished
+        /// initializing Character Controller Pro support for this session.
+        /// </summary>
+        protected virtual void OnRuntimeReady()
+        {
+            if (CharacterActor.CharacterBody == null)
+            {
+                ThrowStateFailure(
+                    "NormalMovementState requires CharacterActor.CharacterBody to be ready before runtime-dependent locomotion data can be cached.");
+            }
+
             // Preserve the default body height so crouch interpolation always has a
             // stable standing target.
             _targetHeight = CharacterActor.DefaultBodySize.y;
@@ -399,14 +421,7 @@ namespace IndieGabo.HandyTools.FSMModule.CCPro
                 CharacterActor.BodySize.x
                 / Mathf.Max(CharacterActor.BodySize.y, Mathf.Epsilon);
 
-            // Transition priorities mirror the original demo: dash wins first, wall
-            // slide remains a lower-priority locomotion exit.
-            AddTransition(DashConditions, _dashState, 100);
-            AddTransition(
-                WallSlideConditions,
-                Brain.States.Get<WallSlideState>(),
-                10);
-            SortTransitions();
+            _targetLookingDirection = CharacterActor.Forward;
         }
 
         /// <summary>
