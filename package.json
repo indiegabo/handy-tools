@@ -1,6 +1,6 @@
 {
   "name": "com.indiegabo.handy-tools",
-  "version": "3.3.2",
+  "version": "3.3.3",
   "displayName": "Handy Tools",
   "description": "A modular Unity toolkit with kernel infrastructure, configurable systems, editor workflows, and reusable runtime support for production projects.",
   "unity": "6000.4",
