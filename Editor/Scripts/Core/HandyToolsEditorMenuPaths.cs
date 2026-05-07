@@ -1,17 +1,17 @@
 namespace IndieGabo.HandyTools.Editor
 {
     /// <summary>
-    /// Centralizes top-level Handy Tools editor menu paths.
+    /// Centralizes top-level HandyTools editor menu paths.
     /// </summary>
     public static class HandyToolsEditorMenuPaths
     {
         /// <summary>
-        /// Root menu used for Handy Tools editor entries.
+        /// Root menu used for HandyTools editor entries.
         /// </summary>
-        public const string Root = "Handy Tools/";
+        public const string Root = "HandyTools/";
 
         /// <summary>
-        /// Root submenu used for general Handy Tools configuration entries.
+        /// Root submenu used for general HandyTools configuration entries.
         /// </summary>
         public const string ConfigurationRoot = Root + "Configuration/";
 

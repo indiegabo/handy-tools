@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cc31dcef65a42b1aa5d922b1dca8693, type: 3}
+  m_Name: HandyFSM Material Settings
+  m_EditorClassIdentifier: 
+  _defaultSurface:
+    _tagName: 
+    _reactionKey: default-surface
+    _debugColor: {r: 0.5471698, g: 0.5471698, b: 0.5471698, a: 1}
+    _surfaceModifiers:
+      _accelerationMultiplier: 1
+      _decelerationMultiplier: 1
+      _speedMultiplier: 1
+  _defaultVolume:
+    _tagName: 
+    _reactionKey: default-volume
+    _volumeModifiers:
+      _accelerationMultiplier: 1
+      _decelerationMultiplier: 1
+      _speedMultiplier: 1
+      _gravityAscendingMultiplier: 1
+      _gravityDescendingMultiplier: 3
+  _surfaces:
+  - _tagName: Ice
+    _reactionKey: ice
+    _debugColor: {r: 0, g: 0.8307624, b: 1, a: 1}
+    _surfaceModifiers:
+      _accelerationMultiplier: 0.05
+      _decelerationMultiplier: 0.05
+      _speedMultiplier: 1
+  - _tagName: Mud
+    _reactionKey: mud
+    _debugColor: {r: 0.754717, g: 0.3876189, b: 0, a: 1}
+    _surfaceModifiers:
+      _accelerationMultiplier: 1
+      _decelerationMultiplier: 1
+      _speedMultiplier: 0.5
+  - _tagName: Boost
+    _reactionKey: boost
+    _debugColor: {r: 0.5591397, g: 0, b: 1, a: 1}
+    _surfaceModifiers:
+      _accelerationMultiplier: 1
+      _decelerationMultiplier: 1
+      _speedMultiplier: 3
+  - _tagName: Grass
+    _reactionKey: grass
+    _debugColor: {r: 0, g: 1, b: 0.2941177, a: 1}
+    _surfaceModifiers:
+      _accelerationMultiplier: 5
+      _decelerationMultiplier: 5
+      _speedMultiplier: 1
+  _volumes:
+  - _tagName: Water
+    _reactionKey: water
+    _volumeModifiers:
+      _accelerationMultiplier: 0.5
+      _decelerationMultiplier: 0.5
+      _speedMultiplier: 0.7
+      _gravityAscendingMultiplier: 0.5
+      _gravityDescendingMultiplier: 0.5
+  - _tagName: Honey
+    _reactionKey: honey
+    _volumeModifiers:
+      _accelerationMultiplier: 0.25
+      _decelerationMultiplier: 1
+      _speedMultiplier: 0.5
+      _gravityAscendingMultiplier: 0.5
+      _gravityDescendingMultiplier: 0.1

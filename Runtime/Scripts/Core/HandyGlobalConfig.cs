@@ -30,7 +30,7 @@ namespace IndieGabo.HandyTools
     }
 
     /// <summary>
-    /// Unity-only replacement for the previous Sirenix global config base.
+    /// Unity-only global config base that loads configuration assets from Resources.
     /// It loads config assets from Resources and creates an in-memory fallback
     /// when no asset exists.
     /// </summary>

@@ -1,5 +1,4 @@
 using UnityEngine;
-using Sirenix.OdinInspector;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
 using System.Collections.Generic;
@@ -19,16 +18,12 @@ namespace IndieGabo.HandyTools.HandyInputSystemModule.RuntimeUI
     {
         #region Inspector
 
-
-        [BoxGroup("Buttons")]
         [SerializeField]
         private Button _resetButton;
 
-        [BoxGroup("Events")]
         [SerializeField]
         private UnityEvent<InputControlScheme> _deviceChanged;
 
-        [BoxGroup("Dependencies")]
         [SerializeField]
         private BindingsPrefHandler _bindingsPrefHandler;
 
@@ -55,9 +50,8 @@ namespace IndieGabo.HandyTools.HandyInputSystemModule.RuntimeUI
         /// </summary>
         private void Awake()
         {
-            _playerInput = ServiceLocator.GetRequired<PlayerInput>(
-                PlayerInputServiceKeys.SinglePlayer
-            );
+            PlayerManager playerManager = ServiceLocator.GetRequired<PlayerManager>();
+            _playerInput = playerManager.GetRequiredSinglePlayerInput();
 
             if (_bindingsPrefHandler == null)
             {

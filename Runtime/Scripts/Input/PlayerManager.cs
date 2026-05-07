@@ -4,7 +4,6 @@ using System.Reflection;
 using IndieGabo.HandyTools.HandyBusModule;
 using IndieGabo.HandyTools.HandyServiceLocatorModule;
 using IndieGabo.HandyTools.LoggerModule;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Users;
@@ -28,11 +27,9 @@ namespace IndieGabo.HandyTools.HandyInputSystemModule
 
         #region Inspector
 
-        [BoxGroup("Configuration")]
         [SerializeField]
         private PlayerInput _playerInputPrefab;
 
-        [BoxGroup("Configuration")]
         [SerializeField]
         private MultiplayerModeOptions _defaultMultiplayerOptions;
 
@@ -66,8 +63,6 @@ namespace IndieGabo.HandyTools.HandyInputSystemModule
         #region Properties
 
         private ProjectInputConfig Config => ProjectInputConfig.Get();
-
-        public PlayerInput SinglePlayerInput => _singlePlayerInput;
 
         #endregion
 
@@ -152,7 +147,6 @@ namespace IndieGabo.HandyTools.HandyInputSystemModule
 
         #region Mode Switching API
 
-        [Button]
         protected void ChangeMode(Mode mode)
         {
             switch (mode)
@@ -505,6 +499,35 @@ namespace IndieGabo.HandyTools.HandyInputSystemModule
             }
 
             CopyRegisteredPlayers(results);
+        }
+
+        /// <summary>
+        /// Resolves the PlayerInput reserved for the single-player flow.
+        /// </summary>
+        /// <returns>The single-player PlayerInput managed by this instance.</returns>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when this manager is not running in single-player mode or
+        /// when the single-player input is not initialized correctly.
+        /// </exception>
+        public PlayerInput GetRequiredSinglePlayerInput()
+        {
+            if (_currentMode != Mode.SinglePlayer)
+            {
+                throw new InvalidOperationException(
+                    $"Trying to get the single-player {nameof(PlayerInput)} but "
+                    + $"current mode is {_currentMode}."
+                );
+            }
+
+            if (_singlePlayerInput == null || _singlePlayerInput.actions == null)
+            {
+                throw new InvalidOperationException(
+                    $"The single-player {nameof(PlayerInput)} is not initialized "
+                    + "correctly."
+                );
+            }
+
+            return _singlePlayerInput;
         }
 
         /// <summary>

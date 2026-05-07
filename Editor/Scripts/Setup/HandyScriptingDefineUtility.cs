@@ -96,7 +96,7 @@ namespace IndieGabo.HandyTools.Editor.ProjectSetup
         /// </summary>
         public static void ApplySetupDefaults()
         {
-            RemoveUnavailableDefines();
+            SyncAvailabilityManagedDefines();
 
             foreach (HandyScriptingDefineDefinition definition
                 in HandyScriptingDefineRegistry.Definitions)
@@ -108,6 +108,25 @@ namespace IndieGabo.HandyTools.Editor.ProjectSetup
 
                 SetEnabled(definition, true);
             }
+        }
+
+        /// <summary>
+        /// Synchronizes defines that should mirror dependency availability.
+        /// </summary>
+        public static void SyncAvailabilityManagedDefines()
+        {
+            foreach (HandyScriptingDefineDefinition definition
+                in HandyScriptingDefineRegistry.Definitions)
+            {
+                if (!definition.SyncWithAvailability)
+                {
+                    continue;
+                }
+
+                SetEnabled(definition, definition.IsAvailable);
+            }
+
+            RemoveUnavailableDefines();
         }
 
         /// <summary>

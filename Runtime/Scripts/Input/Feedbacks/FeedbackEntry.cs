@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using IndieGabo.HandyTools.Utils;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -14,11 +13,9 @@ namespace IndieGabo.HandyTools.HandyInputSystemModule.Feedbacks
     {
         public readonly static string FallbackSchemeControlName = "Fallback";
 
-        [BoxGroup("Feedback")]
         [SerializeField]
         private SpriteDictionary _sprites = new();
 
-        [BoxGroup("Feedback")]
         [SerializeField]
         private List<FeedbackAnimation> _animationsList = new();
 

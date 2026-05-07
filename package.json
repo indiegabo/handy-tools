@@ -1,6 +1,6 @@
 {
   "name": "com.indiegabo.handy-tools",
-  "version": "3.1.0",
+  "version": "3.3.0",
   "displayName": "Handy Tools",
   "description": "A modular Unity toolkit with kernel infrastructure, configurable systems, editor workflows, and reusable runtime support for production projects.",
   "unity": "6000.4",
@@ -19,7 +19,13 @@
     "tools",
     "indiegabo"
   ],
-  "samples": [],
+  "samples": [
+    {
+      "displayName": "FSM CCPro Starter Kit",
+      "description": "Character Controller Pro sample scene and authored state assets for the HandyTools FSM module. Requires Character Controller Pro.",
+      "path": "Samples/FSM CCPro Starter Kit"
+    }
+  ],
   "scripts": {
     "release": "npm run release-it",
     "feature-finish-checklist": "echo Verify whether Assets/HandyTools/package.json description still matches the current package scope and update it if needed before releasing",

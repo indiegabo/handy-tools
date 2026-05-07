@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Events;
@@ -69,7 +68,7 @@ namespace IndieGabo.HandyTools.WebModule
             WebRequest request = new();
             request.SetUrl(url);
             request.SetMethod(method);
-            request.AddHeader("Content-Type", "application/json");
+            request.SetContentType("application/json");
             return request;
         }
 
@@ -163,6 +162,11 @@ namespace IndieGabo.HandyTools.WebModule
         /// <returns></returns>
         public WebRequest AddHeader(string key, string value)
         {
+            if (string.Equals(key, ContentTypeString, StringComparison.OrdinalIgnoreCase))
+            {
+                _contentType = value;
+            }
+
             if (_httpHeaders.ContainsKey(key))
             {
                 _httpHeaders[key] = value;
@@ -182,6 +186,11 @@ namespace IndieGabo.HandyTools.WebModule
         /// <returns></returns>
         public WebRequest RemoveHeader(string key)
         {
+            if (string.Equals(key, ContentTypeString, StringComparison.OrdinalIgnoreCase))
+            {
+                _contentType = null;
+            }
+
             _httpHeaders.Remove(key);
             return this;
         }

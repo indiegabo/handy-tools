@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine;
-using Sirenix.OdinInspector;
 using IndieGabo.HandyTools.LoggerModule;
 
 ////TODO: localization support
@@ -32,20 +31,17 @@ namespace IndieGabo.HandyTools.HandyInputSystemModule.Bindings
         [HideInInspector]
         private InputBinding.DisplayStringOptions m_DisplayStringOptions;
 
-        [FoldoutGroup("Events")]
         [Tooltip("Event that is triggered when the way the binding is display should be updated. This allows displaying "
             + "bindings in custom ways, e.g. using images instead of text.")]
         [SerializeField]
         private UpdateBindingUIEvent m_UpdateBindingUIEvent;
 
-        [FoldoutGroup("Events")]
         [Tooltip("Event that is triggered when an interactive rebind is being initiated. This can be used, for example, "
             + "to implement custom UI behavior while a rebind is in progress. It can also be used to further "
             + "customize the rebind.")]
         [SerializeField]
         private InteractiveRebindEvent m_RebindStartEvent;
 
-        [FoldoutGroup("Events")]
         [Tooltip("Event that is triggered when an interactive rebind is complete or has been aborted.")]
         [SerializeField]
         private InteractiveRebindEvent m_RebindStopEvent;

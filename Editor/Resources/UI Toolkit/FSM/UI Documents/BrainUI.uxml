@@ -1,0 +1,40 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="../Styles/handy-fsm-inspector-styles.uss"/>
+    <uie:ObjectField label="Script" type="UnityEditor.MonoScript, UnityEditor.CoreModule" name="script-field" class="w-100 sa-field"/>
+    <ui:VisualElement name="container-info" style="flex-grow: 1; padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px;">
+        <ui:VisualElement name="container-info-fields" style="flex-grow: 1;">
+            <ui:VisualElement name="runtime-info-container" class="row" style="flex-grow: 1; display: flex;">
+                <ui:Label tabindex="-1" text="Runtime Info" parse-escape-sequences="true" display-tooltip-when-elided="true" name="runtime-info-label" class="info-label" style="margin-top: 5px; margin-bottom: 5px; display: none;"/>
+                <ui:VisualElement name="runtime-info" style="align-items: center; height: 100%; background-color: rgb(46, 46, 46); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px;">
+                    <ui:VisualElement name="status-row" class="field-row runtime-info-row" style="flex-direction: row; align-items: center;">
+                        <ui:Label tabindex="-1" text="Status: " parse-escape-sequences="true" display-tooltip-when-elided="true" name="status-label" class="runtime-label" style="-unity-font-style: bold; -unity-text-align: middle-left;"/>
+                        <ui:Label tabindex="-1" text="Off" parse-escape-sequences="true" display-tooltip-when-elided="true" name="status-text" class="off"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="current-state-row" class="field-row runtime-info-row" style="flex-direction: row; width: 100%; font-size: 16px; -unity-font-style: bold; align-items: center;">
+                        <ui:Label tabindex="-1" text="Current State:" parse-escape-sequences="true" display-tooltip-when-elided="true" name="current-state-label" class="runtime-label" style="font-size: 14px;"/>
+                        <ui:Label tabindex="-1" text="None" parse-escape-sequences="true" display-tooltip-when-elided="true" name="current-state-text" binding-path="_currentStateName" class="state-name" style="-unity-font-style: normal; font-size: 14px; -unity-text-align: middle-left;"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="hidden-fields" style="flex-grow: 1; display: none;">
+                <ui:EnumField label="Status" type="IndieGabo.HandyTools.FSMModule.MachineStatus, IndieGabo.HandyTools.FSM" name="status-field" binding-path="_status" value="Off"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:Label tabindex="-1" text="General" parse-escape-sequences="true" display-tooltip-when-elided="true" name="label-general" class="separation-label"/>
+    <uie:ObjectField label="Owner" name="field-owner" binding-path="_owner"/>
+    <ui:EnumField label="Initialization Mode" type="IndieGabo.HandyTools.FSMModule.InitializationMode, IndieGabo.HandyTools.FSM" name="field-initialization-mode" tooltip="How should the machine be initialized?" binding-path="_initializationMode"/>
+    <ui:Label tabindex="-1" text="Transitions" parse-escape-sequences="true" display-tooltip-when-elided="true" name="label-transitions" class="separation-label"/>
+    <ui:Toggle label="On Update" name="field-transitions-update" binding-path="_transitionsOnUpdate"/>
+    <ui:Toggle label="On LateUpdate" name="field-transitions-late-update" binding-path="_transitionsOnLateUpdate"/>
+    <ui:Toggle label="On FixedUpdate" name="field-transitions-fixed-update" binding-path="_transitionsOnFixedUpdate"/>
+    <ui:Label tabindex="-1" text="Debug" parse-escape-sequences="true" display-tooltip-when-elided="true" name="label-debug" class="separation-label"/>
+    <ui:Toggle label="Save History" name="field-save-history" binding-path="_saveHistory" tooltip="Captures the last play-session history for editor debugging. Player builds ignore this flag and only capture history in Development Build."/>
+    <ui:Label tabindex="-1" text="States" parse-escape-sequences="true" display-tooltip-when-elided="true" name="label-states" class="separation-label"/>
+    <uie:ObjectField label="Default Scriptable State" name="field-default-scriptable-state" type="IndieGabo.HandyTools.FSMModule.ScriptableState, IndieGabo.HandyTools.FSM" binding-path="_defaultScriptableState"/>
+    <ui:ListView focusable="true" name="list-scriptable-states" selection-type="None" reorderable="true" header-title="Scriptable States" show-add-remove-footer="true" show-foldout-header="true" binding-path="_scriptableStates" class="no-label-list"/>
+    <ui:Foldout text="Events" name="foldout-events" value="false">
+        <uie:PropertyField name="status-changed-field" binding-path="_statusChanged" label="Status Changed" tooltip="Fired when the machine state changes" style="margin-top: 5px; margin-right: 5px; margin-bottom: 5px; margin-left: 5px;"/>
+        <uie:PropertyField name="state-changed-field" binding-path="_stateChanged" label="State Changed" tooltip="Fired every time the current state changes" style="margin-top: 5px; margin-right: 5px; margin-bottom: 5px; margin-left: 5px;"/>
+    </ui:Foldout>
+</ui:UXML>

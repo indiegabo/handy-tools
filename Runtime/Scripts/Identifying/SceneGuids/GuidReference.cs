@@ -1,5 +1,4 @@
 ﻿using System;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -21,19 +20,13 @@ namespace IndieGabo.HandyTools.IdentifyingModule.SceneGuids
         private bool _isCacheSet;
         private Guid _guid;
 
-        [FoldoutGroup("Guid")]
-        [ReadOnly]
         [SerializeField]
         private byte[] _serializedGuid;
 
 #if UNITY_EDITOR
-        [FoldoutGroup("Editor Cache")]
-        [ReadOnly]
         [SerializeField]
         private string _cachedName;
 
-        [FoldoutGroup("Editor Cache")]
-        [ReadOnly]
         [SerializeField]
         private SceneAsset _cachedScene;
 #endif

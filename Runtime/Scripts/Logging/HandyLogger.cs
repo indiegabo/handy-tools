@@ -1,5 +1,4 @@
 using UnityEngine;
-using Sirenix.OdinInspector;
 using static UnityEngine.ColorUtility;
 
 namespace IndieGabo.HandyTools.LoggerModule
@@ -113,7 +112,6 @@ namespace IndieGabo.HandyTools.LoggerModule
 
         #region Inspector
 
-        [BoxGroup("Settings")]
         [SerializeField]
         private bool _shouldLog = true;
         public bool ShouldLog { get => _shouldLog; set => _shouldLog = value; }

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using IndieGabo.HandyTools.LoggerModule;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -16,7 +15,6 @@ namespace IndieGabo.HandyTools.HandyInputSystemModule.Bindings
 
         #region Inspector
 
-        [BoxGroup("Dependencies")]
         [SerializeField]
         private InputActionAsset _actionAsset;
 

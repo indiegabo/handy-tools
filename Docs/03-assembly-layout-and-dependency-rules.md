@@ -30,6 +30,9 @@ Examples:
 
 - `IndieGabo.HandyTools.SaveSystem` owns Easy Save references.
 - `IndieGabo.HandyTools.Input` owns Input System references.
+- `IndieGabo.HandyTools.FSM` owns the state machine runtime, while
+  `IndieGabo.HandyTools.FSM.CCPro` isolates Character Controller Pro-specific
+  state bases behind a dependency-backed child asmdef.
 - `IndieGabo.HandyTools.Rendering` owns URP-specific references.
 - `IndieGabo.HandyTools.Web` owns web request helpers without polluting the
   root runtime asmdef.
@@ -46,6 +49,7 @@ Feature-specific editor integrations compile into module editor asmdefs.
 
 Examples:
 
+- `IndieGabo.HandyTools.FSM.Editor`
 - `IndieGabo.HandyTools.Input.Editor`
 - `IndieGabo.HandyTools.SaveSystem.Editor`
 - `IndieGabo.HandyTools.Debugging.Editor`

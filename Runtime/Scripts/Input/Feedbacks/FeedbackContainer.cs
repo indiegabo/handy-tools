@@ -1,7 +1,6 @@
 
 using System;
 using System.Collections.Generic;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -15,11 +14,9 @@ namespace IndieGabo.HandyTools.HandyInputSystemModule.Feedbacks
         [NonSerialized]
         private Dictionary<Guid, FeedbackEntry> _feedbackCache;
 
-        [BoxGroup("Feedback")]
         [SerializeField]
         private InputActionAsset _actionAsset;
 
-        [BoxGroup("Feedback")]
         [SerializeField]
         private FeedbackDictionary _feedbacks;
 

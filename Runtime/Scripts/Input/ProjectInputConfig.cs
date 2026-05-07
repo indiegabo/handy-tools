@@ -1,7 +1,6 @@
 using IndieGabo.HandyTools.Utils;
 using UnityEngine;
 using IndieGabo.HandyTools.Utils.Extensions;
-using Sirenix.OdinInspector;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -26,10 +25,8 @@ namespace IndieGabo.HandyTools.HandyInputSystemModule
 
         private static ProjectInputConfig _cachedInstance;
 
-        [BoxGroup("Players")]
         [SerializeField] private int _maxNumberOfPlayers = 1;
 
-        [BoxGroup("Players")]
         [SerializeField] private PlayerManager _playerManagerPrefab;
 
         #endregion

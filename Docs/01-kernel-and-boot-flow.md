@@ -111,8 +111,9 @@ Activation is controlled by `HandyModuleDescriptor` and `HandyModuleSettings`.
 - Optional modules fall back to `Descriptor.IsActiveByDefault` when no explicit
   project state has been stored yet.
 
-This is how auto-activated modules such as Web, Pooling, Identifying, and
-Rendering remain optional in the architecture while still defaulting to active.
+This is how auto-activated modules such as Web, FSM, Pooling, Animation Events,
+Identifying, and Rendering remain optional in the architecture while still
+defaulting to active.
 
 ## Module Settings Asset
 

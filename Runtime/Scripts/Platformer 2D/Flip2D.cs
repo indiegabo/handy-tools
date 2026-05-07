@@ -1,4 +1,3 @@
-using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -7,44 +6,29 @@ namespace IndieGabo.HandyTools.Platformer2D
     [AddComponentMenu("HandyTools/Platformer/Flip2D")]
     public class Flip2D : HandyBehaviour
     {
-        [BoxGroup("Dependencies")]
         [Tooltip("The subject wich will be flipped. If null, the object's transform will be used")]
         [SerializeField]
         private Transform _subject;
 
-        [BoxGroup("Configuration")]
-        [BoxGroup("Configuration/Strategy")]
         [Tooltip("If the game object should be flipped scaling, rotating or using the sprite renderer")]
-        [LabelText("Strategy")]
-        [EnumToggleButtons]
         [SerializeField]
         private FlipStrategy _strategy = FlipStrategy.Rotating;
 
-        [BoxGroup("Configuration/Strategy")]
-        [ShowIf("UsesSpriteStrategy")]
         [SerializeField]
         private SpriteRenderer _spriteRenderer;
 
-        [BoxGroup("Configuration/Directions")]
         [Tooltip("Use this to set wich direction GameObject should start flipped towards.")]
-        [LabelText("Starting Horizontal")]
-        [EnumToggleButtons]
         [SerializeField]
         private HorizontalDirection _horizontalStartingDirection = HorizontalDirection.Right;
 
-        [BoxGroup("Configuration/Directions")]
         [Tooltip("Use this to set wich direction GameObject should start flipped towards.")]
-        [LabelText("Starting Vertical")]
-        [EnumToggleButtons]
         [SerializeField]
         private VerticalDirection _verticalStartingDirection = VerticalDirection.Down;
 
         // Events
-        [FoldoutGroup("Events")]
         [SerializeField]
         private UnityEvent<int> _facingDirectionSignUpdate;
 
-        [FoldoutGroup("Events")]
         [SerializeField]
         private UnityEvent<int> _verticalDirectionSignUpdate;
 

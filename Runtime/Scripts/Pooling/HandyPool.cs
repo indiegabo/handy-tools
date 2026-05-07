@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -15,30 +14,23 @@ namespace IndieGabo.HandyTools.PoolingModule
     {
         #region Inspector
 
-        [BoxGroup("HandyTools")]
         [SerializeField]
         [Min(0)]
         private int _defaultSize;
 
-        [BoxGroup("HandyTools")]
         [SerializeField]
         [Min(1)]
         private int _maxSize = 10000;
 
-        [BoxGroup("HandyTools")]
         [SerializeField]
         private bool _enableCollectionChecksInPlayerBuilds;
 
-        [BoxGroup("Entries")]
         [SerializeField]
-        [ListDrawerSettings(ShowFoldout = true, DefaultExpandedState = true)]
         private List<PoolEntryConfiguration> _entries = new();
 
-        [BoxGroup("Events")]
         [SerializeField]
         private UnityEvent _initialized;
 
-        [BoxGroup("Events")]
         [SerializeField]
         private UnityEvent _dismissed;
 

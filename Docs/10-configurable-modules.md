@@ -1,8 +1,8 @@
 # Configurable Modules
 
 This document covers the HandyTools modules that appear in the shared modules
-window at `Handy Tools/Modules`. These modules are optional and
-default to inactive unless a project explicitly activates them.
+window at `Handy Tools/Modules`. These modules are optional and default to
+inactive unless a project explicitly activates them.
 
 The `Modules` menu no longer exposes one submenu item per configurable module.
 Open the shared window once and use the left sidebar to select the module you

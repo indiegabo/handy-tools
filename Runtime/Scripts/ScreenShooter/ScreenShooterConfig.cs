@@ -1,5 +1,4 @@
 using System.IO;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -15,11 +14,9 @@ namespace IndieGabo.HandyTools.ScreenShooterModule
 
         #region Fields
 
-        [BoxGroup("Input")]
         [SerializeField]
         private InputAction _shootInputAction = CreateDefaultShootInputAction();
 
-        [BoxGroup("Output")]
         [SerializeField]
         private string _outputDirectoryPath = _defaultOutputDirectory;
 

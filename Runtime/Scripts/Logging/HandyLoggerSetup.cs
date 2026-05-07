@@ -1,5 +1,4 @@
 using UnityEngine;
-using Sirenix.OdinInspector;
 using static UnityEngine.ColorUtility;
 
 namespace IndieGabo.HandyTools.LoggerModule
@@ -12,13 +11,10 @@ namespace IndieGabo.HandyTools.LoggerModule
     {
         #region Fields
 
-        [BoxGroup("Colors")]
         [SerializeField] private Color _successColor = new(84, 166, 84); // Green
 
-        [BoxGroup("Colors")]
         [SerializeField] private Color _warningColor = new(215, 202, 60); // Yellow
 
-        [BoxGroup("Colors")]
         [SerializeField] private Color _errorColor = new(224, 100, 100); // Red
 
         #endregion

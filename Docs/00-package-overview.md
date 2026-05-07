@@ -66,6 +66,7 @@ slice's current `rootNamespace` and runtime examples.
 | Logging          | Configurable module   | Off              | Shared modules window | `LoggingModuleDefinition`, `LoggerBootstrapper`                             |
 | Input            | Configurable module   | Off              | Shared modules window | `InputModuleDefinition`, `ProjectInputConfig.Bootstrap()`                   |
 | Gameplay         | Configurable module   | Off              | Shared modules window | `GameplayModuleDefinition`, `GameplayServiceBootstrapper`, `GameplayConfig` |
+| FSM              | Auto-activated module | On when unset    | No panel              | `FSMModuleDefinition`, `FSMBrain`, `State`, `ScriptableState`               |
 | Save System      | Configurable module   | Off              | Shared modules window | `SaveSystemModuleDefinition`, `SaveSystemBootstrapper`                      |
 | Globals          | Configurable module   | Off              | Shared modules window | `GlobalConfigModuleDefinition`, `Globals.LoadFromGlobals()`                 |
 | Debugging        | Configurable module   | Off              | Shared modules window | `DebuggingModuleDefinition`, `DebugPanelBootstrapper`                       |
@@ -90,6 +91,8 @@ slice's current `rootNamespace` and runtime examples.
   independent runtimes, and identifier-based pool lookup.
 - Read [Gameplay Guide](12-gameplay-guide.md) to understand lifecycle state,
   indefinite interruptions, and gameplay time persistence strategy.
+- Read [FSM Guide](14-fsm-guide.md) to understand the integrated state machine
+  module, its editor surfaces, and its optional integrations.
 - Read [Planned Modules](../../../Docs/planned-modules.md) to review candidate
   and planned module investigations before turning an idea into a new slice.
 - Read [Editor Setup and Configuration](02-editor-setup-and-configuration.md)

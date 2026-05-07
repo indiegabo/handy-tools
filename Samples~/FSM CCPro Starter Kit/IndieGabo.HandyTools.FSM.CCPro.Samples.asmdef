@@ -1,0 +1,21 @@
+{
+    "name": "IndieGabo.HandyTools.FSM.CCPro.Samples",
+    "rootNamespace": "IndieGabo.HandyTools.FSMModule.CCPro",
+    "references": [
+        "IndieGabo.HandyTools.FSM",
+        "IndieGabo.HandyTools.FSM.CCPro",
+        "com.lightbug.character-controller-pro",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "HANDY_CHARACTER_CONTROLLER_PRO_PRESENT"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

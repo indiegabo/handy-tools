@@ -1,6 +1,4 @@
-using System.Collections;
 using System;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -14,13 +12,9 @@ namespace IndieGabo.HandyTools.HandyInputSystemModule.Bindings
     {
         #region Inspector        
 
-        [BoxGroup("Configuration")]
         [SerializeField]
         private InputActionAsset _inputActionAsset;
 
-        [BoxGroup("Configuration")]
-        [ValueDropdown("GetActionMapsIds")]
-        [LabelText("Map")]
         [SerializeField]
         private string _mapId;
 
@@ -49,26 +43,5 @@ namespace IndieGabo.HandyTools.HandyInputSystemModule.Bindings
 
         #endregion                
 
-        #region Callbacks
-
-        /// <summary>
-        /// Builds the Odin dropdown list from the configured action asset.
-        /// </summary>
-        /// <returns>An enumerable list of action-map options.</returns>
-        private IEnumerable GetActionMapsIds()
-        {
-            if (_inputActionAsset == null) return default;
-
-            ValueDropdownList<string> list = new ValueDropdownList<string>();
-
-            foreach (InputActionMap map in _inputActionAsset.actionMaps)
-            {
-                list.Add(map.name, map.id.ToString());
-            }
-
-            return list;
-        }
-
-        #endregion
     }
 }

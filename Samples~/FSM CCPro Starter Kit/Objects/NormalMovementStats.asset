@@ -1,0 +1,143 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 433fa2bdbbe4f584bbf659735643b07f, type: 3}
+  m_Name: NormalMovementStats
+  m_EditorClassIdentifier: 
+  _planarMovement:
+    baseSpeedLimit: 6
+    canRun: 1
+    runInputMode: 1
+    boostSpeedLimit: 10
+    stableGroundedAcceleration: 50
+    stableGroundedDeceleration: 40
+    stableGroundedAngleAccelerationBoost:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 180
+        value: 2
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    unstableGroundedAcceleration: 10
+    unstableGroundedDeceleration: 2
+    unstableGroundedAngleAccelerationBoost:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 180
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    notGroundedAcceleration: 20
+    notGroundedDeceleration: 5
+    notGroundedAngleAccelerationBoost:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 180
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  _verticalMovement:
+    useGravity: 1
+    canJump: 1
+    autoCalculate: 1
+    jumpApexHeight: 2.25
+    jumpApexDuration: 0.5
+    jumpSpeed: 10
+    gravity: 10
+    cancelJumpOnRelease: 1
+    cancelJumpMultiplier: 0.5
+    cancelJumpMinTime: 0.1
+    cancelJumpMaxTime: 0.3
+    preGroundedJumpTime: 0.2
+    postGroundedJumpTime: 0.1
+    availableNotGroundedJumps: 1
+    canJumpOnUnstableGround: 0
+    unstableGroundedResetsPreJump: 0
+    canJumpDown: 1
+    filterByTag: 0
+    jumpDownTag: JumpDown
+    jumpDownDistance: 0.05
+    jumpDownVerticalVelocity: 0.5
+  _crouch:
+    enableCrouch: 1
+    notGroundedCrouch: 0
+    heightRatio: 0.75
+    speedMultiplier: 0.3
+    inputMode: 1
+    notGroundedReference: 0
+    sizeLerpSpeed: 8
+  _lookingDirection:
+    changeLookingDirection: 1
+    speed: 10
+    lookingDirectionMode: 0
+    target: {fileID: 0}
+    stableGroundedLookingDirectionMode: 1
+    unstableGroundedLookingDirectionMode: 0
+    notGroundedLookingDirectionMode: 1
+  _wallJumpReducedControlDuration: 0.5
+  _groundedAnimationParameter: Grounded
+  _stableAnimationParameter: Stable
+  _verticalSpeedAnimationParameter: VerticalSpeed
+  _planarSpeedAnimationParameter: PlanarSpeed
+  _horizontalAxisAnimationParameter: HorizontalAxis
+  _verticalAxisAnimationParameter: VerticalAxis
+  _heightAnimationParameter: Height

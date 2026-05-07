@@ -1,7 +1,6 @@
 
 using System;
 using System.Reflection;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -38,12 +37,10 @@ namespace IndieGabo.HandyTools
 
         #region Inspector
 
-        [BoxGroup("Singleton")]
         [Tooltip("Keeps this object alive when a new scene is loaded.")]
         [SerializeField]
         private bool _persistent = true;
 
-        [BoxGroup("Singleton")]
         [Tooltip("Logs an error when another singleton instance is already active.")]
         [SerializeField]
         private bool _alertAboutOtherInstances = true;

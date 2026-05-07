@@ -1,4 +1,3 @@
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace IndieGabo.HandyTools.PoolingModule
@@ -15,19 +14,15 @@ namespace IndieGabo.HandyTools.PoolingModule
     {
         #region Inspector
 
-        [BoxGroup("Pooling")]
         [SerializeField]
         private float _initialAmount = 0;
 
-        [BoxGroup("Pooling")]
         [SerializeField]
         private bool _initializeOnEnable = true;
 
-        [BoxGroup("Pooling")]
         [SerializeField]
         private Transform _container;
 
-        [BoxGroup("Pooling")]
         [SerializeField]
         private HandyPool<TBehaviour> _pool;
 

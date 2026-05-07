@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <ui:VisualElement name="window-root" style="flex-grow: 1; padding-top: 8px; padding-right: 8px; padding-bottom: 8px; padding-left: 8px;">
+        <ui:VisualElement name="window-toolbar" class="visualizer-window-toolbar">
+            <uie:ObjectField label="Machine" type="IndieGabo.HandyTools.FSMModule.FSMBrain, IndieGabo.HandyTools.FSM" name="machine-selector-field" allow-scene-objects="true" class="visualizer-machine-field" />
+            <ui:Button text="Use Selection" name="from-selection-button" class="visualizer-toolbar-button visualizer-window-action-button" />
+        </ui:VisualElement>
+        <ui:VisualElement name="select-machine-container" class="visualizer-empty-state">
+            <ui:Label tabindex="-1" text="Select an FSMBrain to inspect. In play mode the window will highlight the active inheritance path and record the current session history." parse-escape-sequences="true" display-tooltip-when-elided="true" name="select-machine-label" class="visualizer-empty-label" />
+        </ui:VisualElement>
+        <ui:VisualElement name="body" style="flex-grow: 1;" />
+    </ui:VisualElement>
+</ui:UXML>

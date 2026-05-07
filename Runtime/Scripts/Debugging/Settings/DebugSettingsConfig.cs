@@ -1,5 +1,4 @@
 using UnityEngine;
-using Sirenix.OdinInspector;
 
 namespace IndieGabo.HandyTools.DebuggingModule
 {
@@ -9,11 +8,9 @@ namespace IndieGabo.HandyTools.DebuggingModule
     /// </summary>
     public class DebugSettingsConfig : HandyGlobalConfig<DebugSettingsConfig>
     {
-        [BoxGroup("Settings")]
         [SerializeField]
         private bool _vSyncOn;
 
-        [BoxGroup("Settings")]
         [SerializeField]
         private string _fpsLimit = "No Constraints";
 

@@ -1,7 +1,6 @@
 using IndieGabo.HandyTools.HandyServiceLocatorModule;
 using IndieGabo.HandyTools.LoggerModule;
 using IndieGabo.HandyTools.Utils;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace IndieGabo.HandyTools.SaveSystemModule
@@ -13,7 +12,6 @@ namespace IndieGabo.HandyTools.SaveSystemModule
     /// <typeparam name="T">Persisted data type.</typeparam>
     public abstract class SavableDataBehaviour<T> : HandyBehaviour, ISavableEntity
     {
-        [BoxGroup("Save Data")]
         [SerializeField]
         protected T _data;
 

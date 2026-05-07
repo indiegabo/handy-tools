@@ -1,5 +1,4 @@
 using IndieGabo.HandyTools.Utils;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace IndieGabo.HandyTools.SaveSystemModule
@@ -13,34 +12,24 @@ namespace IndieGabo.HandyTools.SaveSystemModule
 
         #region Fields
 
-        [BoxGroup("Boot")]
         [SerializeField] private bool _shouldAutoBoot = true;
 
-        [BoxGroup("Slots")]
         [SerializeField] private SlotStrategy _slotStrategy = SlotStrategy.Indexed;
 
-        [BoxGroup("Slots")]
         [SerializeField] private int _maxIndexedSlots = 3;
 
-        [BoxGroup("Slots")]
         [SerializeField] private bool _ensureIndexedSlots = true;
 
-        [BoxGroup("Files")]
         [SerializeField] private string _saveFileExtension = "save";
 
-        [BoxGroup("Persistence")]
         [SerializeField] private bool _persistOnManagerDestroy = false;
 
-        [BoxGroup("Persistence")]
         [SerializeField] private bool _persistOnApplicationQuit = true;
 
-        [BoxGroup("Persistence")]
         [SerializeField] private int _persistanceIterationDeltaFactor = 3;
 
-        [BoxGroup("Encryption")]
         [SerializeField] private SaveEncryptionMode _saveEncryptionMode = SaveEncryptionMode.None;
 
-        [BoxGroup("Encryption")]
         [SerializeField] private string _saveEncryptionPassword = string.Empty;
 
         #endregion

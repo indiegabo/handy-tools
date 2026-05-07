@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Sirenix.OdinInspector;
 
 namespace IndieGabo.HandyTools.DebuggingModule
 {
@@ -12,19 +11,15 @@ namespace IndieGabo.HandyTools.DebuggingModule
     {
         #region Fields
 
-        [BoxGroup("Panel")]
         [SerializeField]
         private bool _isEnabled = true;
 
-        [BoxGroup("Panel")]
         [SerializeField]
         private bool _pauseGameplayWhenOpen = true;
 
-        [BoxGroup("Panel")]
         [SerializeField]
         private bool _unlockCursorWhenOpen = true;
 
-        [BoxGroup("Input")]
         [SerializeField]
         private InputAction _openCloseInputAction;
 

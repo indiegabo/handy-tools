@@ -112,11 +112,14 @@ public static class GameplayServiceKeys
 The input module centralizes its identifiers in
 `Runtime/Scripts/Input/PlayerInputServiceKeys.cs`.
 
-- `PlayerInputServiceKeys.SinglePlayer`
 - `PlayerInputServiceKeys.ForPlayerIndex(int playerIndex)`
 - `PlayerInputServiceKeys.ForPlayerId(string playerId)`
 - `PlayerInputServiceKeys.ForInputUserId(uint inputUserId)`
 - `PlayerInputServiceKeys.ForPersistentGuid(Guid persistentGuid)`
+
+The single-player `PlayerInput` is owned by `PlayerManager`. Consumers that
+need it should resolve the `PlayerManager` and request the input from that
+component instead of using a public single-player service identifier.
 
 `PlayerManager` automatically registers multiplayer `PlayerInput` instances by
 player index, `InputUser.id`, and a persistent runtime GUID.

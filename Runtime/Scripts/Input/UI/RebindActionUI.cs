@@ -3,7 +3,6 @@ using IndieGabo.HandyTools.HandyInputSystemModule;
 using IndieGabo.HandyTools.HandyInputSystemModule.Feedbacks;
 using IndieGabo.HandyTools.HandyServiceLocatorModule;
 using IndieGabo.HandyTools.HandyInputSystemModule.Bindings;
-using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -23,34 +22,27 @@ namespace IndieGabo.HandyTools.HandyInputSystemModule.RuntimeUI
     {
         #region Inspector
 
-        [TabGroup("Dependencies")]
         [Tooltip("A GameObject to be activated and deactivated based on the rebinding processes status.")]
         [SerializeField]
         private GameObject _overlay;
 
-        [TabGroup("Dependencies")]
         [SerializeField]
         private FeedbackContainer _feedbackContainer;
 
-        [TabGroup("Feedbacks")]
         [Tooltip("The image wich represents the button or key on that device")]
         [SerializeField]
         private Image _buttonImage;
 
-        [TabGroup("Feedbacks")]
         [SerializeField]
         private Sprite _noButtonSprite;
 
-        [TabGroup("Feedbacks")]
         [Tooltip("Optional text label that will be updated with prompt for user input.")]
         [SerializeField]
         private TextMeshProUGUI _rebindText;
 
-        [TabGroup("Feedbacks")]
         [SerializeField]
         private Button _rebindButton;
 
-        [TabGroup("Feedbacks")]
         [SerializeField]
         private Button _resetButton;
 
@@ -72,9 +64,8 @@ namespace IndieGabo.HandyTools.HandyInputSystemModule.RuntimeUI
         /// </summary>
         private void Awake()
         {
-            _playerInput = ServiceLocator.GetRequired<PlayerInput>(
-                PlayerInputServiceKeys.SinglePlayer
-            );
+            PlayerManager playerManager = ServiceLocator.GetRequired<PlayerManager>();
+            _playerInput = playerManager.GetRequiredSinglePlayerInput();
             _rebinder = GetComponent<InputActionButtonRebinder>();
             _overlay?.SetActive(false);
         }

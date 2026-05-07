@@ -1,0 +1,75 @@
+.row {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    width: 100%;
+    height: auto;
+}
+
+.off {
+    color: rgb(138, 138, 138);
+    -unity-font-style: bold;
+}
+
+.paused {
+    color: rgb(239, 177, 71);
+    -unity-font-style: bold;
+}
+
+.on {
+    color: rgb(173, 233, 186);
+    -unity-font-style: bold;
+}
+
+.state-name {
+    color: rgb(255, 255, 255);
+}
+
+.info-label {
+    color: rgb(221, 221, 221);
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+    font-size: 13px;
+}
+
+.runtime-info-row {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.field {
+    width: 100%;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    height: 18px;
+}
+
+.runtime-label {
+    color: rgb(190, 190, 190);
+    -unity-font-style: bold;
+    font-size: 14px;
+}
+
+.no-label-list .unity-base-field .unity-base-field__label {
+    display: none;
+}
+
+.no-label-list {
+}
+
+.separation-label {
+    margin-top: 3px;
+    margin-right: 0;
+    margin-bottom: 3px;
+    margin-left: 0;
+    -unity-font-style: bold;
+}
+
+.subsection-label {
+    margin-top: 4px;
+    margin-bottom: 2px;
+    color: rgb(190, 190, 190);
+    -unity-font-style: bold;
+}

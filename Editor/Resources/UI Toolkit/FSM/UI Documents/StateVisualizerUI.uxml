@@ -1,0 +1,18 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <ui:VisualElement name="state-visualizer-root" style="flex-grow: 1;">
+        <ui:VisualElement name="view-toolbar" class="visualizer-toolbar">
+            <ui:Button text="Current State" name="current-state-button" class="visualizer-toolbar-button" />
+            <ui:Button text="History" name="history-button" class="visualizer-toolbar-button" />
+        </ui:VisualElement>
+        <ui:VisualElement name="current-state-view" style="flex-grow: 1;">
+            <ui:Label tabindex="-1" text="No machine selected." parse-escape-sequences="true" display-tooltip-when-elided="true" name="current-state-summary-label" class="visualizer-summary-label" />
+            <ui:Label tabindex="-1" text="" parse-escape-sequences="true" display-tooltip-when-elided="true" name="current-state-help-label" class="visualizer-help-label" />
+            <ui:VisualElement name="graph-container" class="visualizer-graph-container" />
+        </ui:VisualElement>
+        <ui:VisualElement name="history-view" style="flex-grow: 1; display: none;">
+            <ui:Label tabindex="-1" text="No transitions recorded in this play session." parse-escape-sequences="true" display-tooltip-when-elided="true" name="history-summary-label" class="visualizer-summary-label" />
+            <ui:Label tabindex="-1" text="" parse-escape-sequences="true" display-tooltip-when-elided="true" name="history-help-label" class="visualizer-help-label" />
+            <ui:ScrollView focusable="true" name="history-scroll-view" class="visualizer-history-scroll-view" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

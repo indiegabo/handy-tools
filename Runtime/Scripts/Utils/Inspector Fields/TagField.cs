@@ -1,5 +1,4 @@
 using System;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace IndieGabo.HandyTools.Utils.InspectorFields
@@ -10,8 +9,6 @@ namespace IndieGabo.HandyTools.Utils.InspectorFields
     /// </summary>
     public class TagField
     {
-        [BoxGroup("Tag")]
-        [ValueDropdown("GetAllTags")]
         [SerializeField]
         private string _tag;
 
@@ -19,13 +16,6 @@ namespace IndieGabo.HandyTools.Utils.InspectorFields
         /// Gets or sets the selected Unity tag.
         /// </summary>
         public string Tag { get => _tag; set => _tag = value; }
-
-#if UNITY_EDITOR
-        private string[] GetAllTags()
-        {
-            return UnityEditorInternal.InternalEditorUtility.tags;
-        }
-#endif
 
         /// <summary>
         /// Converts the wrapper to the selected tag string.

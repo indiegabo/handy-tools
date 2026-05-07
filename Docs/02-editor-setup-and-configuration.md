@@ -103,9 +103,10 @@ object references.
 
 ## Manual Control for Auto-Activated Modules
 
-Web, Pooling, Identifying, and Rendering do not have dedicated module panels.
-They still remain optional modules, so their explicit activation override can be
-stored in `HandyModuleSettings.asset` if a project needs to disable one of them.
+Animation Events, Web, FSM, Pooling, Identifying, and Rendering do not have
+dedicated module panels. They still remain optional modules, so their explicit
+activation override can be stored in `HandyModuleSettings.asset` if a project
+needs to disable one of them.
 
 ## Guidance for AI Agents
 

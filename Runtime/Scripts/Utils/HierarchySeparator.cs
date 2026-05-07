@@ -1,5 +1,4 @@
 using UnityEngine;
-using Sirenix.OdinInspector;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -16,7 +15,6 @@ namespace IndieGabo.HandyTools.Utils
     /// </summary>
     public class HierarchySeparator : MonoBehaviour
     {
-        [BoxGroup("Separator")]
         [HideInInspector]
         [SerializeField]
         private Color m_OutlineColor = Color.black;
@@ -34,7 +32,6 @@ namespace IndieGabo.HandyTools.Utils
             }
         }
 
-        [BoxGroup("Separator")]
         [HideInInspector]
         [SerializeField]
         private Color m_BarColor = Color.black;
@@ -52,7 +49,6 @@ namespace IndieGabo.HandyTools.Utils
             }
         }
 
-        [BoxGroup("Separator")]
         [HideInInspector]
         [SerializeField]
         private Color m_TextColor = Color.white;
@@ -70,7 +66,6 @@ namespace IndieGabo.HandyTools.Utils
             }
         }
 
-        [BoxGroup("Separator")]
         [HideInInspector]
         [SerializeField]
         private int m_OutlineSize = 0;

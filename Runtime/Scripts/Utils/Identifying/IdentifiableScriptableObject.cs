@@ -1,5 +1,4 @@
 using UnityEngine;
-using Sirenix.OdinInspector;
 using System;
 
 #if UNITY_EDITOR
@@ -11,20 +10,15 @@ namespace IndieGabo.HandyTools.Utils.Identifying
     /// <summary>
     /// Base ScriptableObject that owns a persistent identifier value.
     /// </summary>
-    public class IdentifiableScriptableObject : SerializedScriptableObject
+    public class IdentifiableScriptableObject : ScriptableObject
     {
         #region Inspector
 
-        [BoxGroup("Identification")]
-        [LabelText("ID")]
-        [LabelWidth(100)]
-        [ReadOnly]
         [SerializeField]
         private Identifier _identifier;
 
 #if UNITY_EDITOR
-        [BoxGroup("Identification")]
-        [Button("GenerateID")]
+        [ContextMenu("Generate ID")]
         private void GenerateID()
         {
             var path = AssetDatabase.GetAssetPath(this);

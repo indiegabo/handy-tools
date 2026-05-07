@@ -8,7 +8,6 @@ using IndieGabo.HandyTools.Editor.SaveSystemModule;
 using IndieGabo.HandyTools.Editor.ScreenShooterModule;
 using IndieGabo.HandyTools.Editor.SteamModule;
 using IndieGabo.HandyTools.Modules;
-using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -42,7 +41,6 @@ namespace IndieGabo.HandyTools.Editor.Modules
             new(_screenShooterModuleId, "ScreenShooter", new Vector2(900f, 560f), () => new ScreenShooterModuleConfigurationPanel())
         };
 
-        [HideInInspector]
         [SerializeField]
         private string _selectedModuleId = _inputModuleId;
 

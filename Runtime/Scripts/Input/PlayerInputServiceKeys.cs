@@ -30,7 +30,7 @@ namespace IndieGabo.HandyTools.HandyInputSystemModule
         /// <summary>
         /// Gets the identifier reserved for the single-player input instance.
         /// </summary>
-        public static readonly ServiceIdentifier SinglePlayer
+        internal static readonly ServiceIdentifier SinglePlayer
             = ServiceIdentifier.Create(_singlePlayerKey);
 
         #endregion

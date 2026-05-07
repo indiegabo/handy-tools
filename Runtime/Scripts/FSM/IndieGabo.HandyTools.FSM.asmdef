@@ -1,0 +1,18 @@
+{
+    "name": "IndieGabo.HandyTools.FSM",
+    "rootNamespace": "IndieGabo.HandyTools.FSMModule",
+    "references": [
+        "IndieGabo.HandyTools.Runtime",
+        "IndieGabo.HandyTools.Input",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

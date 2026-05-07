@@ -1,5 +1,4 @@
 using UnityEngine;
-using Sirenix.OdinInspector;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -15,11 +14,9 @@ namespace IndieGabo.HandyTools.Utils.InspectorFields
     [System.Serializable]
     public class SceneField
     {
-        [BoxGroup("Scene")]
         [SerializeField]
         private Object _sceneAsset;
 
-        [BoxGroup("Scene")]
         [SerializeField]
         private string _sceneName = "";
 

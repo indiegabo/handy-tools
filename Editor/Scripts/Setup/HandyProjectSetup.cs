@@ -16,7 +16,7 @@ namespace IndieGabo.HandyTools.Editor.ProjectSetup
     {
         static HandyProjectSetup()
         {
-            HandyScriptingDefineUtility.RemoveUnavailableDefines();
+            HandyScriptingDefineUtility.SyncAvailabilityManagedDefines();
 
             string anchorFilePath = AnchorFilePath;
             if (File.Exists(anchorFilePath)) return;
@@ -26,7 +26,7 @@ namespace IndieGabo.HandyTools.Editor.ProjectSetup
         /// <summary>
         /// Executes the default HandyTools project setup flow.
         /// </summary>
-        [MenuItem("Handy Tools/Complete Setup", false, 1000)]
+        [MenuItem("HandyTools/Complete Setup", false, 1000)]
         public static void Setup()
         {
             File.WriteAllText(AnchorFilePath, "");

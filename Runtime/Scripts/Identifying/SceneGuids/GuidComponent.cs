@@ -1,5 +1,4 @@
 using System;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -20,9 +19,8 @@ namespace IndieGabo.HandyTools.IdentifyingModule.SceneGuids
 
         private Guid _guid = Guid.Empty;
 
-        [FoldoutGroup("Guid")]
-        [ReadOnly]
         [SerializeField]
+        [HideInInspector]
         private byte[] _serializedGuid;
 
         #endregion

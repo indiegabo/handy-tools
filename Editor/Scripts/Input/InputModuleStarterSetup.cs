@@ -39,7 +39,7 @@ namespace IndieGabo.HandyTools.Editor.InputModule
         /// Rebuilds the distributable Input starter unitypackage from the
         /// project-owned starter folder.
         /// </summary>
-        [MenuItem("Handy Tools/Development/Create Input Starter Package", false, 9999)]
+        [MenuItem("HandyTools/Development/Create Input Starter Package", false, 9999)]
         public static void CreateStarterPackage()
         {
             HandyStarterPackageUtility.CreatePackage(

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -24,7 +23,6 @@ namespace IndieGabo.HandyTools.Modules
             "Assets/Resources/HandyTools/Modules/HandyModuleSettings.asset";
 #endif
 
-        [BoxGroup("Modules")]
         [SerializeField] private List<HandyModuleState> _modules = new();
 
         private static HandyModuleSettings _instance;

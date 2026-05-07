@@ -1,4 +1,3 @@
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace IndieGabo.HandyTools.GameplayModule
@@ -9,7 +8,6 @@ namespace IndieGabo.HandyTools.GameplayModule
     [GlobalConfig("Resources/Gameplay")]
     public sealed class GameplayConfig : HandyGlobalConfig<GameplayConfig>
     {
-        [BoxGroup("Persistence")]
         [SerializeField]
         private GameplayTimePersistenceStrategy _timePersistenceStrategy =
             GameplayTimePersistenceStrategy.LocalUserData;

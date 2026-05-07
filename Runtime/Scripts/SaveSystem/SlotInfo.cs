@@ -1,5 +1,4 @@
 using System;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 using static IndieGabo.HandyTools.Utils.Time;
@@ -14,27 +13,21 @@ namespace IndieGabo.HandyTools.SaveSystemModule
     {
         #region Fields
 
-        [BoxGroup("Slot")]
         [SerializeField]
         private int _index;
 
-        [BoxGroup("Slot")]
         [SerializeField]
         private string _name;
 
-        [BoxGroup("Slot")]
         [SerializeField]
         private float _gameplayTime;
 
-        [BoxGroup("Slot")]
         [SerializeField]
         private float _progress;
 
-        [BoxGroup("Metadata")]
         [SerializeField]
         private string _createdAt;
 
-        [BoxGroup("Metadata")]
         [SerializeField]
         private string _createdAtTime;
 

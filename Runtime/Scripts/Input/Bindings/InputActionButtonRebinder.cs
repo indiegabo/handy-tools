@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine;
-using Sirenix.OdinInspector;
 using IndieGabo.HandyTools.LoggerModule;
 
 namespace IndieGabo.HandyTools.HandyInputSystemModule.Bindings
@@ -59,25 +58,21 @@ namespace IndieGabo.HandyTools.HandyInputSystemModule.Bindings
 
         #region Inspector
 
-        [BoxGroup("Configuration")]
         [Tooltip("Reference to action that is to be rebound from the UI.")]
         [SerializeField]
         private InputActionReference _actionReference;
 
-        [FoldoutGroup("Events")]
         [Tooltip("Event that is triggered when the way the binding is display should be updated. This allows displaying "
             + "bindings in custom ways, e.g. using images instead of text.")]
         [SerializeField]
         private BindingUpdatedEvent _bindingUpdated;
 
-        [FoldoutGroup("Events")]
         [Tooltip("Event that is triggered when an interactive rebind is being initiated. This can be used, for example, "
             + "to implement custom UI behavior while a rebind is in progress. It can also be used to further "
             + "customize the rebind.")]
         [SerializeField]
         private RebindStartedEvent _rebindStarted;
 
-        [FoldoutGroup("Events")]
         [Tooltip("Event that is triggered when an interactive rebind is complete or has been aborted.")]
         [SerializeField]
         private RebindStoppedEvent _rebindStopped;

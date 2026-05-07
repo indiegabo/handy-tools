@@ -35,7 +35,7 @@ namespace IndieGabo.HandyTools.Modules
             ),
             new(
                 "ServiceLocator",
-                "IndieGabo.HandyTools.HandyServiceLocator.ServiceLocator",
+                "IndieGabo.HandyTools.HandyServiceLocatorModule.ServiceLocator",
                 "BootstrapGlobal"
             ),
         };

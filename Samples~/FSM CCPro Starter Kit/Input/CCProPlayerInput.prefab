@@ -1,0 +1,100 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8725953754607887517
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8725953754607887506}
+  - component: {fileID: 8725953754607887507}
+  m_Layer: 3
+  m_Name: CCProPlayerInput
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8725953754607887506
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8725953754607887517}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8725953754607887507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8725953754607887517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: f54a25f075159e24f98e2b3f16650a79, type: 3}
+  m_NotificationBehavior: 2
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 30867484-3d8d-4905-81d3-31c177b51e2d
+    m_ActionName: 'Gameplay/Movement[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: a78ff2aa-1f12-4bf5-bd68-4ca4f342d764
+    m_ActionName: 'Gameplay/Jump[/Keyboard/space]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 35d514ce-662b-468e-a567-ac25d808b1e1
+    m_ActionName: 'Gameplay/Crouch[/Keyboard/c,/Keyboard/leftCtrl,/Keyboard/rightCtrl]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 22182b3a-f879-4107-b9b4-9272ea5bfbea
+    m_ActionName: 'Gameplay/Run[/Keyboard/leftShift,/Keyboard/rightShift]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: b1732604-020a-4d8e-a646-646a9ec8ce92
+    m_ActionName: 'Gameplay/Dash[/Keyboard/f]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: a0b5c7b8-ed94-44ad-9215-021cbdb16a54
+    m_ActionName: Gameplay/Interact
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 56996f44-b130-4879-8da4-213924c6968f
+    m_ActionName: Gameplay/Jet Pack
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 97d7563f-82a2-425f-8e7c-e11539ef7206
+    m_ActionName: Gameplay/Pitch
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 0a805e85-ab67-4c8a-b8d7-cccaf50683d6
+    m_ActionName: Gameplay/Roll
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: c9d957a8-0c93-4d55-8887-ff237c8103f0
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}

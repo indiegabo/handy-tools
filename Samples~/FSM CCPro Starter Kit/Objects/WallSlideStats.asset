@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9fb19200694df54badc82152cd365c8, type: 3}
+  m_Name: WallSlideStats
+  m_EditorClassIdentifier: 
+  _filterByTag: 1
+  _wallTag: WallSlide
+  _slideAcceleration: 10
+  _initialInertia: 0.4
+  _enableGrab: 1
+  _enableClimb: 1
+  _wallClimbHorizontalSpeed: 1
+  _wallClimbVerticalSpeed: 3
+  _wallClimbAcceleration: 100
+  _modifySize: 1
+  _height: 1.5
+  _jumpNormalVelocity: 5
+  _jumpVerticalVelocity: 5
+  _horizontalVelocityParameter: HorizontalVelocity
+  _verticalVelocityParameter: VerticalVelocity
+  _grabParameter: Grab
+  _movementDetectedParameter: MovementDetected

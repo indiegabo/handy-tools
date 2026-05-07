@@ -30,11 +30,14 @@ linked documents in the suggested order.
 - [Logging](Docs/10-configurable-modules.md#logging)
 - [Input](Docs/10-configurable-modules.md#input)
 - [Gameplay](Docs/10-configurable-modules.md#gameplay)
+- [FSM](Docs/10-configurable-modules.md#fsm)
 - [Save System](Docs/10-configurable-modules.md#save-system)
 - [Globals](Docs/10-configurable-modules.md#globals)
 - [Debugging](Docs/10-configurable-modules.md#debugging)
 - [Steam](Docs/10-configurable-modules.md#steam)
 - [ScreenShooter](Docs/10-configurable-modules.md#screenshooter)
+- [FSM Guide](Docs/14-fsm-guide.md)
+- [FSM Module Reference](Docs/FSMModule/README.md)
 - [Auto-Activated Modules](Docs/11-auto-activated-modules.md)
 - [Animation Events](Docs/13-animation-events-guide.md)
 - [Web](Docs/11-auto-activated-modules.md#web)
@@ -49,7 +52,8 @@ linked documents in the suggested order.
 - Module namespaces now follow the `*Module` convention. Use namespaces such as
   `IndieGabo.HandyTools.HandyBusModule`,
   `IndieGabo.HandyTools.HandyServiceLocatorModule`, and
-  `IndieGabo.HandyTools.GameplayModule` in new code.
+  `IndieGabo.HandyTools.GameplayModule` or
+  `IndieGabo.HandyTools.FSMModule` in new code.
 - Module activation is driven by `HandyModuleSettings` at
   `Assets/Resources/HandyTools/Modules/HandyModuleSettings.asset`.
 - Configurable modules are edited through `Handy Tools/Modules`.
@@ -67,7 +71,8 @@ linked documents in the suggested order.
 5. [AI Agent Playbook](Docs/05-ai-agent-playbook.md)
 6. [Configurable Modules](Docs/10-configurable-modules.md)
 7. [Auto-Activated Modules](Docs/11-auto-activated-modules.md)
-8. [Animation Events Guide](Docs/13-animation-events-guide.md)
+8. [FSM Guide](Docs/14-fsm-guide.md)
+9. [Animation Events Guide](Docs/13-animation-events-guide.md)
 
 ## Documentation Goals
 

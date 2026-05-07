@@ -5,6 +5,7 @@
         "IndieGabo.HandyTools.Runtime",
         "IndieGabo.HandyTools.Editor",
         "IndieGabo.HandyTools.Debugging.Editor",
+        "IndieGabo.HandyTools.FSM.Editor",
         "IndieGabo.HandyTools.Gameplay.Editor",
         "IndieGabo.HandyTools.GlobalConfig.Editor",
         "IndieGabo.HandyTools.Input.Editor",

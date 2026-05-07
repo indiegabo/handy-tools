@@ -1,6 +1,5 @@
 #if UNITY_EDITOR
 using System.Linq;
-using Sirenix.OdinInspector.Editor;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -15,10 +14,8 @@ namespace IndieGabo.HandyTools.HandyInputSystemModule.Bindings.Editor
     /// picking the binding which to rebind.
     /// </summary>
     [CustomEditor(typeof(InputActionRebinder))]
-    public class RebindActionUIEditor : OdinEditor
+    public class RebindActionUIEditor : UnityEditor.Editor
     {
-        private PropertyTree _propertyTree;
-
         private SerializedProperty m_ActionProperty;
         private SerializedProperty m_BindingIdProperty;
         private SerializedProperty m_DisplayStringOptionsProperty;
@@ -26,10 +23,11 @@ namespace IndieGabo.HandyTools.HandyInputSystemModule.Bindings.Editor
         private SerializedProperty m_RebindStopEventProperty;
         private SerializedProperty m_UpdateBindingUIEventProperty;
 
-        protected override void OnEnable()
+        /// <summary>
+        /// Resolves the serialized properties used by the custom inspector.
+        /// </summary>
+        protected virtual void OnEnable()
         {
-            _propertyTree = this.Tree;
-
             m_ActionProperty = serializedObject.FindProperty("m_Action");
             m_BindingIdProperty = serializedObject.FindProperty("m_BindingId");
             m_DisplayStringOptionsProperty = serializedObject.FindProperty("m_DisplayStringOptions");
