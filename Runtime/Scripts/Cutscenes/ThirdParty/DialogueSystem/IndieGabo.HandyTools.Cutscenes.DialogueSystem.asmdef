@@ -1,0 +1,19 @@
+{
+    "name": "IndieGabo.HandyTools.Cutscenes.DialogueSystem",
+    "rootNamespace": "IndieGabo.HandyTools.CutscenesModule.DialogueSystem",
+    "references": [
+        "IndieGabo.HandyTools.Cutscenes",
+        "IndieGabo.HandyTools.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "HANDY_DIALOGUE_SYSTEM_PRESENT"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

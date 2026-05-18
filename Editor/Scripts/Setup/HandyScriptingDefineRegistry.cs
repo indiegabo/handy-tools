@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using IndieGabo.HandyTools.CutscenesModule.ThirdParty.DialogueSystem;
 using UnityEngine;
 
 namespace IndieGabo.HandyTools.Editor.ProjectSetup
@@ -99,6 +100,8 @@ namespace IndieGabo.HandyTools.Editor.ProjectSetup
             "HANDY_SIMPLE_BLACKBOARD_PRESENT";
         private const string _handyCharacterControllerProPresentDefine =
             "HANDY_CHARACTER_CONTROLLER_PRO_PRESENT";
+        private const string _handyDialogueSystemPresentDefine =
+            "HANDY_DIALOGUE_SYSTEM_PRESENT";
         private const string _handyDebugDefine = "HANDY_DEBUG";
         private const string _handyToolsDevelopmentDefine = "HANDY_TOOLS_DEVELOPMENT";
 
@@ -161,6 +164,15 @@ namespace IndieGabo.HandyTools.Editor.ProjectSetup
                     syncWithAvailability: true
                 ),
                 new HandyScriptingDefineDefinition(
+                    _handyDialogueSystemPresentDefine,
+                    "Dialogue System Integration",
+                    "Compiles HandyTools Cutscenes Dialogue System integration when the runtime package is present.",
+                    availabilityResolver: IsDialogueSystemInstalled,
+                    unavailableReason:
+                        "Dialogue System runtime types were not found in the current project.",
+                    syncWithAvailability: true
+                ),
+                new HandyScriptingDefineDefinition(
                     _handyDebugDefine,
                     "Handy Debug Runtime",
                     "Keeps HandyTools debug-only runtime hooks available outside the editor."
@@ -201,6 +213,11 @@ namespace IndieGabo.HandyTools.Editor.ProjectSetup
                 "Lightbug.CharacterControllerPro.Core.CharacterActor",
                 "Lightbug.CharacterControllerPro.Core.CharacterBody"
             );
+        }
+
+        private static bool IsDialogueSystemInstalled()
+        {
+            return DialogueSystemIntegrationAvailability.IsAvailable();
         }
 
         private static bool AreTypesAvailable(params string[] fullTypeNames)

@@ -1,0 +1,1061 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!29 &1
+OcclusionCullingSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_OcclusionBakeSettings:
+    smallestOccluder: 5
+    smallestHole: 0.25
+    backfaceThreshold: 100
+  m_SceneGUID: 00000000000000000000000000000000
+  m_OcclusionCullingData: {fileID: 0}
+--- !u!104 &2
+RenderSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 10
+  m_Fog: 0
+  m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  m_FogMode: 3
+  m_FogDensity: 0.01
+  m_LinearFogStart: 0
+  m_LinearFogEnd: 300
+  m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
+  m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
+  m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
+  m_AmbientIntensity: 1
+  m_AmbientMode: 0
+  m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
+  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_HaloStrength: 0.5
+  m_FlareStrength: 1
+  m_FlareFadeSpeed: 3
+  m_HaloTexture: {fileID: 0}
+  m_SpotCookie: {fileID: 10001, guid: 0000000000000000e000000000000000, type: 0}
+  m_DefaultReflectionMode: 0
+  m_DefaultReflectionResolution: 128
+  m_ReflectionBounces: 1
+  m_ReflectionIntensity: 1
+  m_CustomReflection: {fileID: 0}
+  m_Sun: {fileID: 0}
+  m_UseRadianceAmbientProbe: 0
+--- !u!157 &3
+LightmapSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 13
+  m_BakeOnSceneLoad: 0
+  m_GISettings:
+    serializedVersion: 2
+    m_BounceScale: 1
+    m_IndirectOutputScale: 1
+    m_AlbedoBoost: 1
+    m_EnvironmentLightingMode: 0
+    m_EnableBakedLightmaps: 1
+    m_EnableRealtimeLightmaps: 0
+  m_LightmapEditorSettings:
+    serializedVersion: 12
+    m_Resolution: 2
+    m_BakeResolution: 40
+    m_AtlasSize: 1024
+    m_AO: 0
+    m_AOMaxDistance: 1
+    m_CompAOExponent: 1
+    m_CompAOExponentDirect: 0
+    m_ExtractAmbientOcclusion: 0
+    m_Padding: 2
+    m_LightmapParameters: {fileID: 0}
+    m_LightmapsBakeMode: 1
+    m_TextureCompression: 1
+    m_ReflectionCompression: 2
+    m_MixedBakeMode: 2
+    m_BakeBackend: 1
+    m_PVRSampling: 1
+    m_PVRDirectSampleCount: 32
+    m_PVRSampleCount: 512
+    m_PVRBounces: 2
+    m_PVREnvironmentSampleCount: 256
+    m_PVREnvironmentReferencePointCount: 2048
+    m_PVRFilteringMode: 1
+    m_PVRDenoiserTypeDirect: 1
+    m_PVRDenoiserTypeIndirect: 1
+    m_PVRDenoiserTypeAO: 1
+    m_PVRFilterTypeDirect: 0
+    m_PVRFilterTypeIndirect: 0
+    m_PVRFilterTypeAO: 0
+    m_PVREnvironmentMIS: 1
+    m_PVRCulling: 1
+    m_PVRFilteringGaussRadiusDirect: 1
+    m_PVRFilteringGaussRadiusIndirect: 1
+    m_PVRFilteringGaussRadiusAO: 1
+    m_PVRFilteringAtrousPositionSigmaDirect: 0.5
+    m_PVRFilteringAtrousPositionSigmaIndirect: 2
+    m_PVRFilteringAtrousPositionSigmaAO: 1
+    m_ExportTrainingData: 0
+    m_TrainingDataDestination: TrainingData
+    m_LightProbeSampleCountMultiplier: 4
+  m_LightingDataAsset: {fileID: 20201, guid: 0000000000000000f000000000000000, type: 0}
+  m_LightingSettings: {fileID: 0}
+--- !u!196 &4
+NavMeshSettings:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_BuildSettings:
+    serializedVersion: 3
+    agentTypeID: 0
+    agentRadius: 0.5
+    agentHeight: 2
+    agentSlope: 45
+    agentClimb: 0.4
+    ledgeDropHeight: 0
+    maxJumpAcrossDistance: 0
+    minRegionArea: 2
+    manualCellSize: 0
+    cellSize: 0.16666667
+    manualTileSize: 0
+    tileSize: 256
+    buildHeightMesh: 0
+    maxJobWorkers: 0
+    preserveTilesOutsideBounds: 0
+    debug:
+      m_Flags: 0
+  m_NavMeshData: {fileID: 0}
+--- !u!1 &1000
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1001}
+  - component: {fileID: 1003}
+  - component: {fileID: 1004}
+  m_Layer: 0
+  m_Name: Base Cutscene Sample
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1001
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2050212882}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36df7e5e945d47de88a095e299da978a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: IndieGabo.HandyTools.Cutscenes::IndieGabo.HandyTools.CutscenesModule.Core.CutsceneDirector
+  _title: Cutscene
+  _description: 
+  _playPolicy: 0
+  _timeMode: 0
+  _autoplayOnStart: 0
+  _oneShot: 0
+  _cancelOnDisable: 1
+  _graph:
+    _nodes:
+    - rid: 667685439550259392
+    - rid: 667685439550259393
+    - rid: 667685439550259394
+    - rid: 667685439550259395
+    - rid: 667685439550259396
+    - rid: 667685439550259376
+    - rid: 667685439550259397
+    - rid: 667685439550259398
+    - rid: 667685439550259399
+    _connections:
+    - _fromNodeId:
+        Part1: 3616344635
+        Part2: 1206704245
+        Part3: 1514955667
+        Part4: 567938385
+      _outputKey: Next
+      _toNodeId:
+        Part1: 2540428099
+        Part2: 1105492955
+        Part3: 1730305447
+        Part4: 3331465323
+      _hasCustomColor: 0
+      _customColor: {r: 0, g: 0, b: 0, a: 0}
+    - _fromNodeId:
+        Part1: 2540428099
+        Part2: 1105492955
+        Part3: 1730305447
+        Part4: 3331465323
+      _outputKey: Next
+      _toNodeId:
+        Part1: 3370182372
+        Part2: 1307067044
+        Part3: 698258063
+        Part4: 3222607739
+      _hasCustomColor: 0
+      _customColor: {r: 0, g: 0, b: 0, a: 0}
+    - _fromNodeId:
+        Part1: 3370182372
+        Part2: 1307067044
+        Part3: 698258063
+        Part4: 3222607739
+      _outputKey: Next
+      _toNodeId:
+        Part1: 2390270599
+        Part2: 1327925660
+        Part3: 1207217302
+        Part4: 1855304878
+      _hasCustomColor: 0
+      _customColor: {r: 0, g: 0, b: 0, a: 0}
+    - _fromNodeId:
+        Part1: 2390270599
+        Part2: 1327925660
+        Part3: 1207217302
+        Part4: 1855304878
+      _outputKey: Next
+      _toNodeId:
+        Part1: 3975096542
+        Part2: 1319922910
+        Part3: 3398518710
+        Part4: 3230071924
+      _hasCustomColor: 0
+      _customColor: {r: 0, g: 0, b: 0, a: 0}
+    - _fromNodeId:
+        Part1: 3975096542
+        Part2: 1319922910
+        Part3: 3398518710
+        Part4: 3230071924
+      _outputKey: Next
+      _toNodeId:
+        Part1: 683183901
+        Part2: 1115581725
+        Part3: 3886329235
+        Part4: 1458026843
+      _hasCustomColor: 0
+      _customColor: {r: 0, g: 0, b: 0, a: 0}
+    - _fromNodeId:
+        Part1: 683183901
+        Part2: 1115581725
+        Part3: 3886329235
+        Part4: 1458026843
+      _outputKey: Next
+      _toNodeId:
+        Part1: 1188223214
+        Part2: 1086818444
+        Part3: 3401261746
+        Part4: 709566362
+      _hasCustomColor: 0
+      _customColor: {r: 0, g: 0, b: 0, a: 0}
+    - _fromNodeId:
+        Part1: 1188223214
+        Part2: 1086818444
+        Part3: 3401261746
+        Part4: 709566362
+      _outputKey: Next
+      _toNodeId:
+        Part1: 3719177567
+        Part2: 1115631341
+        Part3: 3861747869
+        Part4: 2678581335
+      _hasCustomColor: 0
+      _customColor: {r: 0, g: 0, b: 0, a: 0}
+    _blackboard:
+      _entries:
+      - _id:
+          Part1: 845376133
+          Part2: 1240234507
+          Part3: 3783798943
+          Part4: 49174869
+        _key: sample.message
+        _value:
+          rid: 667685439550259379
+      - _id:
+          Part1: 3220139139
+          Part2: 1326829264
+          Part3: 3138740098
+          Part4: 2054641034
+        _key: sample.prop.target
+        _value:
+          rid: 667685439550259321
+      - _id:
+          Part1: 1067413936
+          Part2: 1324783718
+          Part3: 1794358713
+          Part4: 218742646
+        _key: sample.prop.active
+        _value:
+          rid: 667685439550259380
+  _blackboardFoldoutStates:
+  - _entryKey: sample.message
+    _isExpanded: 0
+  - _entryKey: sample.prop.target
+    _isExpanded: 0
+  - _entryKey: sample.prop.active
+    _isExpanded: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 667685439550259321
+      type: {class: CutsceneGraphBlackboardGameObjectValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        _objectTypeName: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        Value: {fileID: 2050212878}
+    - rid: 667685439550259376
+      type: {class: CutsceneWaitNode, ns: IndieGabo.HandyTools.CutscenesModule.Nodes.Actions, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        _id:
+          Part1: 683183901
+          Part2: 1115581725
+          Part3: 3886329235
+          Part4: 1458026843
+        _title: Wait
+        _position: {x: 1672, y: 11.200001}
+        _durationSource:
+          _mode: 0
+          _blackboardVariable:
+            _entryId:
+              Part1: 0
+              Part2: 0
+              Part3: 0
+              Part4: 0
+            _entryKey: 
+            _valueTypeName: 
+          _directValue:
+            rid: 667685439550259377
+          _expectedValueTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        _timeModeSource:
+          _mode: 0
+          _blackboardVariable:
+            _entryId:
+              Part1: 0
+              Part2: 0
+              Part3: 0
+              Part4: 0
+            _entryKey: 
+            _valueTypeName: 
+          _directValue:
+            rid: 667685439550259378
+          _expectedValueTypeName: IndieGabo.HandyTools.CutscenesModule.Core.CutsceneTimeMode,
+            IndieGabo.HandyTools.Cutscenes, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    - rid: 667685439550259377
+      type: {class: CutsceneGraphBlackboardFloatValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        Value: 1
+    - rid: 667685439550259378
+      type: {class: CutsceneGraphBlackboardEnumValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        _enumTypeName: IndieGabo.HandyTools.CutscenesModule.Core.CutsceneTimeMode,
+          IndieGabo.HandyTools.Cutscenes, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _valueName: Unscaled
+    - rid: 667685439550259379
+      type: {class: CutsceneGraphBlackboardStringValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        Value: Cutscene log
+    - rid: 667685439550259380
+      type: {class: CutsceneGraphBlackboardBoolValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        Value: 0
+    - rid: 667685439550259381
+      type: {class: CutsceneGraphBlackboardStringValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        Value: Cutscene log
+    - rid: 667685439550259382
+      type: {class: CutsceneGraphBlackboardGameObjectValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        _objectTypeName: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        Value: {fileID: 2050212878}
+    - rid: 667685439550259383
+      type: {class: CutsceneGraphBlackboardBoolValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        Value: 0
+    - rid: 667685439550259384
+      type: {class: CutsceneGraphBlackboardBoolValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        Value: 0
+    - rid: 667685439550259385
+      type: {class: CutsceneGraphBlackboardBoolValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        Value: 0
+    - rid: 667685439550259386
+      type: {class: CutsceneGraphBlackboardUnityObjectValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        _objectTypeName: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        Value: {fileID: 0}
+    - rid: 667685439550259387
+      type: {class: CutsceneGraphBlackboardBoolValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        Value: 0
+    - rid: 667685439550259388
+      type: {class: CutsceneGraphBlackboardFloatValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        Value: 1
+    - rid: 667685439550259389
+      type: {class: CutsceneGraphBlackboardEnumValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        _enumTypeName: IndieGabo.HandyTools.CutscenesModule.Core.CutsceneTimeMode,
+          IndieGabo.HandyTools.Cutscenes, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _valueName: Scaled
+    - rid: 667685439550259390
+      type: {class: CutsceneGraphBlackboardUnityObjectValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        _objectTypeName: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        Value: {fileID: 2050212878}
+    - rid: 667685439550259391
+      type: {class: CutsceneGraphBlackboardBoolValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        Value: 1
+    - rid: 667685439550259392
+      type: {class: CutsceneEntryNode, ns: IndieGabo.HandyTools.CutscenesModule.Nodes.Flow, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        _id:
+          Part1: 3616344635
+          Part2: 1206704245
+          Part3: 1514955667
+          Part4: 567938385
+        _title: Entry
+        _position: {x: 8, y: 11.200001}
+    - rid: 667685439550259393
+      type: {class: CutsceneSetBlackboardValuesNode, ns: IndieGabo.HandyTools.CutscenesModule.Nodes.Actions, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        _id:
+          Part1: 2540428099
+          Part2: 1105492955
+          Part3: 1730305447
+          Part4: 3331465323
+        _title: Set Blackboard Values
+        _position: {x: 328, y: 11.200001}
+        _assignments:
+        - _targetVariable:
+            _entryId:
+              Part1: 845376133
+              Part2: 1240234507
+              Part3: 3783798943
+              Part4: 49174869
+            _entryKey: sample.message
+            _valueTypeName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+              PublicKeyToken=b77a5c561934e089
+          _valueSource:
+            _mode: 0
+            _blackboardVariable:
+              _entryId:
+                Part1: 0
+                Part2: 0
+                Part3: 0
+                Part4: 0
+              _entryKey: 
+              _valueTypeName: 
+            _directValue:
+              rid: 667685439550259381
+            _expectedValueTypeName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+              PublicKeyToken=b77a5c561934e089
+        - _targetVariable:
+            _entryId:
+              Part1: 3220139139
+              Part2: 1326829264
+              Part3: 3138740098
+              Part4: 2054641034
+            _entryKey: sample.prop.target
+            _valueTypeName: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
+              Culture=neutral, PublicKeyToken=null
+          _valueSource:
+            _mode: 0
+            _blackboardVariable:
+              _entryId:
+                Part1: 0
+                Part2: 0
+                Part3: 0
+                Part4: 0
+              _entryKey: 
+              _valueTypeName: 
+            _directValue:
+              rid: 667685439550259382
+            _expectedValueTypeName: UnityEngine.GameObject, UnityEngine.CoreModule,
+              Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        - _targetVariable:
+            _entryId:
+              Part1: 1067413936
+              Part2: 1324783718
+              Part3: 1794358713
+              Part4: 218742646
+            _entryKey: sample.prop.active
+            _valueTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+              PublicKeyToken=b77a5c561934e089
+          _valueSource:
+            _mode: 0
+            _blackboardVariable:
+              _entryId:
+                Part1: 0
+                Part2: 0
+                Part3: 0
+                Part4: 0
+              _entryKey: 
+              _valueTypeName: 
+            _directValue:
+              rid: 667685439550259383
+            _expectedValueTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+              PublicKeyToken=b77a5c561934e089
+    - rid: 667685439550259394
+      type: {class: CutsceneLogBlackboardValueNode, ns: IndieGabo.HandyTools.CutscenesModule.Nodes.Actions, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        _id:
+          Part1: 3370182372
+          Part2: 1307067044
+          Part3: 698258063
+          Part4: 3222607739
+        _title: Log Blackboard Value
+        _position: {x: 680, y: 11.200001}
+        _variable:
+          _entryId:
+            Part1: 845376133
+            Part2: 1240234507
+            Part3: 3783798943
+            Part4: 49174869
+          _entryKey: sample.message
+          _valueTypeName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        _warningSource:
+          _mode: 0
+          _blackboardVariable:
+            _entryId:
+              Part1: 0
+              Part2: 0
+              Part3: 0
+              Part4: 0
+            _entryKey: 
+            _valueTypeName: 
+          _directValue:
+            rid: 667685439550259384
+          _expectedValueTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        _errorSource:
+          _mode: 0
+          _blackboardVariable:
+            _entryId:
+              Part1: 0
+              Part2: 0
+              Part3: 0
+              Part4: 0
+            _entryKey: 
+            _valueTypeName: 
+          _directValue:
+            rid: 667685439550259385
+          _expectedValueTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+    - rid: 667685439550259395
+      type: {class: CutsceneSetGameObjectActiveNode, ns: IndieGabo.HandyTools.CutscenesModule.Nodes.Actions, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        _id:
+          Part1: 2390270599
+          Part2: 1327925660
+          Part3: 1207217302
+          Part4: 1855304878
+        _title: Set GameObject Active
+        _position: {x: 1000, y: 4.3999977}
+        _targetSource:
+          _mode: 1
+          _blackboardVariable:
+            _entryId:
+              Part1: 3220139139
+              Part2: 1326829264
+              Part3: 3138740098
+              Part4: 2054641034
+            _entryKey: sample.prop.target
+            _valueTypeName: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
+              Culture=neutral, PublicKeyToken=null
+          _directValue:
+            rid: 667685439550259386
+          _expectedValueTypeName: UnityEngine.GameObject, UnityEngine.CoreModule,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _activeSource:
+          _mode: 1
+          _blackboardVariable:
+            _entryId:
+              Part1: 1067413936
+              Part2: 1324783718
+              Part3: 1794358713
+              Part4: 218742646
+            _entryKey: sample.prop.active
+            _valueTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+              PublicKeyToken=b77a5c561934e089
+          _directValue:
+            rid: 667685439550259387
+          _expectedValueTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+    - rid: 667685439550259396
+      type: {class: CutsceneWaitNode, ns: IndieGabo.HandyTools.CutscenesModule.Nodes.Actions, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        _id:
+          Part1: 3975096542
+          Part2: 1319922910
+          Part3: 3398518710
+          Part4: 3230071924
+        _title: Wait
+        _position: {x: 1352, y: 11.200001}
+        _durationSource:
+          _mode: 0
+          _blackboardVariable:
+            _entryId:
+              Part1: 0
+              Part2: 0
+              Part3: 0
+              Part4: 0
+            _entryKey: 
+            _valueTypeName: 
+          _directValue:
+            rid: 667685439550259388
+          _expectedValueTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        _timeModeSource:
+          _mode: 0
+          _blackboardVariable:
+            _entryId:
+              Part1: 0
+              Part2: 0
+              Part3: 0
+              Part4: 0
+            _entryKey: 
+            _valueTypeName: 
+          _directValue:
+            rid: 667685439550259389
+          _expectedValueTypeName: IndieGabo.HandyTools.CutscenesModule.Core.CutsceneTimeMode,
+            IndieGabo.HandyTools.Cutscenes, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    - rid: 667685439550259397
+      type: {class: CutsceneSetGameObjectActiveNode, ns: IndieGabo.HandyTools.CutscenesModule.Nodes.Actions, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        _id:
+          Part1: 1188223214
+          Part2: 1086818444
+          Part3: 3401261746
+          Part4: 709566362
+        _title: Set GameObject Active
+        _position: {x: 2024, y: 11.200001}
+        _targetSource:
+          _mode: 0
+          _blackboardVariable:
+            _entryId:
+              Part1: 0
+              Part2: 0
+              Part3: 0
+              Part4: 0
+            _entryKey: 
+            _valueTypeName: 
+          _directValue:
+            rid: 667685439550259390
+          _expectedValueTypeName: UnityEngine.GameObject, UnityEngine.CoreModule,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _activeSource:
+          _mode: 0
+          _blackboardVariable:
+            _entryId:
+              Part1: 0
+              Part2: 0
+              Part3: 0
+              Part4: 0
+            _entryKey: 
+            _valueTypeName: 
+          _directValue:
+            rid: 667685439550259391
+          _expectedValueTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+    - rid: 667685439550259398
+      type: {class: CutsceneFinishNode, ns: IndieGabo.HandyTools.CutscenesModule.Nodes.Flow, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        _id:
+          Part1: 3719177567
+          Part2: 1115631341
+          Part3: 3861747869
+          Part4: 2678581335
+        _title: Finish
+        _position: {x: 2344, y: 11.200001}
+    - rid: 667685439550259399
+      type: {class: CutsceneCommentNode, ns: IndieGabo.HandyTools.CutscenesModule.Nodes.Meta, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        _id:
+          Part1: 3025440633
+          Part2: 1215198459
+          Part3: 2268473748
+          Part4: 1837043318
+        _title: Comment
+        _position: {x: 1512, y: -134}
+        _body: Look at this curve! Changing at real time!! What a nice comment!
+--- !u!114 &1004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3baffc1cf9c548ffa4645e746bf33851, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: IndieGabo.HandyTools.Cutscenes::IndieGabo.HandyTools.CutscenesModule.Triggers.CutsceneTrigger
+  _director: {fileID: 1003}
+  _triggerMode: 3
+  _oneShot: 0
+  _gate: 1
+--- !u!1 &299084872
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 299084874}
+  - component: {fileID: 299084873}
+  m_Layer: 0
+  m_Name: Directional Light
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!108 &299084873
+Light:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 299084872}
+  m_Enabled: 1
+  serializedVersion: 13
+  m_Type: 1
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Intensity: 1
+  m_Range: 10
+  m_SpotAngle: 30
+  m_InnerSpotAngle: 21.80208
+  m_CookieSize2D: {x: 0.5, y: 0.5}
+  m_Shadows:
+    m_Type: 0
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+    m_CullingMatrixOverride:
+      e00: 1
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 1
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 1
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+    m_UseCullingMatrixOverride: 0
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingLayerMask: 1
+  m_Lightmapping: 4
+  m_LightShadowCasterMode: 0
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 1
+  m_ColorTemperature: 6570
+  m_UseColorTemperature: 0
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
+  m_ForceVisible: 0
+  m_ShapeRadius: 0.025
+  m_ShadowAngle: 0
+  m_LightUnit: 1
+  m_LuxAtDistance: 1
+  m_EnableSpotReflector: 1
+--- !u!4 &299084874
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 299084872}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.40821794, y: -0.23456973, z: 0.10938166, w: 0.8754261}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1701864092
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1701864094}
+  - component: {fileID: 1701864093}
+  - component: {fileID: 1701864095}
+  m_Layer: 0
+  m_Name: Main Camera
+  m_TagString: MainCamera
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!20 &1701864093
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1701864092}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 60
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+--- !u!4 &1701864094
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1701864092}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 2, z: -10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1701864095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1701864092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalCameraData
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
+  m_Version: 2
+--- !u!1 &2050212878
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2050212882}
+  - component: {fileID: 2050212881}
+  - component: {fileID: 2050212880}
+  - component: {fileID: 2050212879}
+  m_Layer: 0
+  m_Name: Base Sample Prop
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!23 &2050212879
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2050212878}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &2050212880
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2050212878}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!33 &2050212881
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2050212878}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &2050212882
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2050212878}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.5, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1001}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1660057539 &9223372036854775807
+SceneRoots:
+  m_ObjectHideFlags: 0
+  m_Roots:
+  - {fileID: 1001}
+  - {fileID: 1701864094}
+  - {fileID: 299084874}

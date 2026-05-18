@@ -40,7 +40,9 @@ active and does not need a dedicated editor panel.
    the bootstrap body is intentionally empty.
 4. Keep the feature out of the shared modules window unless it gains real
    editor configuration.
-5. Document how projects can override activation through
+5. Standalone diagnostic or monitor windows are still acceptable when they do
+   not become configuration surfaces.
+6. Document how projects can override activation through
    `HandyModuleSettings.asset`.
 
 ## Creating Support Code Instead of a Module
@@ -72,6 +74,11 @@ Do not turn a feature idea into a new module only because it sounds useful.
 - Reuse `HandyModuleConfigurationPanelBase` and the dependency gate element.
 - Do not create a new standalone configuration window when a shared panel is
   enough.
+- If an optional third-party integration needs dependency-neutral runtime
+  contracts or serialized data, keep those types in the base module asmdef and
+  isolate only the typed bridge code in a define-constrained child asmdef.
+- Mirror that split on the editor side when authoring helpers also depend on
+  the optional package.
 
 ## Documentation Checklist
 

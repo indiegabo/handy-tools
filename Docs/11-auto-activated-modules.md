@@ -16,14 +16,15 @@ override their activation should do so through
 
 ## Summary Table
 
-| Module           | Id                 | Default       | Load Order | Bootstrap Body   |
-| ---------------- | ------------------ | ------------- | ---------- | ---------------- |
-| Web              | `web`              | On when unset | `170`      | Empty            |
-| FSM              | `fsm`              | On when unset | `180`      | Empty            |
-| Pooling          | `pooling`          | On when unset | `180`      | Empty            |
-| Animation Events | `animation-events` | On when unset | `190`      | Registry refresh |
-| Identifying      | `identifying`      | On when unset | `190`      | Empty            |
-| Rendering        | `rendering`        | On when unset | `195`      | Empty            |
+| Module           | Id                 | Default       | Load Order | Bootstrap Body    |
+| ---------------- | ------------------ | ------------- | ---------- | ----------------- |
+| Web              | `web`              | On when unset | `170`      | Empty             |
+| Command Pattern  | `command-pattern`  | On when unset | `172`      | Service bootstrap |
+| FSM              | `fsm`              | On when unset | `180`      | Empty             |
+| Pooling          | `pooling`          | On when unset | `180`      | Empty             |
+| Animation Events | `animation-events` | On when unset | `190`      | Registry refresh  |
+| Identifying      | `identifying`      | On when unset | `190`      | Empty             |
+| Rendering        | `rendering`        | On when unset | `195`      | Empty             |
 
 ## Web
 
@@ -104,6 +105,58 @@ directly, and the visualizer window remains available at
 - Keep additional optional integrations out of `IndieGabo.HandyTools.FSM`.
   Package-specific code should live in a dedicated child asmdef such as
   `IndieGabo.HandyTools.FSM.CCPro`.
+
+## Command Pattern
+
+### Activation Profile
+
+- Activation mode: Optional
+- Active by default: Yes
+- Load order: `172`
+- Declared dependencies: none
+
+### Responsibilities
+
+Command Pattern provides the global command service, queue arbitration,
+scheduling, undo and redo history, runtime diagnostics snapshots, lifecycle
+events, and a dedicated play-mode monitor window.
+
+### Runtime Entry Points
+
+- `Runtime/Scripts/CommandPattern/CommandPatternModuleDefinition.cs`
+- `Runtime/Scripts/CommandPattern/CommandPatternModuleBootstrapper.cs`
+- `Runtime/Scripts/CommandPattern/Service/ICommandService.cs`
+- `Runtime/Scripts/CommandPattern/Service/CommandService.cs`
+- `Runtime/Scripts/CommandPattern/Requests/*`
+- `Runtime/Scripts/CommandPattern/Diagnostics/*`
+
+The bootstrapper registers a global `ICommandService` into the Service Locator
+and creates the persistent runtime service object that owns queues, schedules,
+history, and diagnostics state.
+
+### Editor Entry Points
+
+- `Editor/Scripts/CommandPattern/Windows/CommandPatternMonitorWindow.cs`
+- `Editor/Scripts/CommandPattern/Diagnostics/*`
+
+The slice stays out of the shared modules window because it currently needs no
+project configuration surface. Runtime inspection is available at
+`HandyTools/Command Pattern/Monitor` during play mode.
+
+### Notes for AI Agents
+
+- Start with the `Quickstart In Five Minutes` section in
+  `16-command-pattern-guide.md` when the task is to author or consume one new
+  command flow quickly.
+- Keep project-authored gameplay commands outside the runtime module asmdef.
+- Resolve `ICommandService` through the Service Locator and treat
+  `CommandRequest` as the routing boundary for scope, queue, owner, and tags.
+- Keep scheduling, undo and redo, and diagnostics state in the service rather
+  than on reusable command definitions.
+- Prefer adding generic orchestration helpers before adding project-specific
+  bridges to Input, FSM, gameplay, or UI flows.
+- Use the sample controller and CommandService tests as the first truth source
+  for consumer-facing usage and behavioural invariants.
 
 ## Pooling
 

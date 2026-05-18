@@ -1,0 +1,21 @@
+{
+    "name": "IndieGabo.HandyTools.Cutscenes.Editor",
+    "rootNamespace": "IndieGabo.HandyTools.Editor.CutscenesModule",
+    "references": [
+        "IndieGabo.HandyTools.Runtime",
+        "IndieGabo.HandyTools.Editor",
+        "IndieGabo.HandyTools.Cutscenes",
+        "IndieGabo.HandyTools.Utils"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

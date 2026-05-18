@@ -8,6 +8,10 @@ The `Modules` menu no longer exposes one submenu item per configurable module.
 Open the shared window once and use the left sidebar to select the module you
 want to configure.
 
+Cutscenes now appears in the shared modules window. The detailed runtime,
+graph-editor, and optional Dialogue System workflow notes still live in
+[Cutscenes Module](12-cutscenes-module.md).
+
 ## Summary Table
 
 | Module        | Id               | Default | Load Order | Dedicated Panel |
@@ -15,11 +19,51 @@ want to configure.
 | Logging       | `logging`        | Off     | `-1000`    | Yes             |
 | Input         | `input`          | Off     | `30`       | Yes             |
 | Gameplay      | `gameplay`       | Off     | `40`       | Yes             |
+| Cutscenes     | `cutscenes`      | Off     | `175`      | Yes             |
 | Save System   | `save-system`    | Off     | `100`      | Yes             |
 | Globals       | `global-config`  | Off     | `130`      | Yes             |
 | Steam         | `steam`          | Off     | `150`      | Yes             |
 | ScreenShooter | `screen-shooter` | Off     | `160`      | Yes             |
 | Debugging     | `debugging`      | Off     | `500`      | Yes             |
+
+## Cutscenes
+
+### Activation Profile
+
+- Activation mode: Optional
+- Active by default: No
+- Load order: `175`
+- Declared dependencies: none
+
+### Responsibilities
+
+Cutscenes owns scene-authored graph-based cutscene orchestration, runtime
+execution tracing, graph validation, and the optional Dialogue System bridge.
+
+### Runtime Entry Points
+
+- `Runtime/Scripts/Cutscenes/CutscenesModuleDefinition.cs`
+- `Runtime/Scripts/Cutscenes/CutscenesModuleBootstrapper.cs`
+- `Runtime/Scripts/Cutscenes/Core/CutsceneDirector.cs`
+- `Runtime/Scripts/Cutscenes/Core/CutsceneRun.cs`
+- `Runtime/Scripts/Cutscenes/Services/CutsceneService.cs`
+
+### Editor Workflow
+
+Use `Handy Tools/Modules` and select `Cutscenes` to review the module summary,
+the current Dialogue System availability, and to jump into graph authoring for
+the currently selected director.
+
+Use the `CutsceneDirector` inspector `Open Graph` button or open
+`HandyTools/Cutscenes/Graph Editor` directly to author nodes, connections,
+properties, and play-mode visualization.
+
+### Notes for AI Agents
+
+- Keep scene-owned graph data on `CutsceneDirector`; do not move runtime state
+  back into serialized node definitions.
+- Dialogue System remains an optional integration. Keep Pixel Crushers types
+  out of the root runtime and root editor asmdefs.
 
 ## Logging
 
@@ -144,7 +188,7 @@ time persistence strategy.
 - `Save System` writes gameplay time into the currently loaded slot.
 
 The `Save System` option is only selectable when the Save System module is
-active. See [Gameplay Guide](12-gameplay-guide.md) for usage patterns and state
+active. See [Gameplay Guide](13-gameplay-guide.md) for usage patterns and state
 semantics.
 
 ### Notes for AI Agents

@@ -30,17 +30,20 @@ linked documents in the suggested order.
 - [Logging](Docs/10-configurable-modules.md#logging)
 - [Input](Docs/10-configurable-modules.md#input)
 - [Gameplay](Docs/10-configurable-modules.md#gameplay)
-- [FSM](Docs/10-configurable-modules.md#fsm)
+- [Cutscenes](Docs/12-cutscenes-module.md)
+- [Command Pattern](Docs/16-command-pattern-guide.md)
+- [FSM](Docs/11-auto-activated-modules.md#fsm)
 - [Save System](Docs/10-configurable-modules.md#save-system)
 - [Globals](Docs/10-configurable-modules.md#globals)
 - [Debugging](Docs/10-configurable-modules.md#debugging)
 - [Steam](Docs/10-configurable-modules.md#steam)
 - [ScreenShooter](Docs/10-configurable-modules.md#screenshooter)
-- [FSM Guide](Docs/14-fsm-guide.md)
+- [FSM Guide](Docs/15-fsm-guide.md)
 - [FSM Module Reference](Docs/FSMModule/README.md)
 - [Auto-Activated Modules](Docs/11-auto-activated-modules.md)
-- [Animation Events](Docs/13-animation-events-guide.md)
+- [Animation Events](Docs/14-animation-events-guide.md)
 - [Web](Docs/11-auto-activated-modules.md#web)
+- [Command Pattern](Docs/11-auto-activated-modules.md#command-pattern)
 - [Pooling](Docs/11-auto-activated-modules.md#pooling)
 - [Identifying](Docs/11-auto-activated-modules.md#identifying)
 - [Rendering](Docs/11-auto-activated-modules.md#rendering)
@@ -57,8 +60,12 @@ linked documents in the suggested order.
 - Module activation is driven by `HandyModuleSettings` at
   `Assets/Resources/HandyTools/Modules/HandyModuleSettings.asset`.
 - Configurable modules are edited through `Handy Tools/Modules`.
+- The `Cutscenes` module now ships a shared modules panel, a director
+  inspector, and a graph editor window on top of the runtime slice and
+  package samples.
 - Auto-activated modules such as Web, Pooling, Identifying, and Rendering do
-  not have dedicated editor panels.
+  not have dedicated editor panels, though they may still expose standalone
+  tooling such as the Command Pattern monitor window.
 - The root runtime and root editor asmdefs must stay clean. Optional packages
   belong to module-specific asmdefs only.
 
@@ -71,8 +78,10 @@ linked documents in the suggested order.
 5. [AI Agent Playbook](Docs/05-ai-agent-playbook.md)
 6. [Configurable Modules](Docs/10-configurable-modules.md)
 7. [Auto-Activated Modules](Docs/11-auto-activated-modules.md)
-8. [FSM Guide](Docs/14-fsm-guide.md)
-9. [Animation Events Guide](Docs/13-animation-events-guide.md)
+8. [Cutscenes Module](Docs/12-cutscenes-module.md)
+9. [Command Pattern Guide](Docs/16-command-pattern-guide.md)
+10. [FSM Guide](Docs/15-fsm-guide.md)
+11. [Animation Events Guide](Docs/14-animation-events-guide.md)
 
 ## Documentation Goals
 

@@ -1,6 +1,6 @@
 {
   "name": "com.indiegabo.handy-tools",
-  "version": "3.3.5",
+  "version": "3.4.0",
   "displayName": "Handy Tools",
   "description": "A modular Unity toolkit with kernel infrastructure, configurable systems, editor workflows, and reusable runtime support for production projects.",
   "unity": "6000.4",
@@ -21,9 +21,24 @@
   ],
   "samples": [
     {
+      "displayName": "Cutscenes - Base Sample",
+      "description": "A scene-authored cutscene sample that exercises the base non-dialogue workflow.",
+      "path": "Samples~/Cutscenes Base Sample"
+    },
+    {
+      "displayName": "Cutscenes - Dialogue System Sample",
+      "description": "A scene-authored cutscene sample that exercises the optional Dialogue System workflow.",
+      "path": "Samples~/Cutscenes Dialogue System Sample"
+    },
+    {
       "displayName": "FSM CCPro Starter Kit",
       "description": "Character Controller Pro sample scene and authored state assets for the HandyTools FSM module. Requires Character Controller Pro.",
       "path": "Samples~/FSM CCPro Starter Kit"
+    },
+    {
+      "displayName": "Command Pattern Starter Kit",
+      "description": "Scene-authored command execution, scheduling, undo/redo, and runtime request monitoring sample.",
+      "path": "Samples~/Command Pattern Starter Kit"
     }
   ],
   "scripts": {

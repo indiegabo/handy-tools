@@ -1,0 +1,16 @@
+{
+    "name": "IndieGabo.HandyTools.CommandPattern.Samples",
+    "rootNamespace": "IndieGabo.HandyTools.CommandPatternModule.Samples",
+    "references": [
+        "IndieGabo.HandyTools.CommandPattern"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

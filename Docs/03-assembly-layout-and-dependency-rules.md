@@ -33,6 +33,12 @@ Examples:
 - `IndieGabo.HandyTools.FSM` owns the state machine runtime, while
   `IndieGabo.HandyTools.FSM.CCPro` isolates Character Controller Pro-specific
   state bases behind a dependency-backed child asmdef.
+- `IndieGabo.HandyTools.Cutscenes` owns the scene-authored cutscene runtime,
+  while `IndieGabo.HandyTools.Cutscenes.DialogueSystem` isolates typed Dialogue
+  System references behind the `HANDY_DIALOGUE_SYSTEM_PRESENT` define.
+- `IndieGabo.HandyTools.CommandPattern` owns command orchestration,
+  scheduling, undo and redo history, and runtime diagnostics without polluting
+  the root runtime asmdef.
 - `IndieGabo.HandyTools.Rendering` owns URP-specific references.
 - `IndieGabo.HandyTools.Web` owns web request helpers without polluting the
   root runtime asmdef.
@@ -49,12 +55,26 @@ Feature-specific editor integrations compile into module editor asmdefs.
 
 Examples:
 
+- `IndieGabo.HandyTools.Cutscenes.Editor`
+- `IndieGabo.HandyTools.Cutscenes.DialogueSystem.Editor`
+- `IndieGabo.HandyTools.CommandPattern.Editor`
 - `IndieGabo.HandyTools.FSM.Editor`
 - `IndieGabo.HandyTools.Input.Editor`
 - `IndieGabo.HandyTools.SaveSystem.Editor`
 - `IndieGabo.HandyTools.Debugging.Editor`
 - `IndieGabo.HandyTools.Modules.Editor` for the shared modules window that
   depends on multiple module editor panels
+
+The Command Pattern slice follows the same split: runtime orchestration and
+journal APIs compile into `IndieGabo.HandyTools.CommandPattern`, while the
+play-mode monitor window and its UI Toolkit support code compile into
+`IndieGabo.HandyTools.CommandPattern.Editor`.
+
+Cutscenes now follows that split directly: base graph authoring compiles into
+`IndieGabo.HandyTools.Cutscenes.Editor`, while Dialogue System-specific
+authoring helpers compile into
+`IndieGabo.HandyTools.Cutscenes.DialogueSystem.Editor` behind the synchronized
+`HANDY_DIALOGUE_SYSTEM_PRESENT` define.
 
 ## Choosing the Correct Home for Code
 

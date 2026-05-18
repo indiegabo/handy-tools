@@ -1,4 +1,5 @@
 using System;
+using IndieGabo.HandyTools.Editor.CutscenesModule;
 using IndieGabo.HandyTools.Editor.DebuggingModule;
 using IndieGabo.HandyTools.Editor.GameplayModule;
 using IndieGabo.HandyTools.Editor.GlobalConfigModule;
@@ -20,6 +21,7 @@ namespace IndieGabo.HandyTools.Editor.Modules
     /// </summary>
     public sealed class HandyToolsModulesWindow : EditorWindow
     {
+        private const string _cutscenesModuleId = "cutscenes";
         private const string _debuggingModuleId = "debugging";
         private const string _gameplayModuleId = "gameplay";
         private const string _globalConfigModuleId = "global-config";
@@ -31,6 +33,7 @@ namespace IndieGabo.HandyTools.Editor.Modules
 
         private static readonly ModulePanelRegistration[] _registrations =
         {
+            new(_cutscenesModuleId, "Cutscenes", new Vector2(980f, 640f), () => new CutscenesModuleConfigurationPanel()),
             new(_inputModuleId, "Input", new Vector2(900f, 560f), () => new InputModuleConfigurationPanel()),
             new(_gameplayModuleId, "Gameplay", new Vector2(860f, 520f), () => new GameplayModuleConfigurationPanel()),
             new(_saveSystemModuleId, "Save System", new Vector2(920f, 620f), () => new SaveSystemModuleConfigurationPanel()),

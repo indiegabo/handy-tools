@@ -3,7 +3,8 @@
 HandyTools is a Unity package organized around a mandatory kernel and a set of
 optional modules. The kernel provides startup orchestration, event dispatch,
 service registration, and module discovery. Optional modules own their own
-runtime dependencies, editor panels, and configuration assets.
+runtime dependencies and, when implemented, their editor panels and
+configuration assets.
 
 The markdown files in `Assets/HandyTools/Docs` are the canonical package
 documentation. HandyTools no longer ships a separate generated documentation
@@ -27,7 +28,8 @@ HandyTools is split into four broad layers:
 
 1. Kernel infrastructure: startup orchestration, module metadata, event bus,
    and service locator.
-2. Configurable modules: optional modules with dedicated editor panels.
+2. Configurable modules: optional modules that usually ship dedicated editor
+   panels.
 3. Auto-activated modules: optional modules that default to active but do not
    require editor configuration panels.
 4. Utility and support code: static helpers and module-owned support slices
@@ -61,23 +63,29 @@ slice's current `rootNamespace` and runtime examples.
 
 ## Module Catalog
 
-| Slice            | Kind                  | Default State    | Editor Surface        | Main Runtime Entry                                                          |
-| ---------------- | --------------------- | ---------------- | --------------------- | --------------------------------------------------------------------------- |
-| Logging          | Configurable module   | Off              | Shared modules window | `LoggingModuleDefinition`, `LoggerBootstrapper`                             |
-| Input            | Configurable module   | Off              | Shared modules window | `InputModuleDefinition`, `ProjectInputConfig.Bootstrap()`                   |
-| Gameplay         | Configurable module   | Off              | Shared modules window | `GameplayModuleDefinition`, `GameplayServiceBootstrapper`, `GameplayConfig` |
-| FSM              | Auto-activated module | On when unset    | No panel              | `FSMModuleDefinition`, `FSMBrain`, `State`, `ScriptableState`               |
-| Save System      | Configurable module   | Off              | Shared modules window | `SaveSystemModuleDefinition`, `SaveSystemBootstrapper`                      |
-| Globals          | Configurable module   | Off              | Shared modules window | `GlobalConfigModuleDefinition`, `Globals.LoadFromGlobals()`                 |
-| Debugging        | Configurable module   | Off              | Shared modules window | `DebuggingModuleDefinition`, `DebugPanelBootstrapper`                       |
-| Steam            | Configurable module   | Off              | Shared modules window | `SteamModuleDefinition`, `SteamModuleBootstrapper`                          |
-| ScreenShooter    | Configurable module   | Off              | Shared modules window | `ScreenShooterModuleDefinition`, `ScreenShooterModuleBootstrapper`          |
-| Animation Events | Auto-activated module | On when unset    | No panel              | `AnimationEventsModuleDefinition`, `AnimationEventsModuleBootstrapper`      |
-| Web              | Auto-activated module | On when unset    | No panel              | `WebModuleDefinition`                                                       |
-| Pooling          | Auto-activated module | On when unset    | No panel              | `PoolingModuleDefinition`                                                   |
-| Identifying      | Auto-activated module | On when unset    | No panel              | `IdentifyingModuleDefinition`                                               |
-| Rendering        | Auto-activated module | On when unset    | No panel              | `RenderingModuleDefinition`                                                 |
-| Utils            | Utility/support slice | Always available | No panel              | Static helpers only                                                         |
+| Slice            | Kind                  | Default State    | Editor Surface        | Main Runtime Entry                                                                 |
+| ---------------- | --------------------- | ---------------- | --------------------- | ---------------------------------------------------------------------------------- |
+| Logging          | Configurable module   | Off              | Shared modules window | `LoggingModuleDefinition`, `LoggerBootstrapper`                                    |
+| Input            | Configurable module   | Off              | Shared modules window | `InputModuleDefinition`, `ProjectInputConfig.Bootstrap()`                          |
+| Gameplay         | Configurable module   | Off              | Shared modules window | `GameplayModuleDefinition`, `GameplayServiceBootstrapper`, `GameplayConfig`        |
+| Cutscenes        | Configurable module   | Off              | Shared modules window | `CutscenesModuleDefinition`, `CutsceneDirector`, `ICutsceneService`                |
+| Command Pattern  | Auto-activated module | On when unset    | Monitor window        | `CommandPatternModuleDefinition`, `ICommandService`, `CommandPatternMonitorWindow` |
+| FSM              | Auto-activated module | On when unset    | No panel              | `FSMModuleDefinition`, `FSMBrain`, `State`, `ScriptableState`                      |
+| Save System      | Configurable module   | Off              | Shared modules window | `SaveSystemModuleDefinition`, `SaveSystemBootstrapper`                             |
+| Globals          | Configurable module   | Off              | Shared modules window | `GlobalConfigModuleDefinition`, `Globals.LoadFromGlobals()`                        |
+| Debugging        | Configurable module   | Off              | Shared modules window | `DebuggingModuleDefinition`, `DebugPanelBootstrapper`                              |
+| Steam            | Configurable module   | Off              | Shared modules window | `SteamModuleDefinition`, `SteamModuleBootstrapper`                                 |
+| ScreenShooter    | Configurable module   | Off              | Shared modules window | `ScreenShooterModuleDefinition`, `ScreenShooterModuleBootstrapper`                 |
+| Animation Events | Auto-activated module | On when unset    | No panel              | `AnimationEventsModuleDefinition`, `AnimationEventsModuleBootstrapper`             |
+| Web              | Auto-activated module | On when unset    | No panel              | `WebModuleDefinition`                                                              |
+| Pooling          | Auto-activated module | On when unset    | No panel              | `PoolingModuleDefinition`                                                          |
+| Identifying      | Auto-activated module | On when unset    | No panel              | `IdentifyingModuleDefinition`                                                      |
+| Rendering        | Auto-activated module | On when unset    | No panel              | `RenderingModuleDefinition`                                                        |
+| Utils            | Utility/support slice | Always available | No panel              | Static helpers only                                                                |
+
+Cutscenes now ships the runtime slice, the shared modules panel, the director
+inspector, the graph editor or visualizer window, validation utilities, and
+the package samples.
 
 ## Documentation Reading Map
 
@@ -89,9 +97,13 @@ slice's current `rootNamespace` and runtime examples.
   subscription tokens, dispatch semantics, and event authoring rules.
 - Read [Pooling Guide](09-pooling-guide.md) to understand pool definitions,
   independent runtimes, and identifier-based pool lookup.
-- Read [Gameplay Guide](12-gameplay-guide.md) to understand lifecycle state,
+- Read [Command Pattern Guide](16-command-pattern-guide.md) to understand the
+  command runtime service, queue policies, undo and redo flow, scheduling, the
+  play-mode monitor window, and the new five-minute quickstart for authoring
+  and dispatching commands without reverse engineering the sample or tests.
+- Read [Gameplay Guide](13-gameplay-guide.md) to understand lifecycle state,
   indefinite interruptions, and gameplay time persistence strategy.
-- Read [FSM Guide](14-fsm-guide.md) to understand the integrated state machine
+- Read [FSM Guide](15-fsm-guide.md) to understand the integrated state machine
   module, its editor surfaces, and its optional integrations.
 - Read [Planned Modules](../../../Docs/planned-modules.md) to review candidate
   and planned module investigations before turning an idea into a new slice.
@@ -104,7 +116,9 @@ slice's current `rootNamespace` and runtime examples.
 - Read [Configurable Modules](10-configurable-modules.md) and
   [Auto-Activated Modules](11-auto-activated-modules.md) when touching a
   specific feature slice.
-- Read [Animation Events Guide](13-animation-events-guide.md) when working on
+- Read [Cutscenes Module](12-cutscenes-module.md) for the current runtime,
+  editor workflow, optional Dialogue System integration, and sample coverage.
+- Read [Animation Events Guide](14-animation-events-guide.md) when working on
   state-authored event dispatch, typed animator payloads, or Animation Window
   inspector tooling.
 

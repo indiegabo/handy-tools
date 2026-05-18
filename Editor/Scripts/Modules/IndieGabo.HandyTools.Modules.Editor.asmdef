@@ -4,6 +4,7 @@
     "references": [
         "IndieGabo.HandyTools.Runtime",
         "IndieGabo.HandyTools.Editor",
+        "IndieGabo.HandyTools.Cutscenes.Editor",
         "IndieGabo.HandyTools.Debugging.Editor",
         "IndieGabo.HandyTools.FSM.Editor",
         "IndieGabo.HandyTools.Gameplay.Editor",
