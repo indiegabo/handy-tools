@@ -1,33 +1,79 @@
 # Cutscenes Module
 
-The `Cutscenes` module ships a scene-authored cutscene runtime, the graph
-editor authoring surface, the optional Dialogue System bridge, a built-in
-Timeline playback node, and package samples.
+The `Cutscenes` module is the richest graph-backed module in HandyTools. It
+ships a scene-authored cutscene runtime, composes the shared GraphCore
+runtime and editor layer into the cutscene-specific graph experience, keeps
+the optional Dialogue System bridge behind child asmdefs, includes one built-
+in cross-module `Conversations/Start Conversation` node, includes a built-in
+Timeline playback node, and ships package samples.
 
 ## Current Package State
 
-- Runtime code lives under `Runtime/Scripts/Cutscenes`.
-- Editor code lives under `Editor/Scripts/Cutscenes`.
+- Runtime cutscene code lives under `Runtime/Scripts/Cutscenes`.
+- Editor cutscene code lives under `Editor/Scripts/Cutscenes`.
+- Shared graph-neutral runtime primitives now live under
+  `Runtime/Scripts/GraphCore`.
+- Shared graph-neutral editor primitives now live under
+  `Editor/Scripts/GraphCore`.
 - The shared `Handy Tools/Modules` entry is available.
 - `CutsceneDirectorInspector` opens the graph window and surfaces validation
   issues directly on the component.
-- `CutsceneGraphWindow` uses `GraphView` for node creation, connection
-  authoring, persistent edge-color authoring, property editing, and play-mode
-  trace visualization.
-- `CutsceneGraphBlackboardView` uses UI Toolkit to edit graph blackboard
-  entries inside the graph window sidebar.
+- `CutsceneGraph`, `CutsceneGraphBlackboard`, and `CutsceneValueSource` now sit
+  on top of shared GraphCore authored containers instead of maintaining one
+  fully separate graph substrate.
+- `CutsceneGraphFamily` registers the stable family id that scopes cutscene
+  node catalogs, blackboard descriptors, and authoring helpers.
+- `CutsceneGraphWindow` still owns the cutscene-specific window composition,
+  inspector, presentation, and play-mode trace visualization, but now composes
+  shared GraphCore canvas and blackboard surfaces.
+- `CutsceneGraphBlackboardView` and node inspector value drawers now share the
+  same GraphCore blackboard or value-source registry and consistent direct
+  versus blackboard authoring behavior.
 - The graph window persists the bound `CutsceneDirector` across recompiles.
 - Graph nodes ship with stable category palettes, header icons, and one
   visual-only comment node for authoring-only annotations.
+- The built-in node catalog now includes `Conversations/Start Conversation`,
+  which plays one authored `ConversationReference` and resumes the cutscene
+  after the conversation completes or is canceled.
+- Optional integration nodes stay hidden from the creation menu when their
+  required package or module is unavailable, while existing serialized nodes
+  remain intact and surface validation warnings.
+- Existing authored graphs remain supported through cutscene compatibility
+  normalization and the migration utilities that rebuild authored Cutscenes
+  shapes from shared GraphCore data when needed.
 - Package samples include both scene-authored graphs and installer-backed
   setups depending on the sample workflow.
+
+## GraphCore Architecture
+
+Cutscenes no longer owns one isolated graph stack.
+
+- `CutsceneGraph` derives from `GraphDefinition`.
+- `CutsceneNodeBase` derives from `GraphNodeBase`.
+- `CutsceneGraphBlackboard` derives from `GraphBlackboard`.
+- `CutsceneValueSource` derives from `GraphValueSource`.
+- `CutsceneGraphCoreRuntimeMigrationUtility` bridges shared GraphCore shapes
+  and cutscene-authored compatibility shapes when graphs need to move between
+  the reusable substrate and cutscene-owned authoring containers.
+- GraphCore owns the family registry, shared blackboard value wrappers,
+  variable references, shared editor drawers, graph canvas shell, and
+  blackboard overlay shell.
+- Cutscenes still owns the scene host, run lifecycle, node catalog,
+  validation semantics, graph-window composition, play-mode visualization,
+  and optional Dialogue System bridge.
+
+This split is the current package reference for graph-backed modules: keep the
+shared substrate in GraphCore and keep family-specific behavior inside the
+consumer.
 
 ## Runtime Surface
 
 - `CutsceneDirector`
 - `CutsceneGraph`
+- `CutsceneGraphFamily`
 - `CutsceneGraphBlackboard`
 - `CutsceneGraphBlackboardEntry`
+- `CutsceneValueSource`
 - `CutsceneRun`
 - `CutsceneExecutionContext`
 - `CutsceneRuntimeStateStore`
@@ -37,8 +83,10 @@ Timeline playback node, and package samples.
 - `CutsceneNodeMenuAttribute`
 - `CutsceneBusEventAttribute`
 - `CutsceneBusEventRegistry`
+- `CutsceneGraphCoreRuntimeMigrationUtility`
 - `ICutsceneService`
-- built-in flow, action, signal, trigger, Timeline, and Dialogue nodes
+- built-in flow, action, signal, trigger, Timeline, Conversations, and
+  Dialogue nodes
 
 ## Runtime Reference Cards
 
@@ -95,14 +143,29 @@ Timeline playback node, and package samples.
   start conditions become stateful or systemic, move that decision back into
   gameplay code and call the director or service directly.
 
+### `CutsceneNodeMenuAttribute`
+
+- Registers one graph-creation menu path and optional default title for one
+  cutscene node type.
+- Supports availability flags such as `requiresDialogueSystem` and
+  `requiresConversationsModule` for optional integration nodes.
+- Use it to keep dependency-bound nodes out of the creation UI until their
+  backing module or package is actually available.
+- Do not treat it as the only runtime guard. Nodes that depend on optional
+  systems should still fail with one explicit diagnostic when execution starts
+  without that dependency.
+
 ## Editor Surface
 
 - `CutscenesModuleConfigurationPanel`
 - `CutsceneDirectorInspector`
 - `CutsceneGraphWindow`
-- `CutsceneGraphBlackboardView`
 - `CutsceneGraphView`
+- `CutsceneGraphInspectorView`
+- `CutsceneGraphBlackboardView`
 - `CutsceneNodeCreationRegistry`
+- `CutsceneNodePresentationRegistry`
+- `CutsceneBlackboardValueSourceDrawers`
 - `CutsceneGraphValidator`
 
 ## Five-Minute Quickstart
@@ -136,12 +199,19 @@ Expected result:
 
 ## Graph Blackboard
 
-`CutsceneGraph` now owns one native blackboard that stores graph-level values
-shared across node executions.
+`CutsceneGraph` still owns one cutscene-authored blackboard that stores
+graph-level values shared across node executions, but the storage and
+authoring model now ride on the shared GraphCore blackboard containers,
+descriptors, variable references, and value-source system.
 
-- Author entries in the `Blackboard` foldout on the graph window sidebar.
-- Supported value types are `int`, `float`, `string`, `bool`, and
-  `UnityEngine.Object` references.
+- Author entries in the blackboard overlay on the graph window sidebar.
+- The picker exposes the GraphCore built-in wrappers available to the cutscene
+  family, including numeric types, strings, booleans, vector and transform
+  structs, colors, rects, bounds, curves, gradients, layer masks, enums, and
+  typed `UnityEngine.Object` references.
+- The graph window overlay and node inspectors use the same shared GraphCore
+  drawer logic, so direct values and blackboard-backed values behave
+  consistently across UI Toolkit and IMGUI surfaces.
 - Read and write values through `CutsceneRun.Blackboard`,
   `CutsceneExecutionContext.Blackboard`, or the convenience helpers
   `TryGetBlackboardValue`, `SetBlackboardValue`,
@@ -149,9 +219,11 @@ shared across node executions.
 - Every node that is actually executing receives the same graph blackboard
   through `CutsceneExecutionContext`, so `OnEnter`, `Tick`, and `OnExit` can
   all use `context.Blackboard` without resolving separate graph state.
-- Existing graphs remain valid; an empty blackboard is created lazily.
+- Existing pre-GraphCore graphs remain valid; Cutscenes normalizes or migrates
+  legacy authored wrappers as graphs are loaded, reconstructed, or serialized.
 
-Built-in blackboard authoring nodes now ship in the base module:
+Built-in blackboard authoring nodes now ship in the base module and use the
+shared GraphCore `GraphValueSource` model:
 
 - `Actions/Blackboard/Set Blackboard Values`
 - `Actions/Blackboard/Log Blackboard Value`
@@ -213,8 +285,15 @@ modifying the package editor code.
 - Mark the type with `[CutsceneNodeMenu("Folder/Node Name")]`.
 - Optionally register one default graph title with
   `[CutsceneNodeMenu("Folder/Node Name", "Default Title")]`.
+- Optionally gate node discovery with availability flags such as
+  `[CutsceneNodeMenu("Folder/Node Name", requiresConversationsModule: true)]`
+  or `requiresDialogueSystem: true` when the node depends on one optional
+  module or third-party package.
 - Keep the node type in a runtime assembly that is loaded by Unity.
 - If the project uses asmdefs, reference `IndieGabo.HandyTools.Cutscenes`.
+- Add a direct reference to `IndieGabo.HandyTools.GraphCore` when the node
+  source file directly declares GraphCore types such as `GraphValueSource`,
+  `GraphBlackboardValue`, or `GraphBlackboardVariableReference`.
 - The graph window discovers eligible node types automatically through
   `TypeCache`; no manual registration step is required.
 
@@ -243,6 +322,10 @@ Example asmdef setup when the project uses asmdefs:
   "references": ["IndieGabo.HandyTools.Cutscenes"]
 }
 ```
+
+If the project node only inherits `CutsceneNodeBase`, that single reference is
+enough. If the project node directly uses GraphCore symbols in serialized
+fields or helper types, add `IndieGabo.HandyTools.GraphCore` explicitly.
 
 With that setup, a project-defined class derived from `CutsceneNodeBase`
 becomes available in the graph automatically after Unity recompiles.
@@ -513,37 +596,45 @@ built-in nodes, editor behavior, or integration points to HandyTools itself.
 1. Decide whether the new behavior is project-specific or package-owned.
    Project-specific behavior should usually be implemented as one consumer
    node derived from `CutsceneNodeBase` instead of changing package code.
-2. When the feature is package-owned, put the runtime node in the owning
-   category folder under `Runtime/Scripts/Cutscenes/Nodes/Actions`, `Flow`,
-   `Signals`, or `Meta`.
-3. Keep scene-owned authoring data on `CutsceneDirector` and keep run state in
+2. If the feature is graph-family-neutral and reusable across graph-backed
+   modules, implement it in GraphCore instead of directly in Cutscenes.
+3. When the feature is cutscene-specific and package-owned, put the runtime
+   node in the owning category folder under
+   `Runtime/Scripts/Cutscenes/Nodes/Actions`, `Flow`, `Signals`, or `Meta`.
+4. Keep scene-owned authoring data on `CutsceneDirector` and keep run state in
    `CutsceneRun`, `CutsceneExecutionContext`, or node runtime state storage.
    Do not push transient runtime state back into serialized node definitions.
-4. Rely on the default inspector and type discovery first. A new built-in node
+5. Rely on the default inspector and type discovery first. A new built-in node
    does not require editor registration when serialized fields and
    `CutsceneNodeMenu` metadata are enough.
-5. Touch editor code only when the feature needs one new validation rule,
+6. Touch editor code only when the feature needs one new validation rule,
    custom drag-and-drop behavior, custom graph presentation, or a dedicated
    authoring affordance.
-6. If the node introduces new mandatory outputs, scene references, or binding
+7. Keep GraphCore editor changes graph-family-neutral. Cutscene window
+   composition, presentation, validation, and module-specific UX still belong
+   in `IndieGabo.HandyTools.Cutscenes.Editor`.
+8. If the node introduces new mandatory outputs, scene references, or binding
    rules, extend `CutsceneGraphValidator` so authoring failures are visible
    before play mode.
-7. If the node introduces one new category or needs different visual language,
+9. If the node introduces one new category or needs different visual language,
    update `CutsceneNodePresentationRegistry` so the graph and creation search
    stay visually coherent.
-8. Keep optional Dialogue System behavior isolated. Serialized dialogue node
-   data may live in the base cutscenes runtime, but typed Pixel Crushers code
-   must remain in `IndieGabo.HandyTools.Cutscenes.DialogueSystem` and
-   `IndieGabo.HandyTools.Cutscenes.DialogueSystem.Editor` behind the
-   synchronized define.
-9. Add or update EditMode smoke coverage under `Assets/Tests/CutscenesEditMode`
-   when the feature changes execution flow, validation, or graph serialization.
-10. Update the module guide and sample README files when the new feature
+10. Keep optional Dialogue System behavior isolated. Serialized dialogue node
+    data may live in the base cutscenes runtime, but typed Pixel Crushers code
+    must remain in `IndieGabo.HandyTools.Cutscenes.DialogueSystem` and
+    `IndieGabo.HandyTools.Cutscenes.DialogueSystem.Editor` behind the
+    synchronized define.
+11. Add or update EditMode smoke coverage under `Assets/Tests/CutscenesEditMode`
+    when the feature changes execution flow, validation, or graph serialization.
+12. Update the module guide and sample README files when the new feature
     changes the recommended authoring workflow or becomes part of the public
     built-in node catalog.
 
 Ownership map for common expansion points:
 
+- GraphCore runtime and editor: shared graph containers, family registries,
+  reusable blackboard or value-source infrastructure, and reusable authoring
+  shells.
 - `CutsceneDirector`: scene-owned authoring root, runtime policy, and graph
   ownership.
 - `CutsceneRun`: execution authority and active-branch orchestration.
@@ -615,6 +706,26 @@ node fails with an explicit runtime error.
   System is unavailable, while existing serialized dialogue nodes remain
   intact and warn through validation.
 
+## Optional Conversations Integration
+
+- `CutsceneConversationReferenceNode` lives in the base cutscenes runtime
+  assembly and serializes one `ConversationReference`.
+- The node appears in the graph as `Conversations/Start Conversation`.
+- Runtime playback is owned directly by the cutscene node through one authored
+  playback controller, so the graph does not need one intermediary
+  `ConversationTrigger` component.
+- Conversation progression remains manual: the node waits for presenter-driven
+  or input-driven advance, skip, or cancel requests and does not auto-advance
+  the active conversation on its own.
+- The node resolves successfully when the conversation session reaches
+  `Completed` or `Canceled`, and fails explicitly when Conversations cannot
+  start playback.
+- Node creation stays hidden from the graph window when the `Conversations`
+  module is inactive, while existing serialized nodes remain intact and warn
+  through validation.
+- Enable `Conversations` in `Handy Tools/Modules` before authoring or running
+  cutscenes that depend on this node.
+
 ## Current Limitations
 
 - `CutsceneParallelNode` fans out into all connected branches and waits for all
@@ -626,6 +737,7 @@ node fails with an explicit runtime error.
 ## Samples
 
 - `Cutscenes Base Sample`
+- `Cutscenes Conversations Example`
 - `Cutscenes Dialogue System Sample`
 
 Open `Samples/Cutscenes Base Sample/Scenes/CutscenesBaseSample.unity` and
@@ -637,3 +749,13 @@ flow.
 Open `Samples/Cutscenes Dialogue System Sample/Scenes/CutscenesDialogueSystemSample.unity`
 and press Play in a project where Dialogue System is installed to run the
 optional integration sample.
+
+Open `Samples/Cutscenes Conversations Example/Scenes/CutscenesConversationsExample.unity`
+and press Play in a project where both `Cutscenes` and `Conversations` are
+active to run the cross-module sample. The sample starts one authored
+cutscene automatically and enters `Conversations/Start Conversation` twice.
+Advance, skip, or cancel each conversation manually through the presenter or
+the authored input actions to verify the cutscene resumes only after the
+conversation reaches one terminal state. The sample table registers three
+actors and intentionally leaves portrait sprites unassigned for project-
+specific art.

@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using IndieGabo.HandyTools.CutscenesModule.Events;
-using IndieGabo.HandyTools.CutscenesModule.Nodes.Flow;
 using IndieGabo.HandyTools.CutscenesModule.Services;
+using IndieGabo.HandyTools.GraphCore;
 using IndieGabo.HandyTools.HandyBusModule;
 using IndieGabo.HandyTools.Utils;
 
@@ -15,17 +15,27 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
         private readonly Dictionary<SerializableGuid, ExecutionState> _activeExecutions = new();
         private readonly List<SerializableGuid> _executionOrder = new();
         private readonly Dictionary<SerializableGuid, ParallelGroupState> _parallelGroups = new();
+        private readonly GraphBlackboard _runtimeBlackboard;
+        private readonly GraphDefinition _runtimeGraphDefinition;
 
         private SerializableGuid _lastNodeId = SerializableGuid.Empty;
         private SerializableGuid _lastExecutionId = SerializableGuid.Empty;
+        private bool _isAdvancingRun;
 
         public CutsceneRun(CutsceneDirector director, ICutsceneService service)
         {
             Director = director;
             Service = service;
             Graph = director.Graph;
+            _runtimeBlackboard = CutsceneGraphCoreRuntimeMigrationUtility.CreateGraphBlackboard(
+                Graph.Blackboard);
+            _runtimeGraphDefinition =
+                CutsceneGraphCoreRuntimeMigrationUtility.CreateGraphDefinition(
+                    Graph,
+                    _runtimeBlackboard);
             StateStore = new CutsceneRuntimeStateStore();
             Trace = new CutsceneRunTrace();
+            RuntimeTrace = new GraphRunTrace();
         }
 
         public CutsceneDirector Director { get; }
@@ -36,9 +46,15 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
 
         public CutsceneGraphBlackboard Blackboard => Graph.Blackboard;
 
+        public GraphBlackboard RuntimeBlackboard => _runtimeBlackboard;
+
+        public GraphDefinition RuntimeGraphDefinition => _runtimeGraphDefinition;
+
         public CutsceneRuntimeStateStore StateStore { get; }
 
         public CutsceneRunTrace Trace { get; }
+
+        public GraphRunTrace RuntimeTrace { get; }
 
         public CutsceneRunStatus Status { get; private set; } = CutsceneRunStatus.Idle;
 
@@ -89,9 +105,9 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
                 return;
             }
 
-            CutsceneEntryNode entryNode = Graph.GetEntryNode();
-
-            if (entryNode == null)
+            if (!CutsceneGraphCoreRuntimeMigrationUtility.TryGetEntryNode(
+                RuntimeGraphDefinition,
+                out GraphNodeBase entryNode))
             {
                 Fail("Cutscene graph does not contain an entry node.");
                 return;
@@ -109,36 +125,57 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
                 return;
             }
 
-            CurrentDeltaTime = deltaTime;
-            CurrentUnscaledDeltaTime = unscaledDeltaTime;
+            _isAdvancingRun = true;
 
-            List<SerializableGuid> executionSnapshot = _executionOrder.ToList();
-
-            for (int index = 0; index < executionSnapshot.Count; index++)
+            try
             {
-                SerializableGuid executionId = executionSnapshot[index];
+                CurrentDeltaTime = deltaTime;
+                CurrentUnscaledDeltaTime = unscaledDeltaTime;
 
-                if (!_activeExecutions.TryGetValue(executionId, out ExecutionState state)
-                    || !Graph.TryGetNode(state.NodeId, out CutsceneNodeBase currentNode))
+                List<SerializableGuid> executionSnapshot = _executionOrder.ToList();
+
+                for (int index = 0; index < executionSnapshot.Count; index++)
                 {
-                    continue;
-                }
+                    SerializableGuid executionId = executionSnapshot[index];
 
-                if (currentNode.RequiresTick)
-                {
-                    currentNode.Tick(state.Context);
-                }
+                    if (!_activeExecutions.TryGetValue(executionId, out ExecutionState state)
+                        || !RuntimeGraphDefinition.TryGetNode(state.NodeId, out GraphNodeBase currentNode))
+                    {
+                        continue;
+                    }
 
-                ConsumePendingCompletion(executionId);
+                    if (currentNode.RequiresTick
+                        && !CutsceneGraphCoreRuntimeMigrationUtility.TryTickGraphNode(
+                            currentNode,
+                            state.Context))
+                    {
+                        RemoveExecution(executionId);
+                        Fail("Current cutscene node could not be ticked.");
+                        return;
+                    }
 
-                if (Status != CutsceneRunStatus.Running)
-                {
-                    return;
+                    ConsumePendingCompletion(executionId);
+
+                    if (Status != CutsceneRunStatus.Running)
+                    {
+                        return;
+                    }
                 }
+            }
+            finally
+            {
+                _isAdvancingRun = false;
             }
         }
 
         public bool TryCompleteNode(SerializableGuid executionId, CutsceneNodeResult result)
+        {
+            return TryCompleteNode(
+                executionId,
+                CutsceneGraphExecutionContractAdapter.ToGraphExecutionResult(result));
+        }
+
+        public bool TryCompleteNode(SerializableGuid executionId, GraphExecutionResult result)
         {
             if (Status != CutsceneRunStatus.Running
                 || executionId == SerializableGuid.Empty
@@ -150,6 +187,12 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
 
             state.HasPendingCompletion = true;
             state.PendingResult = result;
+
+            if (!_isAdvancingRun)
+            {
+                ConsumePendingCompletion(executionId);
+            }
+
             return true;
         }
 
@@ -168,6 +211,9 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
             FailureReason = reason ?? string.Empty;
             Status = CutsceneRunStatus.Cancelled;
             Trace.MarkEnded(Status, FailureReason);
+            RuntimeTrace.MarkEnded(
+                CutsceneGraphExecutionContractAdapter.ToGraphRunStatus(Status),
+                FailureReason);
 
             HandyBus<CutsceneCancelledEvent>.Raise(new CutsceneCancelledEvent(Director, this, FailureReason));
             HandyBus<CutsceneEndedEvent>.Raise(new CutsceneEndedEvent(Director, this, Status, FailureReason));
@@ -220,10 +266,10 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
                 return;
             }
 
-            CutsceneNodeResult result = state.PendingResult;
+            GraphExecutionResult result = state.PendingResult;
             state.HasPendingCompletion = false;
 
-            if (!Graph.TryGetNode(state.NodeId, out CutsceneNodeBase currentNode))
+            if (!RuntimeGraphDefinition.TryGetNode(state.NodeId, out GraphNodeBase currentGraphNode))
             {
                 RemoveExecution(executionId);
                 Fail("Current cutscene node could not be resolved.");
@@ -231,13 +277,38 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
             }
 
             RemoveExecution(executionId);
-            currentNode.OnExit(state.Context);
-            Trace.MarkNodeFinished(currentNode.Id, result.Status, result.OutputKey, result.FailureReason);
+
+            if (!CutsceneGraphCoreRuntimeMigrationUtility.TryExitGraphNode(
+                    currentGraphNode,
+                    state.Context))
+            {
+                Fail("Current cutscene node could not exit.");
+                return;
+            }
+
+            CutsceneNodeResult legacyResult =
+                CutsceneGraphExecutionContractAdapter.ToCutsceneNodeResult(result);
+            Trace.MarkNodeFinished(
+                currentGraphNode.Id,
+                legacyResult.Status,
+                legacyResult.OutputKey,
+                legacyResult.FailureReason);
+            RuntimeTrace.MarkNodeFinished(
+                currentGraphNode.Id,
+                result.Status,
+                result.OutputKey,
+                result.FailureReason);
 
             HandyBus<CutsceneNodeFinishedEvent>.Raise(
-                new CutsceneNodeFinishedEvent(Director, this, currentNode.Id, result.Status, result.OutputKey, result.FailureReason));
+                new CutsceneNodeFinishedEvent(
+                    Director,
+                    this,
+                    currentGraphNode.Id,
+                    legacyResult.Status,
+                    legacyResult.OutputKey,
+                    legacyResult.FailureReason));
 
-            if (result.Status == CutsceneNodeStatus.Failure)
+            if (result.Status == GraphNodeStatus.Failure)
             {
                 Fail(string.IsNullOrWhiteSpace(result.FailureReason)
                     ? "Cutscene node reported failure."
@@ -245,15 +316,15 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
                 return;
             }
 
-            if (currentNode is CutsceneFinishNode)
+            if (CutsceneGraphCoreRuntimeMigrationUtility.IsFinishNode(currentGraphNode))
             {
                 ResolveCompletedExecution(state);
                 return;
             }
 
-            if (currentNode is CutsceneParallelNode parallelNode)
+            if (CutsceneGraphCoreRuntimeMigrationUtility.IsParallelNode(currentGraphNode))
             {
-                SpawnParallelBranches(state, parallelNode);
+                SpawnParallelBranches(state, currentGraphNode);
                 return;
             }
 
@@ -261,13 +332,16 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
                 ? CutsceneNodePorts.Next
                 : result.OutputKey;
 
-            if (!Graph.TryGetOutgoingConnection(currentNode.Id, outputKey, out CutsceneConnection connection))
+            if (!RuntimeGraphDefinition.TryGetOutgoingConnection(
+                    currentGraphNode.Id,
+                    outputKey,
+                    out GraphConnection connection))
             {
-                Fail($"Node '{currentNode.DisplayTitle}' has no connection for output '{outputKey}'.");
+                Fail($"Node '{currentGraphNode.DisplayTitle}' has no connection for output '{outputKey}'.");
                 return;
             }
 
-            if (!Graph.TryGetNode(connection.ToNodeId, out CutsceneNodeBase nextNode))
+            if (!RuntimeGraphDefinition.TryGetNode(connection.ToNodeId, out GraphNodeBase nextNode))
             {
                 Fail("The next cutscene node could not be resolved.");
                 return;
@@ -276,32 +350,50 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
             EnterNode(nextNode, state.OwningParallelGroupId);
         }
 
-        private void EnterNode(CutsceneNodeBase node, SerializableGuid owningParallelGroupId)
+        private void EnterNode(GraphNodeBase node, SerializableGuid owningParallelGroupId)
         {
             if (Status != CutsceneRunStatus.Running)
             {
                 return;
             }
 
-            SerializableGuid executionId = SerializableGuid.NewGuid();
-            CutsceneExecutionContext context = new(this, node.Id, executionId);
-            ExecutionState state = new(executionId, node.Id, owningParallelGroupId, context);
+            bool previousAdvancingState = _isAdvancingRun;
+            _isAdvancingRun = true;
 
-            _activeExecutions[executionId] = state;
-            _executionOrder.Add(executionId);
-            _lastNodeId = node.Id;
-            _lastExecutionId = executionId;
+            try
+            {
+                SerializableGuid executionId = SerializableGuid.NewGuid();
+                CutsceneExecutionContext context = new(this, node.Id, executionId);
+                ExecutionState state = new(executionId, node.Id, owningParallelGroupId, context);
 
-            Trace.MarkNodeStarted(node.Id);
+                _activeExecutions[executionId] = state;
+                _executionOrder.Add(executionId);
+                _lastNodeId = node.Id;
+                _lastExecutionId = executionId;
 
-            HandyBus<CutsceneNodeStartedEvent>.Raise(new CutsceneNodeStartedEvent(Director, this, node.Id));
-            node.OnEnter(context);
-            ConsumePendingCompletion(executionId);
+                Trace.MarkNodeStarted(node.Id);
+                RuntimeTrace.MarkNodeStarted(node.Id);
+
+                HandyBus<CutsceneNodeStartedEvent>.Raise(new CutsceneNodeStartedEvent(Director, this, node.Id));
+
+                if (CutsceneGraphCoreRuntimeMigrationUtility.TryEnterGraphNode(node, context))
+                {
+                    ConsumePendingCompletion(executionId);
+                    return;
+                }
+
+                RemoveExecution(executionId);
+                Fail("The cutscene runtime node could not be executed.");
+            }
+            finally
+            {
+                _isAdvancingRun = previousAdvancingState;
+            }
         }
 
-        private void SpawnParallelBranches(ExecutionState completedState, CutsceneParallelNode parallelNode)
+        private void SpawnParallelBranches(ExecutionState completedState, GraphNodeBase parallelNode)
         {
-            IReadOnlyList<CutsceneNodePort> outputPorts = parallelNode.GetOutputPorts();
+            IReadOnlyList<GraphPortDefinition> outputPorts = parallelNode.GetOutputPorts();
 
             if (outputPorts == null || outputPorts.Count == 0)
             {
@@ -309,25 +401,29 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
                 return;
             }
 
-            List<CutsceneNodeBase> branchTargets = new(outputPorts.Count);
+            List<GraphNodeBase> branchTargets = new(outputPorts.Count);
 
             for (int index = 0; index < outputPorts.Count; index++)
             {
-                CutsceneNodePort outputPort = outputPorts[index];
+                GraphPortDefinition outputPort = outputPorts[index];
 
-                if (!Graph.TryGetOutgoingConnection(parallelNode.Id, outputPort.Key, out CutsceneConnection connection))
+                if (!RuntimeGraphDefinition.TryGetOutgoingConnection(
+                        parallelNode.Id,
+                        outputPort.Key,
+                        out GraphConnection connection))
                 {
                     Fail($"Fork node '{parallelNode.DisplayTitle}' has no connection for output '{outputPort.DisplayName}'.");
                     return;
                 }
 
-                if (!Graph.TryGetNode(connection.ToNodeId, out CutsceneNodeBase nextNode))
+                if (!RuntimeGraphDefinition.TryGetNode(connection.ToNodeId, out GraphNodeBase nextNode))
                 {
                     Fail("The next cutscene node could not be resolved.");
                     return;
                 }
 
                 Trace.MarkOutputTraversed(parallelNode.Id, outputPort.Key);
+                RuntimeTrace.MarkOutputTraversed(parallelNode.Id, outputPort.Key);
                 branchTargets.Add(nextNode);
             }
 
@@ -406,9 +502,11 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
             {
                 ExecutionState state = executionStates[index];
 
-                if (Graph.TryGetNode(state.NodeId, out CutsceneNodeBase currentNode))
+                if (RuntimeGraphDefinition.TryGetNode(state.NodeId, out GraphNodeBase currentNode))
                 {
-                    currentNode.OnExit(state.Context);
+                    CutsceneGraphCoreRuntimeMigrationUtility.TryExitGraphNode(
+                        currentNode,
+                        state.Context);
                 }
             }
         }
@@ -418,6 +516,9 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
             _parallelGroups.Clear();
             Status = CutsceneRunStatus.Success;
             Trace.MarkEnded(Status, string.Empty);
+            RuntimeTrace.MarkEnded(
+                CutsceneGraphExecutionContractAdapter.ToGraphRunStatus(Status),
+                string.Empty);
             HandyBus<CutsceneEndedEvent>.Raise(new CutsceneEndedEvent(Director, this, Status, string.Empty));
         }
 
@@ -431,6 +532,9 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
             FailureReason = reason ?? string.Empty;
             Status = CutsceneRunStatus.Failed;
             Trace.MarkEnded(Status, FailureReason);
+            RuntimeTrace.MarkEnded(
+                CutsceneGraphExecutionContractAdapter.ToGraphRunStatus(Status),
+                FailureReason);
             HandyBus<CutsceneEndedEvent>.Raise(new CutsceneEndedEvent(Director, this, Status, FailureReason));
         }
 
@@ -458,7 +562,7 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
 
             public bool HasPendingCompletion { get; set; }
 
-            public CutsceneNodeResult PendingResult { get; set; }
+            public GraphExecutionResult PendingResult { get; set; }
         }
 
         private sealed class ParallelGroupState

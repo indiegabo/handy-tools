@@ -113,7 +113,7 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule.Samples
             setInactiveNode.Position = new Vector2(320f, 32f);
 
             CutsceneWaitNode firstWaitNode = graph.CreateNode<CutsceneWaitNode>();
-            firstWaitNode.Configure(1f, CutsceneTimeMode.Scaled);
+            firstWaitNode.Configure(0.25f, CutsceneTimeMode.Scaled);
             firstWaitNode.Position = new Vector2(640f, 32f);
 
             CutsceneWaitNode secondWaitNode = graph.CreateNode<CutsceneWaitNode>();

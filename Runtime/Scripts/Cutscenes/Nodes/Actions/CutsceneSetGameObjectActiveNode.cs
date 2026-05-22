@@ -17,6 +17,30 @@ namespace IndieGabo.HandyTools.CutscenesModule.Nodes.Actions
         private CutsceneValueSource _activeSource =
             CutsceneValueSource.CreateDirect(true);
 
+        /// <summary>
+        /// Exposes the authored target source for runtime migration.
+        /// </summary>
+        internal CutsceneValueSource TargetSource
+        {
+            get
+            {
+                EnsureValueSourcesConfigured();
+                return _targetSource;
+            }
+        }
+
+        /// <summary>
+        /// Exposes the authored active-state source for runtime migration.
+        /// </summary>
+        internal CutsceneValueSource ActiveSource
+        {
+            get
+            {
+                EnsureValueSourcesConfigured();
+                return _activeSource;
+            }
+        }
+
         public void Configure(GameObject target, bool isActive)
         {
             EnsureValueSourcesConfigured();

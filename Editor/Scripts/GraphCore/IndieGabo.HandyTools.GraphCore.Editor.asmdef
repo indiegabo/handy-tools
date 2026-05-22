@@ -1,0 +1,20 @@
+{
+    "name": "IndieGabo.HandyTools.GraphCore.Editor",
+    "rootNamespace": "IndieGabo.HandyTools.Editor.GraphCore",
+    "references": [
+        "IndieGabo.HandyTools.Editor",
+        "IndieGabo.HandyTools.GraphCore",
+        "IndieGabo.HandyTools.Utils"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

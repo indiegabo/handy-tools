@@ -60,8 +60,12 @@ namespace IndieGabo.HandyTools.PoolingModule
         /// <returns>Independent pool runtime instance.</returns>
         public HandyPoolRuntime<TBehaviour> CreateRuntime()
         {
+            string runtimeOwnerName = string.IsNullOrWhiteSpace(name)
+                ? GetType().Name
+                : name;
+
             return new HandyPoolRuntime<TBehaviour>(
-                name,
+                runtimeOwnerName,
                 BuildRuntimeDefinitions(),
                 _defaultSize,
                 _maxSize,

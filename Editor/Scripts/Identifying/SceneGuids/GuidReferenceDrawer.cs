@@ -46,9 +46,9 @@ namespace IndieGabo.HandyTools.Editor.IdentifyingModule.SceneGuids
         /// <param name="label">Label provided by the inspector.</param>
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            SerializedProperty guidProperty = property.FindPropertyRelative("serializedGuid");
-            SerializedProperty nameProperty = property.FindPropertyRelative("cachedName");
-            SerializedProperty sceneProperty = property.FindPropertyRelative("cachedScene");
+            SerializedProperty guidProperty = property.FindPropertyRelative("_serializedGuid");
+            SerializedProperty nameProperty = property.FindPropertyRelative("_cachedName");
+            SerializedProperty sceneProperty = property.FindPropertyRelative("_cachedScene");
 
             Rect objectFieldRect = position;
             objectFieldRect.height = EditorGUIUtility.singleLineHeight;
@@ -59,6 +59,16 @@ namespace IndieGabo.HandyTools.Editor.IdentifyingModule.SceneGuids
                 EditorGUIUtility.standardVerticalSpacing;
 
             EditorGUI.BeginProperty(position, label, property);
+
+            if (guidProperty == null || nameProperty == null || sceneProperty == null)
+            {
+                EditorGUI.LabelField(
+                    objectFieldRect,
+                    label.text,
+                    "GuidReference layout mismatch.");
+                EditorGUI.EndProperty();
+                return;
+            }
 
             DrawReferenceField(
                 objectFieldRect,

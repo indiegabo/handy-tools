@@ -4,6 +4,10 @@ using UnityEngine;
 
 namespace IndieGabo.HandyTools.CutscenesModule.Triggers
 {
+    /// <summary>
+    /// Defines which Unity lifecycle callback automatically starts one
+    /// cutscene trigger.
+    /// </summary>
     public enum CutsceneTriggerMode
     {
         Manual,
@@ -12,6 +16,9 @@ namespace IndieGabo.HandyTools.CutscenesModule.Triggers
         Start,
     }
 
+    /// <summary>
+    /// Starts one cutscene director from a configured lifecycle entry point.
+    /// </summary>
     [DisallowMultipleComponent]
     public sealed class CutsceneTrigger : MonoBehaviour
     {
@@ -24,10 +31,7 @@ namespace IndieGabo.HandyTools.CutscenesModule.Triggers
 
         private void Awake()
         {
-            if (_director == null)
-            {
-                _director = GetComponent<CutsceneDirector>();
-            }
+            ResolveDirector();
 
             if (_triggerMode == CutsceneTriggerMode.Awake)
             {
@@ -61,6 +65,50 @@ namespace IndieGabo.HandyTools.CutscenesModule.Triggers
 
             _director.Play();
             _hasTriggered = true;
+        }
+
+        /// <summary>
+        /// Replays the configured automatic trigger mode when the Unity editor
+        /// enters play mode without reloading the active scene objects.
+        /// </summary>
+        public void HandlePlaySessionStartWithoutSceneReload()
+        {
+            ResolveDirector();
+
+            if (_director == null || _director.TryGetActiveRun(out _))
+            {
+                return;
+            }
+
+            switch (_triggerMode)
+            {
+                case CutsceneTriggerMode.Awake:
+                case CutsceneTriggerMode.OnEnable:
+                case CutsceneTriggerMode.Start:
+                    Trigger();
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Clears transient trigger state before a new play session starts when
+        /// Unity reuses the same scene objects without reloading them.
+        /// </summary>
+        public void ResetRuntimeState()
+        {
+            _hasTriggered = false;
+        }
+
+        /// <summary>
+        /// Resolves the local director reference when the serialized field is
+        /// missing and the component shares the same GameObject.
+        /// </summary>
+        private void ResolveDirector()
+        {
+            if (_director == null)
+            {
+                _director = GetComponent<CutsceneDirector>();
+            }
         }
     }
 }

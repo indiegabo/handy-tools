@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using IndieGabo.HandyTools.CutscenesModule.Core;
 using IndieGabo.HandyTools.CutscenesModule.Nodes.Meta;
+using IndieGabo.HandyTools.Editor.GraphCore;
 using IndieGabo.HandyTools.Editor.CutscenesModule.Validation;
 using IndieGabo.HandyTools.Utils;
 using UnityEditor;
@@ -58,11 +59,12 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
         private readonly ScrollView _content;
         private readonly List<DragRelayField> _dragRelayFields = new();
         private readonly List<BlackboardDropZoneField> _blackboardDropZones = new();
+        private readonly DeferredGraphUiActionDispatcher _inspectorChangedDispatcher;
+        private readonly DeferredGraphUiActionDispatcher _refreshDispatcher;
 
         private CutsceneDirector _director;
         private SerializableGuid _selectedNodeId;
         private bool _isRefreshing;
-        private bool _hasPendingInspectorChanged;
         private bool _hasPendingLiveCommentPreview;
         private string _pendingLiveCommentPropertyPath;
         private string _pendingLiveCommentValue;
@@ -95,6 +97,9 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
             _content.contentContainer.style.minWidth = 0f;
             _content.contentContainer.style.flexShrink = 1f;
             Add(_content);
+
+            _inspectorChangedDispatcher = new DeferredGraphUiActionDispatcher(this);
+            _refreshDispatcher = new DeferredGraphUiActionDispatcher(this);
 
             RegisterCallback<DragUpdatedEvent>(
                 HandleRootDragUpdated,
@@ -170,7 +175,7 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
                 return;
             }
 
-            schedule.Execute(Refresh).ExecuteLater(0);
+            _refreshDispatcher.Dispatch(Refresh);
         }
 
         /// <summary>
@@ -363,7 +368,7 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
         private void HandleNodePropertyChanged()
         {
             if (_isRefreshing
-                || _hasPendingInspectorChanged
+                || _inspectorChangedDispatcher.HasPendingAction
                 || _director == null
                 || _selectedNodeId == SerializableGuid.Empty)
             {
@@ -402,19 +407,15 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
             CutsceneEditorUtility.MarkDirectorDirty(_director);
 
             SerializableGuid changedNodeId = _selectedNodeId;
-            _hasPendingInspectorChanged = true;
-
-            schedule.Execute(() =>
+            _inspectorChangedDispatcher.Dispatch(() =>
             {
-                _hasPendingInspectorChanged = false;
-
                 if (_director == null || changedNodeId == SerializableGuid.Empty)
                 {
                     return;
                 }
 
                 InspectorChanged?.Invoke(changedNodeId);
-            }).ExecuteLater(0);
+            });
         }
 
         /// <summary>
@@ -792,7 +793,7 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
             SerializableGuid changedNodeId = _selectedNodeId;
             Refresh();
 
-            schedule.Execute(() =>
+            _inspectorChangedDispatcher.Dispatch(() =>
             {
                 if (_director == null || changedNodeId == SerializableGuid.Empty)
                 {
@@ -800,7 +801,7 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
                 }
 
                 InspectorChanged?.Invoke(changedNodeId);
-            }).ExecuteLater(0);
+            });
         }
 
         /// <summary>

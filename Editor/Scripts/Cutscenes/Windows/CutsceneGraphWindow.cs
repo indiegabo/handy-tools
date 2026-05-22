@@ -32,6 +32,9 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
         private string _directorGlobalId;
 
         [SerializeField]
+        private EntityId _directorEntityId = EntityId.None;
+
+        [SerializeField]
         private string _selectedNodeIdHex;
 
         private CutsceneGraphView _graphView;
@@ -72,12 +75,14 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
         private void OnEnable()
         {
             EditorApplication.update += HandleEditorUpdate;
-            RestoreBoundDirector();
+            EditorApplication.playModeStateChanged += HandlePlayModeStateChanged;
+            SyncDirectorBinding();
         }
 
         private void OnDisable()
         {
             EditorApplication.update -= HandleEditorUpdate;
+            EditorApplication.playModeStateChanged -= HandlePlayModeStateChanged;
 
             if (_searchProvider != null)
             {
@@ -87,7 +92,7 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
 
         public void CreateGUI()
         {
-            RestoreBoundDirector();
+            SyncDirectorBinding();
 
             rootVisualElement.Clear();
             rootVisualElement.style.flexDirection = FlexDirection.Column;
@@ -272,10 +277,12 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
             if (_director != null)
             {
                 _directorGlobalId = GlobalObjectId.GetGlobalObjectIdSlow(_director).ToString();
+                _directorEntityId = GetEntityId(_director);
             }
             else
             {
                 _directorGlobalId = string.Empty;
+                _directorEntityId = EntityId.None;
             }
 
             ApplyDirectorBinding();
@@ -294,34 +301,172 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
             RefreshValidationSummary();
         }
 
-        private void RestoreBoundDirector()
+        private bool RestoreBoundDirector()
         {
-            if (_director != null)
+            CutsceneDirector previousDirector = _director;
+            string previousDirectorGlobalId = _directorGlobalId;
+
+            if (string.IsNullOrWhiteSpace(_directorGlobalId)
+                && !HasEntityId(_directorEntityId)
+                && _director != null)
             {
                 _directorGlobalId = GlobalObjectId.GetGlobalObjectIdSlow(_director).ToString();
-                return;
+                _directorEntityId = GetEntityId(_director);
             }
 
             if (string.IsNullOrWhiteSpace(_directorGlobalId)
-                || !GlobalObjectId.TryParse(_directorGlobalId, out GlobalObjectId globalObjectId))
+                && !HasEntityId(_directorEntityId))
             {
-                return;
+                return !ReferenceEquals(previousDirector, _director)
+                    || !string.Equals(
+                        previousDirectorGlobalId,
+                        _directorGlobalId,
+                        StringComparison.Ordinal);
             }
 
-            UnityEngine.Object resolvedObject =
-                GlobalObjectId.GlobalObjectIdentifierToObjectSlow(globalObjectId);
-
-            if (resolvedObject is CutsceneDirector resolvedDirector)
+            if (TryResolveDirectorByGlobalId(
+                    _directorGlobalId,
+                    _directorEntityId,
+                    out CutsceneDirector resolvedDirector))
             {
                 _director = resolvedDirector;
+            }
+            else
+            {
+                _director = null;
+                _directorGlobalId = string.Empty;
+                _directorEntityId = EntityId.None;
+            }
+
+            if (_director != null)
+            {
+                _directorGlobalId = GlobalObjectId.GetGlobalObjectIdSlow(_director).ToString();
+                _directorEntityId = GetEntityId(_director);
+            }
+
+            return !ReferenceEquals(previousDirector, _director)
+                || !string.Equals(
+                    previousDirectorGlobalId,
+                    _directorGlobalId,
+                    StringComparison.Ordinal);
+        }
+
+        private static bool TryResolveDirectorByGlobalId(
+            string directorGlobalId,
+            EntityId directorEntityId,
+            out CutsceneDirector director)
+        {
+            director = null;
+            GlobalObjectId globalObjectId = default;
+            bool hasPersistedGlobalId = !string.IsNullOrWhiteSpace(directorGlobalId)
+                && GlobalObjectId.TryParse(directorGlobalId, out globalObjectId);
+
+            if (hasPersistedGlobalId
+                && TryResolveDirectorFromObject(
+                    GlobalObjectId.GlobalObjectIdentifierToObjectSlow(globalObjectId),
+                    out director))
+            {
+                return true;
+            }
+
+            if (HasEntityId(directorEntityId)
+                && TryResolveDirectorFromObject(
+                    EditorUtility.EntityIdToObject(directorEntityId),
+                    out director))
+            {
+                return true;
+            }
+
+            CutsceneDirector[] candidates = Resources.FindObjectsOfTypeAll<CutsceneDirector>();
+
+            for (int index = 0; index < candidates.Length; index++)
+            {
+                CutsceneDirector candidate = candidates[index];
+
+                if (candidate == null)
+                {
+                    continue;
+                }
+
+                if (HasEntityId(directorEntityId)
+                    && (GetEntityId(candidate).Equals(directorEntityId)
+                        || GetEntityId(candidate.gameObject).Equals(directorEntityId)))
+                {
+                    director = candidate;
+                    return true;
+                }
+
+                if (!hasPersistedGlobalId)
+                {
+                    continue;
+                }
+
+                string candidateGlobalId = GlobalObjectId.GetGlobalObjectIdSlow(candidate).ToString();
+
+                if (string.Equals(candidateGlobalId, directorGlobalId, StringComparison.Ordinal))
+                {
+                    director = candidate;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool TryResolveDirectorFromObject(
+            UnityEngine.Object source,
+            out CutsceneDirector director)
+        {
+            if (source is CutsceneDirector resolvedDirector)
+            {
+                director = resolvedDirector;
+                return true;
+            }
+
+            if (source is GameObject resolvedGameObject
+                && resolvedGameObject.TryGetComponent(out CutsceneDirector resolvedFromGameObject))
+            {
+                director = resolvedFromGameObject;
+                return true;
+            }
+
+            director = null;
+            return false;
+        }
+
+        private static EntityId GetEntityId(UnityEngine.Object source)
+        {
+            return source != null ? source.GetEntityId() : EntityId.None;
+        }
+
+        private static bool HasEntityId(EntityId entityId)
+        {
+            return !EqualityComparer<EntityId>.Default.Equals(entityId, EntityId.None);
+        }
+
+        private void SyncDirectorBinding()
+        {
+            bool bindingChanged = RestoreBoundDirector();
+
+            if (bindingChanged)
+            {
+                ApplyDirectorBinding();
                 return;
             }
 
-            if (resolvedObject is GameObject resolvedGameObject
-                && resolvedGameObject.TryGetComponent(out CutsceneDirector resolvedFromGameObject))
+            _graphView?.RefreshRuntimeState();
+            _inspectorView?.Refresh();
+        }
+
+        private void HandlePlayModeStateChanged(PlayModeStateChange state)
+        {
+            if (state != PlayModeStateChange.EnteredPlayMode
+                && state != PlayModeStateChange.EnteredEditMode)
             {
-                _director = resolvedFromGameObject;
+                return;
             }
+
+            SyncDirectorBinding();
         }
 
         private void HandleNodeSelected(CutsceneGraphNodeView nodeView)
@@ -491,7 +636,10 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
 
             _pendingNodeCreationScreenPosition = GraphViewLocalToScreenPosition(screenPosition);
             _hasPendingNodeCreationScreenPosition = true;
-            _hasPendingNodeCreationGraphPosition = false;
+            _pendingNodeCreationGraphPosition = _graphView.ChangeCoordinatesTo(
+                _graphView.contentViewContainer,
+                screenPosition);
+            _hasPendingNodeCreationGraphPosition = true;
             _hasPendingConnectionRequest = false;
             _pendingConnectionFromNodeId = default;
             _pendingConnectionOutputKey = null;

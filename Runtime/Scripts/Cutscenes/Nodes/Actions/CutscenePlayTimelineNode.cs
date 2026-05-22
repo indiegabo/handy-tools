@@ -32,6 +32,42 @@ namespace IndieGabo.HandyTools.CutscenesModule.Nodes.Actions
             CutsceneValueSource.CreateDirect(true);
 
         /// <summary>
+        /// Exposes the authored PlayableDirector source for runtime migration.
+        /// </summary>
+        internal CutsceneValueSource PlayableDirectorSource
+        {
+            get
+            {
+                EnsureValueSourcesConfigured();
+                return _playableDirectorSource;
+            }
+        }
+
+        /// <summary>
+        /// Exposes the authored restart-on-enter source for runtime migration.
+        /// </summary>
+        internal CutsceneValueSource RestartOnEnterSource
+        {
+            get
+            {
+                EnsureValueSourcesConfigured();
+                return _restartOnEnterSource;
+            }
+        }
+
+        /// <summary>
+        /// Exposes the authored stop-on-exit source for runtime migration.
+        /// </summary>
+        internal CutsceneValueSource StopOnExitSource
+        {
+            get
+            {
+                EnsureValueSourcesConfigured();
+                return _stopOnExitSource;
+            }
+        }
+
+        /// <summary>
         /// Configures the timeline playback target and exit behavior.
         /// </summary>
         /// <param name="playableDirector">Director that owns the Timeline asset.</param>

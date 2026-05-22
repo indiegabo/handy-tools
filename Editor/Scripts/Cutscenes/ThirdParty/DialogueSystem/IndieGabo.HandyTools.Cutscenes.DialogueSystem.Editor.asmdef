@@ -4,6 +4,7 @@
     "references": [
         "IndieGabo.HandyTools.Runtime",
         "IndieGabo.HandyTools.Editor",
+        "IndieGabo.HandyTools.GraphCore",
         "IndieGabo.HandyTools.Cutscenes",
         "IndieGabo.HandyTools.Cutscenes.Editor",
         "IndieGabo.HandyTools.Cutscenes.DialogueSystem"

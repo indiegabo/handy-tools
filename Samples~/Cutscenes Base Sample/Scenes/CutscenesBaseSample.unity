@@ -196,20 +196,7 @@ MonoBehaviour:
         Part3: 1730305447
         Part4: 3331465323
       _hasCustomColor: 0
-      _customColor: {r: 0, g: 0, b: 0, a: 0}
-    - _fromNodeId:
-        Part1: 2540428099
-        Part2: 1105492955
-        Part3: 1730305447
-        Part4: 3331465323
-      _outputKey: Next
-      _toNodeId:
-        Part1: 3370182372
-        Part2: 1307067044
-        Part3: 698258063
-        Part4: 3222607739
-      _hasCustomColor: 0
-      _customColor: {r: 0, g: 0, b: 0, a: 0}
+      _customColor: {r: 0.45, g: 0.45, b: 0.45, a: 1}
     - _fromNodeId:
         Part1: 3370182372
         Part2: 1307067044
@@ -222,7 +209,7 @@ MonoBehaviour:
         Part3: 1207217302
         Part4: 1855304878
       _hasCustomColor: 0
-      _customColor: {r: 0, g: 0, b: 0, a: 0}
+      _customColor: {r: 0.45, g: 0.45, b: 0.45, a: 1}
     - _fromNodeId:
         Part1: 2390270599
         Part2: 1327925660
@@ -235,7 +222,7 @@ MonoBehaviour:
         Part3: 3398518710
         Part4: 3230071924
       _hasCustomColor: 0
-      _customColor: {r: 0, g: 0, b: 0, a: 0}
+      _customColor: {r: 0.45, g: 0.45, b: 0.45, a: 1}
     - _fromNodeId:
         Part1: 3975096542
         Part2: 1319922910
@@ -248,7 +235,7 @@ MonoBehaviour:
         Part3: 3886329235
         Part4: 1458026843
       _hasCustomColor: 0
-      _customColor: {r: 0, g: 0, b: 0, a: 0}
+      _customColor: {r: 0.45, g: 0.45, b: 0.45, a: 1}
     - _fromNodeId:
         Part1: 683183901
         Part2: 1115581725
@@ -261,7 +248,7 @@ MonoBehaviour:
         Part3: 3401261746
         Part4: 709566362
       _hasCustomColor: 0
-      _customColor: {r: 0, g: 0, b: 0, a: 0}
+      _customColor: {r: 0.45, g: 0.45, b: 0.45, a: 1}
     - _fromNodeId:
         Part1: 1188223214
         Part2: 1086818444
@@ -274,7 +261,20 @@ MonoBehaviour:
         Part3: 3861747869
         Part4: 2678581335
       _hasCustomColor: 0
-      _customColor: {r: 0, g: 0, b: 0, a: 0}
+      _customColor: {r: 0.45, g: 0.45, b: 0.45, a: 1}
+    - _fromNodeId:
+        Part1: 2540428099
+        Part2: 1105492955
+        Part3: 1730305447
+        Part4: 3331465323
+      _outputKey: Next
+      _toNodeId:
+        Part1: 3370182372
+        Part2: 1307067044
+        Part3: 698258063
+        Part4: 3222607739
+      _hasCustomColor: 0
+      _customColor: {r: 0.45, g: 0.45, b: 0.45, a: 1}
     _blackboard:
       _entries:
       - _id:
@@ -284,7 +284,7 @@ MonoBehaviour:
           Part4: 49174869
         _key: sample.message
         _value:
-          rid: 667685439550259379
+          rid: 1096524703007244482
       - _id:
           Part1: 3220139139
           Part2: 1326829264
@@ -292,7 +292,7 @@ MonoBehaviour:
           Part4: 2054641034
         _key: sample.prop.target
         _value:
-          rid: 667685439550259321
+          rid: 1096524703007244483
       - _id:
           Part1: 1067413936
           Part2: 1324783718
@@ -300,7 +300,7 @@ MonoBehaviour:
           Part4: 218742646
         _key: sample.prop.active
         _value:
-          rid: 667685439550259380
+          rid: 1096524703007244484
   _blackboardFoldoutStates:
   - _entryKey: sample.message
     _isExpanded: 0
@@ -311,12 +311,6 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 667685439550259321
-      type: {class: CutsceneGraphBlackboardGameObjectValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
-      data:
-        _objectTypeName: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
-          Culture=neutral, PublicKeyToken=null
-        Value: {fileID: 2050212878}
     - rid: 667685439550259376
       type: {class: CutsceneWaitNode, ns: IndieGabo.HandyTools.CutscenesModule.Nodes.Actions, asm: IndieGabo.HandyTools.Cutscenes}
       data:
@@ -326,10 +320,12 @@ MonoBehaviour:
           Part3: 3886329235
           Part4: 1458026843
         _title: Wait
-        _position: {x: 1672, y: 11.200001}
+        _position: {x: 960, y: 224}
         _durationSource:
           _mode: 0
           _blackboardVariable:
+            _scope: 0
+            _scopeKey: 
             _entryId:
               Part1: 0
               Part2: 0
@@ -338,12 +334,14 @@ MonoBehaviour:
             _entryKey: 
             _valueTypeName: 
           _directValue:
-            rid: 667685439550259377
+            rid: 1096524703007244385
           _expectedValueTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
             PublicKeyToken=b77a5c561934e089
         _timeModeSource:
           _mode: 0
           _blackboardVariable:
+            _scope: 0
+            _scopeKey: 
             _entryId:
               Part1: 0
               Part2: 0
@@ -352,79 +350,9 @@ MonoBehaviour:
             _entryKey: 
             _valueTypeName: 
           _directValue:
-            rid: 667685439550259378
+            rid: 1096524703007244386
           _expectedValueTypeName: IndieGabo.HandyTools.CutscenesModule.Core.CutsceneTimeMode,
             IndieGabo.HandyTools.Cutscenes, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    - rid: 667685439550259377
-      type: {class: CutsceneGraphBlackboardFloatValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
-      data:
-        Value: 1
-    - rid: 667685439550259378
-      type: {class: CutsceneGraphBlackboardEnumValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
-      data:
-        _enumTypeName: IndieGabo.HandyTools.CutscenesModule.Core.CutsceneTimeMode,
-          IndieGabo.HandyTools.Cutscenes, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-        _valueName: Unscaled
-    - rid: 667685439550259379
-      type: {class: CutsceneGraphBlackboardStringValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
-      data:
-        Value: Cutscene log
-    - rid: 667685439550259380
-      type: {class: CutsceneGraphBlackboardBoolValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
-      data:
-        Value: 0
-    - rid: 667685439550259381
-      type: {class: CutsceneGraphBlackboardStringValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
-      data:
-        Value: Cutscene log
-    - rid: 667685439550259382
-      type: {class: CutsceneGraphBlackboardGameObjectValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
-      data:
-        _objectTypeName: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
-          Culture=neutral, PublicKeyToken=null
-        Value: {fileID: 2050212878}
-    - rid: 667685439550259383
-      type: {class: CutsceneGraphBlackboardBoolValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
-      data:
-        Value: 0
-    - rid: 667685439550259384
-      type: {class: CutsceneGraphBlackboardBoolValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
-      data:
-        Value: 0
-    - rid: 667685439550259385
-      type: {class: CutsceneGraphBlackboardBoolValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
-      data:
-        Value: 0
-    - rid: 667685439550259386
-      type: {class: CutsceneGraphBlackboardUnityObjectValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
-      data:
-        _objectTypeName: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
-          Culture=neutral, PublicKeyToken=null
-        Value: {fileID: 0}
-    - rid: 667685439550259387
-      type: {class: CutsceneGraphBlackboardBoolValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
-      data:
-        Value: 0
-    - rid: 667685439550259388
-      type: {class: CutsceneGraphBlackboardFloatValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
-      data:
-        Value: 1
-    - rid: 667685439550259389
-      type: {class: CutsceneGraphBlackboardEnumValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
-      data:
-        _enumTypeName: IndieGabo.HandyTools.CutscenesModule.Core.CutsceneTimeMode,
-          IndieGabo.HandyTools.Cutscenes, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-        _valueName: Scaled
-    - rid: 667685439550259390
-      type: {class: CutsceneGraphBlackboardUnityObjectValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
-      data:
-        _objectTypeName: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
-          Culture=neutral, PublicKeyToken=null
-        Value: {fileID: 2050212878}
-    - rid: 667685439550259391
-      type: {class: CutsceneGraphBlackboardBoolValue, ns: IndieGabo.HandyTools.CutscenesModule.Core, asm: IndieGabo.HandyTools.Cutscenes}
-      data:
-        Value: 1
     - rid: 667685439550259392
       type: {class: CutsceneEntryNode, ns: IndieGabo.HandyTools.CutscenesModule.Nodes.Flow, asm: IndieGabo.HandyTools.Cutscenes}
       data:
@@ -434,7 +362,7 @@ MonoBehaviour:
           Part3: 1514955667
           Part4: 567938385
         _title: Entry
-        _position: {x: 8, y: 11.200001}
+        _position: {x: -640, y: 32}
     - rid: 667685439550259393
       type: {class: CutsceneSetBlackboardValuesNode, ns: IndieGabo.HandyTools.CutscenesModule.Nodes.Actions, asm: IndieGabo.HandyTools.Cutscenes}
       data:
@@ -444,9 +372,11 @@ MonoBehaviour:
           Part3: 1730305447
           Part4: 3331465323
         _title: Set Blackboard Values
-        _position: {x: 328, y: 11.200001}
+        _position: {x: -320, y: 32}
         _assignments:
         - _targetVariable:
+            _scope: 0
+            _scopeKey: 
             _entryId:
               Part1: 845376133
               Part2: 1240234507
@@ -458,6 +388,8 @@ MonoBehaviour:
           _valueSource:
             _mode: 0
             _blackboardVariable:
+              _scope: 0
+              _scopeKey: 
               _entryId:
                 Part1: 0
                 Part2: 0
@@ -466,10 +398,12 @@ MonoBehaviour:
               _entryKey: 
               _valueTypeName: 
             _directValue:
-              rid: 667685439550259381
+              rid: 1096524703007244377
             _expectedValueTypeName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
               PublicKeyToken=b77a5c561934e089
         - _targetVariable:
+            _scope: 0
+            _scopeKey: 
             _entryId:
               Part1: 3220139139
               Part2: 1326829264
@@ -481,6 +415,8 @@ MonoBehaviour:
           _valueSource:
             _mode: 0
             _blackboardVariable:
+              _scope: 0
+              _scopeKey: 
               _entryId:
                 Part1: 0
                 Part2: 0
@@ -489,10 +425,12 @@ MonoBehaviour:
               _entryKey: 
               _valueTypeName: 
             _directValue:
-              rid: 667685439550259382
+              rid: 1096524703007244378
             _expectedValueTypeName: UnityEngine.GameObject, UnityEngine.CoreModule,
               Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
         - _targetVariable:
+            _scope: 0
+            _scopeKey: 
             _entryId:
               Part1: 1067413936
               Part2: 1324783718
@@ -504,6 +442,8 @@ MonoBehaviour:
           _valueSource:
             _mode: 0
             _blackboardVariable:
+              _scope: 0
+              _scopeKey: 
               _entryId:
                 Part1: 0
                 Part2: 0
@@ -512,7 +452,7 @@ MonoBehaviour:
               _entryKey: 
               _valueTypeName: 
             _directValue:
-              rid: 667685439550259383
+              rid: 1096524703007244379
             _expectedValueTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
               PublicKeyToken=b77a5c561934e089
     - rid: 667685439550259394
@@ -524,8 +464,10 @@ MonoBehaviour:
           Part3: 698258063
           Part4: 3222607739
         _title: Log Blackboard Value
-        _position: {x: 680, y: 11.200001}
+        _position: {x: 0, y: 32}
         _variable:
+          _scope: 0
+          _scopeKey: 
           _entryId:
             Part1: 845376133
             Part2: 1240234507
@@ -537,6 +479,8 @@ MonoBehaviour:
         _warningSource:
           _mode: 0
           _blackboardVariable:
+            _scope: 0
+            _scopeKey: 
             _entryId:
               Part1: 0
               Part2: 0
@@ -545,12 +489,14 @@ MonoBehaviour:
             _entryKey: 
             _valueTypeName: 
           _directValue:
-            rid: 667685439550259384
+            rid: 1096524703007244380
           _expectedValueTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
             PublicKeyToken=b77a5c561934e089
         _errorSource:
           _mode: 0
           _blackboardVariable:
+            _scope: 0
+            _scopeKey: 
             _entryId:
               Part1: 0
               Part2: 0
@@ -559,7 +505,7 @@ MonoBehaviour:
             _entryKey: 
             _valueTypeName: 
           _directValue:
-            rid: 667685439550259385
+            rid: 1096524703007244381
           _expectedValueTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
             PublicKeyToken=b77a5c561934e089
     - rid: 667685439550259395
@@ -571,10 +517,12 @@ MonoBehaviour:
           Part3: 1207217302
           Part4: 1855304878
         _title: Set GameObject Active
-        _position: {x: 1000, y: 4.3999977}
+        _position: {x: 320, y: 32}
         _targetSource:
           _mode: 1
           _blackboardVariable:
+            _scope: 0
+            _scopeKey: 
             _entryId:
               Part1: 3220139139
               Part2: 1326829264
@@ -584,22 +532,23 @@ MonoBehaviour:
             _valueTypeName: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
               Culture=neutral, PublicKeyToken=null
           _directValue:
-            rid: 667685439550259386
+            rid: 1096524736640320416
           _expectedValueTypeName: UnityEngine.GameObject, UnityEngine.CoreModule,
             Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
         _activeSource:
-          _mode: 1
+          _mode: 0
           _blackboardVariable:
+            _scope: 0
+            _scopeKey: 
             _entryId:
-              Part1: 1067413936
-              Part2: 1324783718
-              Part3: 1794358713
-              Part4: 218742646
-            _entryKey: sample.prop.active
-            _valueTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
-              PublicKeyToken=b77a5c561934e089
+              Part1: 0
+              Part2: 0
+              Part3: 0
+              Part4: 0
+            _entryKey: 
+            _valueTypeName: 
           _directValue:
-            rid: 667685439550259387
+            rid: 1096524703007244382
           _expectedValueTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
             PublicKeyToken=b77a5c561934e089
     - rid: 667685439550259396
@@ -611,10 +560,12 @@ MonoBehaviour:
           Part3: 3398518710
           Part4: 3230071924
         _title: Wait
-        _position: {x: 1352, y: 11.200001}
+        _position: {x: 648, y: 27.2}
         _durationSource:
           _mode: 0
           _blackboardVariable:
+            _scope: 0
+            _scopeKey: 
             _entryId:
               Part1: 0
               Part2: 0
@@ -623,12 +574,14 @@ MonoBehaviour:
             _entryKey: 
             _valueTypeName: 
           _directValue:
-            rid: 667685439550259388
+            rid: 1096524703007244383
           _expectedValueTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
             PublicKeyToken=b77a5c561934e089
         _timeModeSource:
           _mode: 0
           _blackboardVariable:
+            _scope: 0
+            _scopeKey: 
             _entryId:
               Part1: 0
               Part2: 0
@@ -637,7 +590,7 @@ MonoBehaviour:
             _entryKey: 
             _valueTypeName: 
           _directValue:
-            rid: 667685439550259389
+            rid: 1096524703007244384
           _expectedValueTypeName: IndieGabo.HandyTools.CutscenesModule.Core.CutsceneTimeMode,
             IndieGabo.HandyTools.Cutscenes, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     - rid: 667685439550259397
@@ -649,10 +602,12 @@ MonoBehaviour:
           Part3: 3401261746
           Part4: 709566362
         _title: Set GameObject Active
-        _position: {x: 2024, y: 11.200001}
+        _position: {x: 1280, y: 224}
         _targetSource:
           _mode: 0
           _blackboardVariable:
+            _scope: 0
+            _scopeKey: 
             _entryId:
               Part1: 0
               Part2: 0
@@ -661,12 +616,14 @@ MonoBehaviour:
             _entryKey: 
             _valueTypeName: 
           _directValue:
-            rid: 667685439550259390
+            rid: 1096524703007244387
           _expectedValueTypeName: UnityEngine.GameObject, UnityEngine.CoreModule,
             Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
         _activeSource:
           _mode: 0
           _blackboardVariable:
+            _scope: 0
+            _scopeKey: 
             _entryId:
               Part1: 0
               Part2: 0
@@ -675,7 +632,7 @@ MonoBehaviour:
             _entryKey: 
             _valueTypeName: 
           _directValue:
-            rid: 667685439550259391
+            rid: 1096524703007244388
           _expectedValueTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
             PublicKeyToken=b77a5c561934e089
     - rid: 667685439550259398
@@ -687,7 +644,7 @@ MonoBehaviour:
           Part3: 3861747869
           Part4: 2678581335
         _title: Finish
-        _position: {x: 2344, y: 11.200001}
+        _position: {x: 1600, y: 224}
     - rid: 667685439550259399
       type: {class: CutsceneCommentNode, ns: IndieGabo.HandyTools.CutscenesModule.Nodes.Meta, asm: IndieGabo.HandyTools.Cutscenes}
       data:
@@ -699,6 +656,82 @@ MonoBehaviour:
         _title: Comment
         _position: {x: 1512, y: -134}
         _body: Look at this curve! Changing at real time!! What a nice comment!
+    - rid: 1096524703007244377
+      type: {class: GraphBlackboardStringValue, ns: IndieGabo.HandyTools.GraphCore, asm: IndieGabo.HandyTools.GraphCore}
+      data:
+        _value: Cutscene log
+    - rid: 1096524703007244378
+      type: {class: GraphBlackboardGameObjectValue, ns: IndieGabo.HandyTools.GraphCore, asm: IndieGabo.HandyTools.GraphCore}
+      data:
+        _objectTypeName: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        _value: {fileID: 2050212878}
+    - rid: 1096524703007244379
+      type: {class: GraphBlackboardBoolValue, ns: IndieGabo.HandyTools.GraphCore, asm: IndieGabo.HandyTools.GraphCore}
+      data:
+        _value: 0
+    - rid: 1096524703007244380
+      type: {class: GraphBlackboardBoolValue, ns: IndieGabo.HandyTools.GraphCore, asm: IndieGabo.HandyTools.GraphCore}
+      data:
+        _value: 0
+    - rid: 1096524703007244381
+      type: {class: GraphBlackboardBoolValue, ns: IndieGabo.HandyTools.GraphCore, asm: IndieGabo.HandyTools.GraphCore}
+      data:
+        _value: 0
+    - rid: 1096524703007244382
+      type: {class: GraphBlackboardBoolValue, ns: IndieGabo.HandyTools.GraphCore, asm: IndieGabo.HandyTools.GraphCore}
+      data:
+        _value: 0
+    - rid: 1096524703007244383
+      type: {class: GraphBlackboardFloatValue, ns: IndieGabo.HandyTools.GraphCore, asm: IndieGabo.HandyTools.GraphCore}
+      data:
+        _value: 0.25
+    - rid: 1096524703007244384
+      type: {class: GraphBlackboardEnumValue, ns: IndieGabo.HandyTools.GraphCore, asm: IndieGabo.HandyTools.GraphCore}
+      data:
+        _enumTypeName: IndieGabo.HandyTools.CutscenesModule.Core.CutsceneTimeMode,
+          IndieGabo.HandyTools.Cutscenes, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _valueName: Scaled
+    - rid: 1096524703007244385
+      type: {class: GraphBlackboardFloatValue, ns: IndieGabo.HandyTools.GraphCore, asm: IndieGabo.HandyTools.GraphCore}
+      data:
+        _value: 1
+    - rid: 1096524703007244386
+      type: {class: GraphBlackboardEnumValue, ns: IndieGabo.HandyTools.GraphCore, asm: IndieGabo.HandyTools.GraphCore}
+      data:
+        _enumTypeName: IndieGabo.HandyTools.CutscenesModule.Core.CutsceneTimeMode,
+          IndieGabo.HandyTools.Cutscenes, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _valueName: Unscaled
+    - rid: 1096524703007244387
+      type: {class: GraphBlackboardGameObjectValue, ns: IndieGabo.HandyTools.GraphCore, asm: IndieGabo.HandyTools.GraphCore}
+      data:
+        _objectTypeName: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        _value: {fileID: 2050212878}
+    - rid: 1096524703007244388
+      type: {class: GraphBlackboardBoolValue, ns: IndieGabo.HandyTools.GraphCore, asm: IndieGabo.HandyTools.GraphCore}
+      data:
+        _value: 1
+    - rid: 1096524703007244482
+      type: {class: GraphBlackboardStringValue, ns: IndieGabo.HandyTools.GraphCore, asm: IndieGabo.HandyTools.GraphCore}
+      data:
+        _value: Cutscene log
+    - rid: 1096524703007244483
+      type: {class: GraphBlackboardGameObjectValue, ns: IndieGabo.HandyTools.GraphCore, asm: IndieGabo.HandyTools.GraphCore}
+      data:
+        _objectTypeName: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        _value: {fileID: 2050212878}
+    - rid: 1096524703007244484
+      type: {class: GraphBlackboardBoolValue, ns: IndieGabo.HandyTools.GraphCore, asm: IndieGabo.HandyTools.GraphCore}
+      data:
+        _value: 0
+    - rid: 1096524736640320416
+      type: {class: GraphBlackboardGameObjectValue, ns: IndieGabo.HandyTools.GraphCore, asm: IndieGabo.HandyTools.GraphCore}
+      data:
+        _objectTypeName: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        _value: {fileID: 0}
 --- !u!114 &1004
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -806,6 +839,72 @@ Transform:
   m_GameObject: {fileID: 299084872}
   serializedVersion: 2
   m_LocalRotation: {x: 0.40821794, y: -0.23456973, z: 0.10938166, w: 0.8754261}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &457619568
+GameObject:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 457619570}
+  - component: {fileID: 457619569}
+  m_Layer: 0
+  m_Name: __HandySceneMetadata
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &457619569
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 457619568}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96e44c8f73c746409b038d4e9a5923a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: IndieGabo.HandyTools.Scenes::IndieGabo.HandyTools.Scenes.HandySceneMetadataCarrier
+  _schemaVersion: 1
+  _isHandyScene: 1
+  _sectionIds:
+  - sample.level-mapping
+  - sample.travel-profile
+  _sections:
+  - rid: 1096524751336374362
+  - rid: 1096524751336374363
+  references:
+    version: 2
+    RefIds:
+    - rid: 1096524751336374362
+      type: {class: LevelMapping, ns: IndieGabo.HandyTools.Scenes.Samples, asm: IndieGabo.HandyTools.Scenes.Samples}
+      data:
+        _levelCode: Level-01
+        _recommendedPower: 5
+        _recommendedPowerObject: {fileID: 0}
+    - rid: 1096524751336374363
+      type: {class: SceneTravelProfile, ns: IndieGabo.HandyTools.Scenes.Samples, asm: IndieGabo.HandyTools.Scenes.Samples}
+      data:
+        _entrySpawnId: spawn.main_gate
+        _allowFastTravel: 1
+--- !u!4 &457619570
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 457619568}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1059,3 +1158,4 @@ SceneRoots:
   - {fileID: 1001}
   - {fileID: 1701864094}
   - {fileID: 299084874}
+  - {fileID: 457619570}

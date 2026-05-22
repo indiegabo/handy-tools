@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using IndieGabo.HandyTools.GraphCore;
 using IndieGabo.HandyTools.Utils;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -8,72 +9,48 @@ using UnityEngine;
 namespace IndieGabo.HandyTools.CutscenesModule.Core
 {
     [Serializable]
-    public abstract class CutsceneNodeBase
+    public abstract class CutsceneNodeBase : GraphNodeBase
     {
         private static readonly Dictionary<Type, string> DefaultTitlesByType = new();
 
-        [SerializeField, HideInInspector] private SerializableGuid _id;
-
-        [SerializeField]
-        private string _title;
-
-        [SerializeField]
-        private Vector2 _position;
-
-        public SerializableGuid Id => _id;
+        [ShowInInspector, ReadOnly]
+        public new string DisplayTitle => base.DisplayTitle;
 
         [ShowInInspector, ReadOnly]
-        public string DisplayTitle => string.IsNullOrWhiteSpace(_title) ? DefaultTitle : _title;
+        public string GraphNodeTitle => base.DisplayTitle;
 
-        protected virtual string DefaultTitle => ResolveRegisteredDefaultTitle();
+        internal string AuthoredTitle => Title ?? string.Empty;
 
-        public Vector2 Position
-        {
-            get => _position;
-            set => _position = value;
-        }
+        protected override string DefaultTitle => ResolveRegisteredDefaultTitle();
 
         /// <summary>
         /// Gets whether the graph editor should render one input port for this node.
         /// </summary>
-        public virtual bool HasInputPort => true;
+        public override bool HasInputPort => true;
 
         /// <summary>
         /// Gets whether editor auto-arrange should reposition this node.
         /// </summary>
-        public virtual bool ParticipatesInAutoArrange => true;
+        public override bool ParticipatesInAutoArrange => true;
 
         /// <summary>
         /// Gets whether topology validation should include this node.
         /// </summary>
-        public virtual bool ParticipatesInTopologyValidation => true;
+        public override bool ParticipatesInTopologyValidation => true;
 
         /// <summary>
         /// Gets whether runtime visualization may override the authored palette.
         /// </summary>
-        public virtual bool UsesRuntimeStateStyling => true;
+        public override bool UsesRuntimeStateStyling => true;
 
-        protected CutsceneNodeBase()
-        {
-            EnsureId();
-        }
-
-        public void EnsureId()
-        {
-            if (_id == SerializableGuid.Empty)
-            {
-                _id = SerializableGuid.NewGuid();
-            }
-        }
-
-        public virtual IReadOnlyList<CutsceneNodePort> GetOutputPorts()
+        public new virtual IReadOnlyList<CutsceneNodePort> GetOutputPorts()
         {
             return CutsceneNodePort.NextOnly;
         }
 
-        public virtual bool RequiresTick => false;
+        public override bool RequiresTick => false;
 
-        public virtual string GetSummary()
+        public override string GetSummary()
         {
             return string.Empty;
         }
@@ -91,45 +68,29 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
         {
         }
 
+        /// <summary>
+        /// Restores authored identity and layout state during graph migration flows.
+        /// </summary>
+        /// <param name="id">Stable node identifier to restore.</param>
+        /// <param name="title">Authored title override to restore.</param>
+        /// <param name="position">Authored graph position to restore.</param>
+        internal void RestoreAuthoringState(
+            SerializableGuid id,
+            string title,
+            Vector2 position)
+        {
+            RestoreId(id);
+            Title = title ?? string.Empty;
+            Position = position;
+        }
+
         private string ResolveRegisteredDefaultTitle()
         {
             Type nodeType = GetType();
 
-            if (DefaultTitlesByType.TryGetValue(nodeType, out string defaultTitle))
-            {
-                return defaultTitle;
-            }
-
-            CutsceneNodeMenuAttribute menuAttribute =
-                nodeType.GetCustomAttribute<CutsceneNodeMenuAttribute>(false);
-
-            if (menuAttribute != null)
-            {
-                if (!string.IsNullOrWhiteSpace(menuAttribute.DefaultTitle))
-                {
-                    defaultTitle = menuAttribute.DefaultTitle;
-                    DefaultTitlesByType[nodeType] = defaultTitle;
-                    return defaultTitle;
-                }
-
-                if (!string.IsNullOrWhiteSpace(menuAttribute.MenuPath))
-                {
-                    int slashIndex = menuAttribute.MenuPath.LastIndexOf('/');
-                    defaultTitle = slashIndex >= 0
-                        ? menuAttribute.MenuPath[(slashIndex + 1)..]
-                        : menuAttribute.MenuPath;
-
-                    if (!string.IsNullOrWhiteSpace(defaultTitle))
-                    {
-                        DefaultTitlesByType[nodeType] = defaultTitle;
-                        return defaultTitle;
-                    }
-                }
-            }
-
-            defaultTitle = nodeType.Name;
-            DefaultTitlesByType[nodeType] = defaultTitle;
-            return defaultTitle;
+            return GraphNodeMenuMetadataUtility.ResolveDefaultTitle<CutsceneNodeMenuAttribute>(
+                nodeType,
+                DefaultTitlesByType);
         }
     }
 }

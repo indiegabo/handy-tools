@@ -22,6 +22,42 @@ namespace IndieGabo.HandyTools.CutscenesModule.Nodes.Actions
         private CutsceneValueSource _resetTriggerNameSource =
             CutsceneValueSource.CreateDirect(string.Empty);
 
+        /// <summary>
+        /// Exposes the authored animator source for runtime migration.
+        /// </summary>
+        internal CutsceneValueSource AnimatorSource
+        {
+            get
+            {
+                EnsureValueSourcesConfigured();
+                return _animatorSource;
+            }
+        }
+
+        /// <summary>
+        /// Exposes the authored trigger-name source for runtime migration.
+        /// </summary>
+        internal CutsceneValueSource TriggerNameSource
+        {
+            get
+            {
+                EnsureValueSourcesConfigured();
+                return _triggerNameSource;
+            }
+        }
+
+        /// <summary>
+        /// Exposes the authored reset-trigger source for runtime migration.
+        /// </summary>
+        internal CutsceneValueSource ResetTriggerNameSource
+        {
+            get
+            {
+                EnsureValueSourcesConfigured();
+                return _resetTriggerNameSource;
+            }
+        }
+
         public override string GetSummary()
         {
             EnsureValueSourcesConfigured();

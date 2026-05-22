@@ -12,6 +12,17 @@ namespace IndieGabo.HandyTools.CutscenesModule.Services
 
         private ICutsceneDialogueBridge _dialogueBridge;
 
+        /// <summary>
+        /// Clears stale runtime state before a new play session begins when
+        /// Unity reuses the same service instance without reloading the scene
+        /// or the scripting domain.
+        /// </summary>
+        public void ResetRuntimeState()
+        {
+            _activeRuns.Clear();
+            _dialogueBridge = null;
+        }
+
         public CutsceneRun StartDirector(CutsceneDirector director)
         {
             if (director == null)

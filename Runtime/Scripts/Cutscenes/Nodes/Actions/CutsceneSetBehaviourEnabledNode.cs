@@ -1,3 +1,4 @@
+using System.Reflection;
 using IndieGabo.HandyTools.CutscenesModule.Core;
 using UnityEngine;
 
@@ -8,9 +9,9 @@ namespace IndieGabo.HandyTools.CutscenesModule.Nodes.Actions
     public sealed class CutsceneSetBehaviourEnabledNode : CutsceneNodeBase
     {
         [SerializeField]
-        [CutsceneValueSourceType(typeof(Behaviour))]
+        [CutsceneValueSourceType(typeof(Component))]
         private CutsceneValueSource _targetSource =
-            CutsceneValueSource.CreateDirect<Behaviour>(null);
+            CutsceneValueSource.CreateDirect<Component>(null);
 
         [SerializeField]
         [CutsceneValueSourceType(typeof(bool))]
@@ -27,10 +28,10 @@ namespace IndieGabo.HandyTools.CutscenesModule.Nodes.Actions
         {
             EnsureValueSourcesConfigured();
 
-            if (!_targetSource.TryGetValue(context, out Behaviour target))
+            if (!_targetSource.TryGetValue(context, out Component target))
             {
                 context.TryComplete(CutsceneNodeResult.Failure(
-                    "Set Behaviour Enabled node requires one valid behaviour source."));
+                    "Set Behaviour Enabled node requires one valid component source."));
                 return;
             }
 
@@ -41,17 +42,45 @@ namespace IndieGabo.HandyTools.CutscenesModule.Nodes.Actions
                 return;
             }
 
-            target.enabled = isEnabled;
+            if (!TrySetEnabledState(target, isEnabled))
+            {
+                context.TryComplete(CutsceneNodeResult.Failure(
+                    "Set Behaviour Enabled node requires one component with a writable enabled state."));
+                return;
+            }
+
             context.TryComplete(CutsceneNodeResult.Success());
         }
 
         private void EnsureValueSourcesConfigured()
         {
-            _targetSource ??= CutsceneValueSource.CreateDirect<Behaviour>(null);
+            _targetSource ??= CutsceneValueSource.CreateDirect<Component>(null);
             _enabledSource ??= CutsceneValueSource.CreateDirect(true);
 
-            _targetSource.SetExpectedValueType(typeof(Behaviour));
+            _targetSource.SetExpectedValueType(typeof(Component));
             _enabledSource.SetExpectedValueType(typeof(bool));
+        }
+
+        private static bool TrySetEnabledState(Component target, bool isEnabled)
+        {
+            if (target == null)
+            {
+                return false;
+            }
+
+            PropertyInfo enabledProperty = target.GetType().GetProperty(
+                "enabled",
+                BindingFlags.Instance | BindingFlags.Public);
+
+            if (enabledProperty == null
+                || enabledProperty.PropertyType != typeof(bool)
+                || !enabledProperty.CanWrite)
+            {
+                return false;
+            }
+
+            enabledProperty.SetValue(target, isEnabled);
+            return true;
         }
     }
 }

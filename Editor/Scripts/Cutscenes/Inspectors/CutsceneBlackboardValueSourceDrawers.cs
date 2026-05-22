@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using IndieGabo.HandyTools.Editor.GraphCore;
 using IndieGabo.HandyTools.CutscenesModule.Core;
+using IndieGabo.HandyTools.GraphCore;
 using IndieGabo.HandyTools.CutscenesModule.Nodes.Actions;
 using IndieGabo.HandyTools.Utils;
 using UnityEditor;
@@ -13,19 +15,9 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
 {
     internal static class CutsceneBlackboardDragAndDrop
     {
-        private const string DirectorDataKey =
-            "HandyTools.Cutscenes.Blackboard.Director";
-        private const string EntryIdDataKey =
-            "HandyTools.Cutscenes.Blackboard.EntryId";
+        internal static bool HasActiveDrag => GraphBlackboardDragSession.HasActiveDrag;
 
-        private static CutsceneDirector s_activeDirector;
-        private static SerializableGuid s_activeEntryId;
-        private static string s_activeEntryLabel = string.Empty;
-
-        internal static bool HasActiveDrag => s_activeDirector != null
-            && s_activeEntryId != SerializableGuid.Empty;
-
-        internal static string ActiveEntryLabel => s_activeEntryLabel;
+        internal static string ActiveEntryLabel => GraphBlackboardDragSession.ActiveEntryLabel;
 
         internal static void BeginDrag(
             CutsceneDirector director,
@@ -37,16 +29,15 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
             }
 
             entry.EnsureId();
-            s_activeDirector = director;
-            s_activeEntryId = entry.Id;
-            s_activeEntryLabel = entry.Key ?? string.Empty;
+            GraphBlackboardDragSession.BeginDrag(
+                director,
+                entry.Id,
+                entry.Key ?? string.Empty);
         }
 
         internal static void CancelDrag()
         {
-            s_activeDirector = null;
-            s_activeEntryId = SerializableGuid.Empty;
-            s_activeEntryLabel = string.Empty;
+            GraphBlackboardDragSession.CancelDrag();
         }
 
         internal static bool TryResolveDraggedEntry(
@@ -60,27 +51,12 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
                 return false;
             }
 
-            if (ReferenceEquals(s_activeDirector, expectedDirector)
-                && s_activeEntryId != SerializableGuid.Empty)
-            {
-                return expectedDirector.Graph.Blackboard.TryGetEntry(s_activeEntryId, out entry);
-            }
-
-            if (!ReferenceEquals(
-                    DragAndDrop.GetGenericData(DirectorDataKey),
-                    expectedDirector))
+            if (!GraphBlackboardDragSession.TryGetActiveEntryId(
+                    expectedDirector,
+                    out SerializableGuid entryId))
             {
                 return false;
             }
-
-            string entryIdHex = DragAndDrop.GetGenericData(EntryIdDataKey) as string;
-
-            if (string.IsNullOrWhiteSpace(entryIdHex))
-            {
-                return false;
-            }
-
-            SerializableGuid entryId = SerializableGuid.FromHexString(entryIdHex);
 
             return expectedDirector.Graph.Blackboard.TryGetEntry(entryId, out entry);
         }
@@ -88,12 +64,6 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
 
     internal static class CutsceneBlackboardDrawerUtility
     {
-        private const float InlineActionButtonWidth = 18f;
-        private const float InlineActionButtonSpacing = 4f;
-        private const string Part1FieldName = nameof(SerializableGuid.Part1);
-        private const string Part2FieldName = nameof(SerializableGuid.Part2);
-        private const string Part3FieldName = nameof(SerializableGuid.Part3);
-        private const string Part4FieldName = nameof(SerializableGuid.Part4);
         private const string EntryIdFieldName = "_entryId";
         private const string EntryKeyFieldName = "_entryKey";
         private const string ValueTypeNameFieldName = "_valueTypeName";
@@ -101,16 +71,16 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
         private const string BlackboardVariableFieldName = "_blackboardVariable";
         private const string DirectValueFieldName = "_directValue";
         private const string ExpectedValueTypeNameFieldName = "_expectedValueTypeName";
+        private const string BoxedValueFieldName = "_value";
         private const string ValueFieldName = "Value";
-        private const string EnumValueNameFieldName = "_valueName";
-
-        private static GUIStyle s_inlineActionButtonStyle;
 
         internal static event Action ValueSourceBindingCleared;
 
-        internal static float SingleLineHeight => EditorGUIUtility.singleLineHeight;
+        internal static float SingleLineHeight =>
+            GraphBlackboardDrawerSharedUtility.SingleLineHeight;
 
-        internal static float VerticalSpacing => EditorGUIUtility.standardVerticalSpacing;
+        internal static float VerticalSpacing =>
+            GraphBlackboardDrawerSharedUtility.VerticalSpacing;
 
         internal static bool TryGetBoundDirector(
             SerializedProperty property,
@@ -122,32 +92,12 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
 
         internal static float GetVariableReferenceHeight()
         {
-            return SingleLineHeight;
+            return GraphBlackboardDrawerSharedUtility.GetVariableReferenceHeight();
         }
 
         internal static float GetValueSourceHeight(SerializedProperty property)
         {
-            if (property == null)
-            {
-                return SingleLineHeight;
-            }
-
-            SerializedProperty directValueProperty = property.FindPropertyRelative(
-                DirectValueFieldName);
-            SerializedProperty boxedValueProperty = directValueProperty
-                ?.FindPropertyRelative(ValueFieldName);
-
-            if (boxedValueProperty == null)
-            {
-                return SingleLineHeight;
-            }
-
-            return Mathf.Max(
-                SingleLineHeight,
-                EditorGUI.GetPropertyHeight(
-                    boxedValueProperty,
-                    GUIContent.none,
-                    includeChildren: true));
+            return GraphBlackboardDrawerSharedUtility.GetValueSourceHeight(property);
         }
 
         internal static Type ResolveExpectedValueType(
@@ -173,10 +123,8 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
         internal static Type ResolveVariableReferenceValueType(
             SerializedProperty variableProperty)
         {
-            return ResolveSerializedType(
-                variableProperty
-                    .FindPropertyRelative(ValueTypeNameFieldName)
-                    ?.stringValue);
+            return GraphBlackboardDrawerSharedUtility.ResolveVariableReferenceValueType(
+                variableProperty);
         }
 
         internal static void EnsureValueSourceExpectedType(
@@ -202,17 +150,18 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
 
             SerializedProperty directValueProperty = valueSourceProperty
                 .FindPropertyRelative(DirectValueFieldName);
-            CutsceneGraphBlackboardValue directValue =
-                directValueProperty.managedReferenceValue as CutsceneGraphBlackboardValue;
+            GraphBlackboardValue directValue =
+                directValueProperty.managedReferenceValue as GraphBlackboardValue;
 
             if (CanRepresentExpectedValueType(directValue, expectedType))
             {
                 return;
             }
 
-            if (CutsceneBlackboardValueRegistry.TryCreateValue(
-                    expectedType,
-                    out CutsceneGraphBlackboardValue replacementValue))
+            if (GraphBlackboardValueRegistry.TryCreateValue(
+                expectedType,
+                CutsceneGraphFamily.Id,
+                out GraphBlackboardValue replacementValue))
             {
                 directValueProperty.managedReferenceValue = replacementValue;
             }
@@ -232,7 +181,7 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
             Rect buttonRect = contentRect;
             buttonRect.width = Mathf.Max(
                 0f,
-                buttonRect.width - InlineActionButtonWidth - InlineActionButtonSpacing);
+                buttonRect.width - GraphBlackboardDrawerSharedUtility.InlineActionButtonReservedWidth);
             Rect clearRect = GetInlineActionButtonRect(contentRect, buttonRect.xMax);
 
             bool hasDirector = TryGetBoundDirector(property, out CutsceneDirector director);
@@ -306,7 +255,8 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
 
         internal static bool ShouldShowValueSourceDropZone(SerializedProperty property)
         {
-            return property != null && !IsValueSourceInBlackboardMode(property);
+            return GraphBlackboardDrawerSharedUtility.ShouldShowValueSourceDropZone(
+                property);
         }
 
         internal static void DrawValueSourceField(
@@ -348,98 +298,14 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
             GUIContent label,
             Type expectedType)
         {
-            SerializedProperty directValueProperty = valueSourceProperty
-                .FindPropertyRelative(DirectValueFieldName);
-
-            if (expectedType == null)
-            {
-                EditorGUI.LabelField(position, label, new GUIContent("Unsupported type."));
-                return;
-            }
-
-            EnsureValueSourceExpectedType(valueSourceProperty, expectedType);
-
-            if (directValueProperty.managedReferenceValue
-                is CutsceneGraphBlackboardUnityObjectValue objectValue)
-            {
-                SerializedProperty boxedValueProperty = directValueProperty
-                    .FindPropertyRelative(ValueFieldName);
-                Type objectType = typeof(Object).IsAssignableFrom(expectedType)
-                    ? expectedType
-                    : objectValue.ResolveObjectType();
-
-                if (ShouldDrawBlackboardValueSourceDropTarget(
-                        position,
-                        valueSourceProperty,
-                        expectedType))
-                {
-                    DrawBlackboardValueSourceDropTarget(position, label, expectedType);
-                    return;
-                }
-
-                EditorGUI.BeginChangeCheck();
-                Object newValue = EditorGUI.ObjectField(
-                    position,
-                    label,
-                    boxedValueProperty.objectReferenceValue,
-                    objectType,
-                    true);
-
-                if (EditorGUI.EndChangeCheck())
-                {
-                    AssignDirectObjectValue(
-                        valueSourceProperty.Copy(),
-                        newValue,
-                        expectedType);
-                }
-
-                return;
-            }
-
-            if (directValueProperty.managedReferenceValue
-                is CutsceneGraphBlackboardEnumValue enumValue)
-            {
-                Type enumType = expectedType.IsEnum
-                    ? expectedType
-                    : enumValue.ResolveEnumType();
-
-                if (enumType == null || !enumType.IsEnum)
-                {
-                    EditorGUI.LabelField(position, "No enum type configured.");
-                    return;
-                }
-
-                string[] valueNames = Enum.GetNames(enumType);
-                SerializedProperty valueNameProperty = directValueProperty
-                    .FindPropertyRelative(EnumValueNameFieldName);
-                int selectedIndex = Mathf.Max(
-                    0,
-                    Array.IndexOf(valueNames, valueNameProperty.stringValue));
-
-                EditorGUI.BeginChangeCheck();
-                int newIndex = EditorGUI.Popup(
-                    position,
-                    label.text,
-                    selectedIndex,
-                    valueNames);
-
-                if (EditorGUI.EndChangeCheck() && newIndex >= 0 && newIndex < valueNames.Length)
-                {
-                    valueNameProperty.stringValue = valueNames[newIndex];
-                }
-
-                return;
-            }
-
-            SerializedProperty boxedValue = directValueProperty.FindPropertyRelative(ValueFieldName);
-
-            if (boxedValue != null)
-            {
-                EditorGUI.PropertyField(position, boxedValue, label, true);
-                return;
-            }
-
-            EditorGUI.PropertyField(position, directValueProperty, label, true);
+            GraphBlackboardDrawerSharedUtility.DrawDirectValueField(
+                position,
+                valueSourceProperty,
+                label,
+                expectedType,
+                EnsureValueSourceExpectedType,
+                AssignDirectObjectValue,
+                ShouldDrawBlackboardValueSourceDropTarget);
         }
 
         private static bool TryHandleUIDrag(
@@ -569,7 +435,7 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
             Rect buttonRect = contentRect;
             buttonRect.width = Mathf.Max(
                 0f,
-                buttonRect.width - InlineActionButtonWidth - InlineActionButtonSpacing);
+                buttonRect.width - GraphBlackboardDrawerSharedUtility.InlineActionButtonReservedWidth);
             Rect clearRect = GetInlineActionButtonRect(contentRect, buttonRect.xMax);
 
             bool hasDirector = TryGetBoundDirector(valueSourceProperty, out CutsceneDirector director);
@@ -598,44 +464,16 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
 
         private static Rect GetInlineActionButtonRect(Rect contentRect, float primaryRectMaxX)
         {
-            float buttonHeight = Mathf.Min(contentRect.height, SingleLineHeight);
-            float buttonY = contentRect.y + ((contentRect.height - buttonHeight) * 0.5f);
-
-            return new Rect(
-                primaryRectMaxX + InlineActionButtonSpacing,
-                buttonY,
-                InlineActionButtonWidth,
-                buttonHeight);
+            return GraphBlackboardDrawerSharedUtility.GetInlineActionButtonRect(
+                contentRect,
+                primaryRectMaxX);
         }
 
         private static bool DrawInlineActionButton(Rect position, string tooltip)
         {
-            return GUI.Button(
+            return GraphBlackboardDrawerSharedUtility.DrawInlineActionButton(
                 position,
-                new GUIContent("x", tooltip),
-                InlineActionButtonStyle);
-        }
-
-        private static GUIStyle InlineActionButtonStyle
-        {
-            get
-            {
-                if (s_inlineActionButtonStyle != null)
-                {
-                    return s_inlineActionButtonStyle;
-                }
-
-                s_inlineActionButtonStyle = new GUIStyle(EditorStyles.miniButton)
-                {
-                    alignment = TextAnchor.MiddleCenter,
-                    fontStyle = FontStyle.Bold,
-                    fontSize = 10,
-                    margin = new RectOffset(0, 0, 0, 0),
-                    padding = new RectOffset(0, 0, 0, 0),
-                };
-
-                return s_inlineActionButtonStyle;
-            }
+                tooltip);
         }
 
         private static void ShowVariableReferenceMenu(
@@ -840,15 +678,10 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
             GUIContent label,
             Type expectedType)
         {
-            Rect contentRect = HasVisibleLabel(label)
-                ? EditorGUI.PrefixLabel(position, label)
-                : position;
-            string typeName = GetReadableTypeName(expectedType);
-
-            GUI.Box(
-                contentRect,
-                new GUIContent($"Drop Blackboard {typeName}", label.tooltip),
-                EditorStyles.objectField);
+            GraphBlackboardDrawerSharedUtility.DrawBlackboardValueSourceDropTarget(
+                position,
+                label,
+                expectedType);
         }
 
         private static void HandleDirectObjectDrag(
@@ -982,8 +815,8 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
 
             SerializedProperty directValueProperty = property.FindPropertyRelative(
                 DirectValueFieldName);
-            SerializedProperty boxedValueProperty = directValueProperty
-                ?.FindPropertyRelative(ValueFieldName);
+            SerializedProperty boxedValueProperty = ResolveDirectBoxedValueProperty(
+                directValueProperty);
 
             if (boxedValueProperty == null)
             {
@@ -1013,71 +846,20 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
             Type expectedType,
             out Object draggedObject)
         {
-            draggedObject = null;
-
-            if (DragAndDrop.objectReferences == null
-                || DragAndDrop.objectReferences.Length <= 0)
-            {
-                return false;
-            }
-
-            Object candidate = DragAndDrop.objectReferences[0];
-
-            if (candidate == null)
-            {
-                return false;
-            }
-
-            Object coercedObject = CoerceDirectObjectValue(candidate, expectedType);
-
-            if (coercedObject == null)
-            {
-                return false;
-            }
-
-            draggedObject = coercedObject;
-            return true;
+            return GraphBlackboardDrawerSharedUtility.TryResolveDraggedUnityObject(
+                expectedType,
+                out draggedObject);
         }
 
         private static Object CoerceDirectObjectValue(Object value, Type expectedType)
         {
-            if (value == null || expectedType == null)
-            {
-                return null;
-            }
-
-            if (expectedType.IsInstanceOfType(value))
-            {
-                return value;
-            }
-
-            if (expectedType == typeof(GameObject))
-            {
-                return value switch
-                {
-                    GameObject gameObject => gameObject,
-                    Component component => component.gameObject,
-                    _ => null,
-                };
-            }
-
-            if (typeof(Component).IsAssignableFrom(expectedType))
-            {
-                GameObject ownerGameObject = value switch
-                {
-                    GameObject gameObject => gameObject,
-                    Component component => component.gameObject,
-                    _ => null,
-                };
-
-                return ownerGameObject?.GetComponent(expectedType);
-            }
-
-            return null;
+            return GraphBlackboardDrawerSharedUtility.CoerceDirectObjectValue(
+                value,
+                expectedType);
         }
 
         private static bool CanRepresentExpectedValueType(
-            CutsceneGraphBlackboardValue value,
+            GraphBlackboardValue value,
             Type expectedType)
         {
             if (value == null || expectedType == null)
@@ -1085,7 +867,7 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
                 return false;
             }
 
-            if (value is CutsceneGraphBlackboardUnityObjectValue objectValue)
+            if (value is GraphBlackboardUnityObjectValue objectValue)
             {
                 return objectValue.GetExpectedValueType() == expectedType;
             }
@@ -1095,46 +877,18 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
 
         private static bool IsValueSourceProperty(SerializedProperty property)
         {
-            return property?.FindPropertyRelative(ModeFieldName) != null
-                && property.FindPropertyRelative(BlackboardVariableFieldName) != null;
+            return GraphBlackboardDrawerSharedUtility.IsValueSourceProperty(property);
         }
 
         private static bool IsVariableReferenceProperty(SerializedProperty property)
         {
-            return property?.FindPropertyRelative(EntryIdFieldName) != null
-                && property.FindPropertyRelative(EntryKeyFieldName) != null
-                && property.FindPropertyRelative(BlackboardVariableFieldName) == null;
+            return GraphBlackboardDrawerSharedUtility.IsVariableReferenceProperty(property);
         }
 
         private static Type ResolveUIDragExpectedType(SerializedProperty property)
         {
-            if (property == null)
-            {
-                return null;
-            }
-
-            if (IsVariableReferenceProperty(property))
-            {
-                return ResolveVariableReferenceValueType(property);
-            }
-
-            if (!IsValueSourceProperty(property))
-            {
-                return null;
-            }
-
-            Type serializedType = ResolveSerializedType(
-                property.FindPropertyRelative(ExpectedValueTypeNameFieldName)?.stringValue);
-
-            if (serializedType != null)
-            {
-                return serializedType;
-            }
-
-            SerializedProperty directValueProperty = property.FindPropertyRelative(DirectValueFieldName);
-            return directValueProperty?.managedReferenceValue is CutsceneGraphBlackboardValue directValue
-                ? directValue.GetExpectedValueType()
-                : null;
+            return GraphBlackboardDrawerSharedUtility.ResolveExpectedValueTypeFromSerializedData(
+                property);
         }
 
         private static void ClearVariableReference(SerializedProperty property)
@@ -1158,78 +912,62 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
 
         private static void ApplyPropertyChanges(SerializedObject serializedObject)
         {
-            serializedObject.ApplyModifiedProperties();
-            serializedObject.UpdateIfRequiredOrScript();
+            GraphBlackboardDrawerSharedUtility.ApplyPropertyChanges(serializedObject);
         }
 
         private static bool IsValueSourceInBlackboardMode(SerializedProperty property)
         {
-            return property != null
-                && (CutsceneValueSourceMode)property
-                    .FindPropertyRelative(ModeFieldName)
-                    .enumValueIndex == CutsceneValueSourceMode.Blackboard;
+            return GraphBlackboardDrawerSharedUtility.IsValueSourceInBlackboardMode(
+                property);
         }
 
         private static void SetValueSourceMode(
             SerializedProperty property,
             CutsceneValueSourceMode mode)
         {
-            property.FindPropertyRelative(ModeFieldName).enumValueIndex = (int)mode;
+            GraphBlackboardDrawerSharedUtility.SetValueSourceMode(
+                property,
+                (int)mode);
         }
 
         private static SerializableGuid ReadGuid(SerializedProperty guidProperty)
         {
-            return guidProperty == null
-                ? SerializableGuid.Empty
-                : new SerializableGuid(
-                    guidProperty.FindPropertyRelative(Part1FieldName).uintValue,
-                    guidProperty.FindPropertyRelative(Part2FieldName).uintValue,
-                    guidProperty.FindPropertyRelative(Part3FieldName).uintValue,
-                    guidProperty.FindPropertyRelative(Part4FieldName).uintValue);
+            return GraphBlackboardDrawerSharedUtility.ReadGuid(guidProperty);
         }
 
         private static void SetGuid(
             SerializedProperty guidProperty,
             SerializableGuid value)
         {
-            guidProperty.FindPropertyRelative(Part1FieldName).uintValue = value.Part1;
-            guidProperty.FindPropertyRelative(Part2FieldName).uintValue = value.Part2;
-            guidProperty.FindPropertyRelative(Part3FieldName).uintValue = value.Part3;
-            guidProperty.FindPropertyRelative(Part4FieldName).uintValue = value.Part4;
+            GraphBlackboardDrawerSharedUtility.SetGuid(guidProperty, value);
         }
 
         private static Type ResolveSerializedType(string serializedTypeName)
         {
-            return string.IsNullOrWhiteSpace(serializedTypeName)
-                ? null
-                : Type.GetType(serializedTypeName);
+            return GraphBlackboardDrawerSharedUtility.ResolveSerializedType(
+                serializedTypeName);
         }
 
         private static string GetReadableTypeName(Type type)
         {
-            return type == null ? "Unknown" : type.Name;
+            return GraphBlackboardDrawerSharedUtility.GetReadableTypeName(type);
         }
 
         private static GUIContent CreateSeamlessLabel(GUIContent label)
         {
-            if (!HasVisibleLabel(label))
-            {
-                return GUIContent.none;
-            }
-
-            string labelText = label.text;
-
-            if (labelText.EndsWith(" Source", StringComparison.Ordinal))
-            {
-                labelText = labelText[..^7];
-            }
-
-            return new GUIContent(labelText, label.tooltip);
+            return GraphBlackboardDrawerSharedUtility.CreateSeamlessLabel(label);
         }
 
         private static bool HasVisibleLabel(GUIContent label)
         {
-            return label != null && !string.IsNullOrWhiteSpace(label.text);
+            return GraphBlackboardDrawerSharedUtility.HasVisibleLabel(label);
+        }
+
+        private static SerializedProperty ResolveDirectBoxedValueProperty(
+            SerializedProperty directValueProperty)
+        {
+            return directValueProperty?.FindPropertyRelative(BoxedValueFieldName)
+                ?? directValueProperty?.FindPropertyRelative(ValueFieldName);
         }
     }
 

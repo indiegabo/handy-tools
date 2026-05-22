@@ -119,6 +119,38 @@ namespace IndieGabo.HandyTools.CutscenesModule.Events
             return true;
         }
 
+        /// <summary>
+        /// Copies the serialized selector state without requiring registry validation.
+        /// This is used by runtime migration snapshots that must preserve authored
+        /// invalid references for deterministic failure behavior.
+        /// </summary>
+        /// <param name="source">Selector state to copy.</param>
+        internal void CopySerializedStateFrom(CutsceneBusEventSelector source)
+        {
+            if (source == null)
+            {
+                _selectionMode = EventSelectionMode.CustomName;
+                _eventName = DefaultEventName;
+                _eventReference ??= new CutsceneBusEventReference();
+                _eventReference.Assign(string.Empty, string.Empty);
+                return;
+            }
+
+            _selectionMode = source._selectionMode;
+            _eventName = source._eventName;
+            _eventReference ??= new CutsceneBusEventReference();
+
+            if (source._eventReference == null)
+            {
+                _eventReference.Assign(string.Empty, string.Empty);
+                return;
+            }
+
+            _eventReference.Assign(
+                source._eventReference.EventPath,
+                source._eventReference.EventTypeName);
+        }
+
         #endregion
     }
 }

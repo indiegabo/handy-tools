@@ -1,8 +1,8 @@
 {
   "name": "com.indiegabo.handy-tools",
-  "version": "3.4.0",
+  "version": "3.5.1",
   "displayName": "Handy Tools",
-  "description": "A modular Unity toolkit with kernel infrastructure, configurable systems, editor workflows, and reusable runtime support for production projects.",
+  "description": "A modular Unity package with a small kernel and opt-in gameplay, editor, and workflow modules for cutscenes, FSM, command patterns, conversations, and scene metadata.",
   "unity": "6000.4",
   "documentationUrl": "https://github.com/indiegabo/handy-tools#readme",
   "changelogUrl": "https://github.com/indiegabo/handy-tools/blob/main/CHANGELOG.md",
@@ -13,10 +13,13 @@
     "url": "http://indiegabo.github.io/portfolio"
   },
   "keywords": [
-    "events",
-    "patterns",
-    "scripts",
-    "tools",
+    "unity",
+    "tooling",
+    "cutscenes",
+    "fsm",
+    "command-pattern",
+    "conversations",
+    "scene-metadata",
     "indiegabo"
   ],
   "samples": [
@@ -31,19 +34,29 @@
       "path": "Samples~/Cutscenes Dialogue System Sample"
     },
     {
-      "displayName": "FSM CCPro Starter Kit",
-      "description": "Character Controller Pro sample scene and authored state assets for the HandyTools FSM module. Requires Character Controller Pro.",
-      "path": "Samples~/FSM CCPro Starter Kit"
+      "displayName": "Cutscenes - Conversations Example",
+      "description": "A scene-authored cutscene sample that pauses for two authored Conversations references and resumes after completion or cancelation.",
+      "path": "Samples~/Cutscenes Conversations Example"
     },
     {
-      "displayName": "Command Pattern Starter Kit",
+      "displayName": "FSM CCPro Example",
+      "description": "Character Controller Pro sample scene and authored state assets for the HandyTools FSM module. Requires Character Controller Pro.",
+      "path": "Samples~/FSM CCPro Example"
+    },
+    {
+      "displayName": "Command Pattern Example",
       "description": "Scene-authored command execution, scheduling, undo/redo, and runtime request monitoring sample.",
-      "path": "Samples~/Command Pattern Starter Kit"
+      "path": "Samples~/Command Pattern Example"
+    },
+    {
+      "displayName": "Conversations Example",
+      "description": "Pre-authored Conversations sample scene with graph authoring workflow and in-scene runtime presenter playback.",
+      "path": "Samples~/Conversations Example"
+    },
+    {
+      "displayName": "HandyScene Example",
+      "description": "Pre-authored HandyScene sample with generic scene metadata sections rendered directly on the scene asset inspector.",
+      "path": "Samples~/HandyScene Example"
     }
-  ],
-  "scripts": {
-    "release": "npm run release-it",
-    "feature-finish-checklist": "echo Verify whether Assets/HandyTools/package.json description still matches the current package scope and update it if needed before releasing",
-    "pre-release": "npx auto-changelog -p && npm run feature-finish-checklist && echo Go create Unity .meta and any starter unitypackages before releasing"
-  }
+  ]
 }

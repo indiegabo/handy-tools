@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using IndieGabo.HandyTools.Editor.GraphCore;
 using IndieGabo.HandyTools.CutscenesModule.Core;
+using IndieGabo.HandyTools.GraphCore;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -14,11 +16,8 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
     /// Renders one dedicated editor surface for authoring graph blackboard
     /// entries inside the cutscene graph window.
     /// </summary>
-    public sealed class CutsceneGraphBlackboardView : VisualElement
+    public sealed class CutsceneGraphBlackboardView : GraphBlackboardOverlayView
     {
-        private static readonly Color DragSourceIdleColor = new(0f, 0f, 0f, 0f);
-        private static readonly Color DragSourceHoverColor = new(0.23f, 0.23f, 0.23f, 0.72f);
-        private const string BaseFieldLabelClassName = "unity-base-field__label";
         private const string DefaultEntryKeyName = "Entry";
         private const string GraphPropertyPath = "_graph";
         private const string BlackboardPropertyName = "_blackboard";
@@ -26,6 +25,7 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
         private const string KeyPropertyName = "_key";
         private const string ValuePropertyName = "_value";
         private const string ValueFieldName = "Value";
+        private const string BoxedValueFieldName = "_value";
         private const string ObjectTypeNamePropertyName = "_objectTypeName";
         private const string EnumTypeNamePropertyName = "_enumTypeName";
         private const string EnumValueNamePropertyName = "_valueName";
@@ -33,17 +33,11 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
         private static IReadOnlyList<Type> s_pickableObjectTypes;
         private static IReadOnlyList<Type> s_pickableEnumTypes;
 
-        private readonly HelpBox _stateBox;
-        private readonly ScrollView _entriesContainer;
-        private readonly VisualElement _contentContainer;
-        private readonly Label _bindingLabel;
-        private readonly Label _entryCountLabel;
-        private readonly Button _collapseButton;
         private readonly Dictionary<string, bool> _entryExpansionStates =
             new(StringComparer.OrdinalIgnoreCase);
+        private readonly DeferredGraphUiActionDispatcher _deferredRefreshDispatcher;
 
         private CutsceneDirector _director;
-        private bool _isExpanded = true;
 
         /// <summary>
         /// Raised after the view commits one change to the serialized graph.
@@ -54,111 +48,9 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
         /// Creates the UI Toolkit hierarchy used by the blackboard editor.
         /// </summary>
         public CutsceneGraphBlackboardView()
+            : base("Blackboard")
         {
-            style.flexDirection = FlexDirection.Column;
-            style.minWidth = 280f;
-            style.maxWidth = 360f;
-            style.paddingLeft = 10f;
-            style.paddingRight = 10f;
-            style.paddingTop = 8f;
-            style.paddingBottom = 10f;
-            style.backgroundColor = new StyleColor(new Color(0.07f, 0.07f, 0.07f, 0.86f));
-            style.borderLeftWidth = 1f;
-            style.borderRightWidth = 1f;
-            style.borderTopWidth = 1f;
-            style.borderBottomWidth = 1f;
-            style.borderLeftColor = new Color(0.28f, 0.28f, 0.28f, 0.85f);
-            style.borderRightColor = new Color(0.28f, 0.28f, 0.28f, 0.85f);
-            style.borderTopColor = new Color(0.28f, 0.28f, 0.28f, 0.85f);
-            style.borderBottomColor = new Color(0.28f, 0.28f, 0.28f, 0.85f);
-            style.borderTopLeftRadius = 10f;
-            style.borderTopRightRadius = 10f;
-            style.borderBottomLeftRadius = 10f;
-            style.borderBottomRightRadius = 10f;
-            style.overflow = Overflow.Hidden;
-
-            VisualElement header = new();
-            header.style.flexDirection = FlexDirection.Row;
-            header.style.alignItems = Align.Center;
-            header.style.paddingBottom = 8f;
-            header.style.marginBottom = 8f;
-            header.style.borderBottomWidth = 1f;
-            header.style.borderBottomColor = new Color(0.26f, 0.26f, 0.26f, 0.75f);
-
-            VisualElement titleColumn = new();
-            titleColumn.style.flexGrow = 1f;
-
-            Label titleLabel = new("Blackboard");
-            titleLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
-            titleLabel.style.fontSize = 13f;
-            titleLabel.style.marginBottom = 1f;
-            titleColumn.Add(titleLabel);
-
-            _bindingLabel = new("Graph (Unbound)");
-            _bindingLabel.style.fontSize = 10f;
-            _bindingLabel.style.color = new Color(0.80f, 0.80f, 0.80f, 0.82f);
-            _bindingLabel.style.marginBottom = 1f;
-            titleColumn.Add(_bindingLabel);
-
-            _entryCountLabel = new("No entries");
-            _entryCountLabel.style.fontSize = 10f;
-            _entryCountLabel.style.color = new Color(0.67f, 0.67f, 0.67f, 0.78f);
-            titleColumn.Add(_entryCountLabel);
-
-            header.Add(titleColumn);
-
-            _collapseButton = new Button(ToggleExpanded)
-            {
-                text = "v",
-            };
-            _collapseButton.tooltip = "Collapse or expand the blackboard panel.";
-            _collapseButton.style.width = 24f;
-            _collapseButton.style.height = 20f;
-            _collapseButton.style.minWidth = 24f;
-            _collapseButton.style.paddingLeft = 0f;
-            _collapseButton.style.paddingRight = 0f;
-            header.Add(_collapseButton);
-
-            Add(header);
-
-            _contentContainer = new();
-            _contentContainer.style.flexDirection = FlexDirection.Column;
-            _contentContainer.style.display = DisplayStyle.Flex;
-
-            VisualElement toolbar = new();
-            toolbar.style.flexDirection = FlexDirection.Row;
-            toolbar.style.justifyContent = Justify.FlexEnd;
-            toolbar.style.marginBottom = 6f;
-
-            Button addButton = new(HandleAddEntry)
-            {
-                text = "Add",
-            };
-            addButton.tooltip = "Add blackboard entry.";
-            addButton.style.height = 24f;
-            addButton.style.width = 56f;
-            addButton.style.minWidth = 56f;
-            addButton.style.alignSelf = Align.FlexEnd;
-            toolbar.Add(addButton);
-
-            _stateBox = new HelpBox(string.Empty, HelpBoxMessageType.Warning);
-            _stateBox.style.marginBottom = 6f;
-            ApplyInformativeBoxStyle(_stateBox);
-            HideStateBox();
-
-            _entriesContainer = new ScrollView(ScrollViewMode.Vertical);
-            _entriesContainer.style.maxHeight = 320f;
-            _entriesContainer.style.flexGrow = 1f;
-            _entriesContainer.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
-            _entriesContainer.contentContainer.style.flexDirection = FlexDirection.Column;
-            _entriesContainer.contentContainer.style.flexGrow = 1f;
-            _entriesContainer.contentContainer.style.paddingRight = 2f;
-
-            _contentContainer.Add(toolbar);
-            _contentContainer.Add(_stateBox);
-            _contentContainer.Add(_entriesContainer);
-            Add(_contentContainer);
-
+            _deferredRefreshDispatcher = new DeferredGraphUiActionDispatcher(this);
             Refresh();
         }
 
@@ -178,17 +70,17 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
         /// </summary>
         public void Refresh()
         {
-            _entriesContainer.Clear();
+            ClearOverlayEntries();
 
             if (_director == null)
             {
-                _contentContainer.SetEnabled(false);
+                SetOverlayContentEnabled(false);
                 RefreshHeader(0);
                 HideStateBox();
                 return;
             }
 
-            _contentContainer.SetEnabled(true);
+            SetOverlayContentEnabled(true);
 
             SerializedObject serializedDirector = new(_director);
             serializedDirector.UpdateIfRequiredOrScript();
@@ -215,8 +107,14 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
                     continue;
                 }
 
-                _entriesContainer.Add(CreateEntryElement(entryProperty, index));
+                AddOverlayEntry(CreateEntryElement(entryProperty, index));
             }
+        }
+
+        /// <inheritdoc />
+        protected override void HandleAddRequested()
+        {
+            HandleAddEntry();
         }
 
         /// <summary>
@@ -307,17 +205,15 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
                 evt => HandleEntryTypeChanged(entryIndex, evt.newValue));
 
             entryFoldout.Add(CreateFieldSection("Name", keyField));
-            entryFoldout.Add(CreateFieldSection("Type", typeField));
+            entryFoldout.Add(CreateFieldControlSection(typeField));
 
-            if (valueProperty?.managedReferenceValue is CutsceneGraphBlackboardEnumValue)
+            if (valueProperty?.managedReferenceValue is GraphBlackboardEnumValue)
             {
-                entryFoldout.Add(CreateFieldSection(
-                    "Enum Type",
+                entryFoldout.Add(CreateFieldControlSection(
                     CreateEnumTypeButton(entryIndex, valueProperty)));
             }
 
-            VisualElement valueSection = CreateFieldSection(
-                "Value",
+            VisualElement valueSection = CreateFieldControlSection(
                 CreateValueField(entryIndex, valueProperty));
             RegisterEntryValueDrag(valueSection, entryIndex);
             entryFoldout.Add(valueSection);
@@ -394,89 +290,21 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
                 return;
             }
 
-            Vector2 dragStartPosition = default;
-            bool isPointerDown = false;
-
-            dragSource.RegisterCallback<MouseDownEvent>(evt =>
-            {
-                if (evt.button != 0)
+            GraphBlackboardDragSourceUtility.RegisterDragSource(
+                dragSource,
+                () => CutsceneBlackboardDragAndDrop.HasActiveDrag,
+                () =>
                 {
-                    return;
-                }
+                    if (!TryGetEntry(entryIndex, out CutsceneGraphBlackboardEntry entry))
+                    {
+                        return false;
+                    }
 
-                handlePointerDown?.Invoke();
-                isPointerDown = true;
-                dragStartPosition = evt.mousePosition;
-                dragSource.CaptureMouse();
-                SetDragSourceVisualState(dragSource, DragSourceHoverColor);
-            }, TrickleDown.TrickleDown);
-
-            dragSource.RegisterCallback<MouseUpEvent>(evt =>
-            {
-                isPointerDown = false;
-                SetDragSourceVisualState(dragSource, DragSourceIdleColor);
-
-                if (dragSource.HasMouseCapture())
-                {
-                    dragSource.ReleaseMouse();
-                }
-            }, TrickleDown.TrickleDown);
-
-            dragSource.RegisterCallback<MouseCaptureOutEvent>(evt =>
-            {
-                isPointerDown = false;
-                SetDragSourceVisualState(dragSource, DragSourceIdleColor);
-            }, TrickleDown.TrickleDown);
-
-            dragSource.RegisterCallback<MouseEnterEvent>(evt =>
-            {
-                if (CutsceneBlackboardDragAndDrop.HasActiveDrag)
-                {
-                    return;
-                }
-
-                SetDragSourceVisualState(dragSource, DragSourceHoverColor);
-            }, TrickleDown.TrickleDown);
-
-            dragSource.RegisterCallback<MouseLeaveEvent>(evt =>
-            {
-                if (isPointerDown || CutsceneBlackboardDragAndDrop.HasActiveDrag)
-                {
-                    return;
-                }
-
-                SetDragSourceVisualState(dragSource, DragSourceIdleColor);
-            }, TrickleDown.TrickleDown);
-
-            dragSource.RegisterCallback<MouseMoveEvent>(evt =>
-            {
-                if (!isPointerDown || evt.pressedButtons == 0)
-                {
-                    return;
-                }
-
-                if ((evt.mousePosition - dragStartPosition).sqrMagnitude < 16f)
-                {
-                    return;
-                }
-
-                if (!TryGetEntry(entryIndex, out CutsceneGraphBlackboardEntry entry))
-                {
-                    return;
-                }
-
-                CutsceneBlackboardDragAndDrop.BeginDrag(_director, entry);
-                handleDragStarted?.Invoke();
-                isPointerDown = false;
-                SetDragSourceVisualState(dragSource, DragSourceHoverColor);
-
-                if (dragSource.HasMouseCapture())
-                {
-                    dragSource.ReleaseMouse();
-                }
-
-                evt.StopPropagation();
-            }, TrickleDown.TrickleDown);
+                    CutsceneBlackboardDragAndDrop.BeginDrag(_director, entry);
+                    return true;
+                },
+                handlePointerDown,
+                handleDragStarted);
         }
 
         /// <summary>
@@ -485,34 +313,7 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
         /// <param name="dragSource">Element that should look draggable.</param>
         private static void ApplyDragSourceHintStyle(VisualElement dragSource)
         {
-            if (dragSource == null)
-            {
-                return;
-            }
-
-            dragSource.style.borderLeftWidth = 2f;
-            dragSource.style.borderLeftColor = new Color(0.43f, 0.43f, 0.43f, 0.5f);
-            dragSource.style.paddingLeft = Mathf.Max(dragSource.resolvedStyle.paddingLeft, 2f);
-        }
-
-        /// <summary>
-        /// Updates the drag affordance color for one blackboard element.
-        /// </summary>
-        /// <param name="dragSource">Element being updated.</param>
-        /// <param name="backgroundColor">Background color to apply.</param>
-        private static void SetDragSourceVisualState(
-            VisualElement dragSource,
-            Color backgroundColor)
-        {
-            if (dragSource == null)
-            {
-                return;
-            }
-
-            dragSource.style.backgroundColor = new StyleColor(backgroundColor);
-            dragSource.style.borderLeftColor = backgroundColor.a <= 0.01f
-                ? new Color(0.43f, 0.43f, 0.43f, 0.5f)
-                : new Color(0.74f, 0.88f, 0.78f, 0.95f);
+            GraphBlackboardDragSourceUtility.ApplyDragSourceHintStyle(dragSource);
         }
 
         /// <summary>
@@ -554,18 +355,17 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
             int entryIndex,
             SerializedProperty valueProperty)
         {
-            if (valueProperty?.managedReferenceValue is CutsceneGraphBlackboardUnityObjectValue)
+            if (valueProperty?.managedReferenceValue is GraphBlackboardUnityObjectValue)
             {
                 return CreateObjectValueField(entryIndex, valueProperty);
             }
 
-            if (valueProperty?.managedReferenceValue is CutsceneGraphBlackboardEnumValue)
+            if (valueProperty?.managedReferenceValue is GraphBlackboardEnumValue)
             {
                 return CreateEnumValueField(entryIndex, valueProperty);
             }
 
-            SerializedProperty boxedValueProperty =
-                valueProperty?.FindPropertyRelative(ValueFieldName);
+            SerializedProperty boxedValueProperty = ResolveBoxedValueProperty(valueProperty);
 
             if (boxedValueProperty != null)
             {
@@ -574,9 +374,7 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
                 return propertyField;
             }
 
-            PropertyField fallbackField = new(valueProperty, string.Empty);
-            fallbackField.Bind(valueProperty.serializedObject);
-            return fallbackField;
+            return CreateFlattenedValueFields(valueProperty);
         }
 
         /// <summary>
@@ -610,8 +408,7 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
             SerializedProperty valueProperty)
         {
             Type objectType = ResolveObjectType(valueProperty);
-            SerializedProperty boxedValueProperty =
-                valueProperty.FindPropertyRelative(ValueFieldName);
+            SerializedProperty boxedValueProperty = ResolveBoxedValueProperty(valueProperty);
 
             ObjectField objectField = new()
             {
@@ -762,7 +559,7 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
                     SerializedProperty objectTypeNameProperty =
                         valueProperty?.FindPropertyRelative(ObjectTypeNamePropertyName);
                     SerializedProperty boxedValueProperty =
-                        valueProperty?.FindPropertyRelative(ValueFieldName);
+                        ResolveBoxedValueProperty(valueProperty);
 
                     if (objectTypeNameProperty == null || objectType == null)
                     {
@@ -874,13 +671,24 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
                     SerializedProperty valueProperty =
                         GetValueProperty(entriesProperty, entryIndex);
                     SerializedProperty boxedValueProperty =
-                        valueProperty?.FindPropertyRelative(ValueFieldName);
+                        ResolveBoxedValueProperty(valueProperty);
 
                     if (boxedValueProperty != null)
                     {
                         applyValue(boxedValueProperty);
                     }
                 });
+        }
+
+        /// <summary>
+        /// Resolves the serialized backing field that stores one wrapper payload.
+        /// </summary>
+        /// <param name="valueProperty">Serialized wrapper property.</param>
+        /// <returns>The boxed value property when available.</returns>
+        private static SerializedProperty ResolveBoxedValueProperty(SerializedProperty valueProperty)
+        {
+            return valueProperty?.FindPropertyRelative(BoxedValueFieldName)
+                ?? valueProperty?.FindPropertyRelative(ValueFieldName);
         }
 
         /// <summary>
@@ -909,8 +717,20 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
             CutsceneEditorUtility.RecordDirectorChange(_director, undoLabel);
             mutateEntries(entriesProperty);
             serializedDirector.ApplyModifiedProperties();
-            Refresh();
-            BlackboardChanged?.Invoke();
+            QueueRefreshAfterMutation();
+        }
+
+        /// <summary>
+        /// Defers one view rebuild until the current UI event finishes so Unity
+        /// bindings do not dereference disposed serialized properties on blur.
+        /// </summary>
+        private void QueueRefreshAfterMutation()
+        {
+            _deferredRefreshDispatcher.Dispatch(() =>
+            {
+                Refresh();
+                BlackboardChanged?.Invoke();
+            });
         }
 
         /// <summary>
@@ -920,9 +740,7 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
         /// <param name="messageType">Severity of the message.</param>
         private void ShowStateBox(string message, HelpBoxMessageType messageType)
         {
-            _stateBox.text = message;
-            _stateBox.messageType = messageType;
-            _stateBox.style.display = DisplayStyle.Flex;
+            ShowOverlayStateBox(message, messageType);
         }
 
         /// <summary>
@@ -930,7 +748,7 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
         /// </summary>
         private void HideStateBox()
         {
-            _stateBox.style.display = DisplayStyle.None;
+            HideOverlayStateBox();
         }
 
         /// <summary>
@@ -974,10 +792,7 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
         /// <param name="helpBox">Help box to style.</param>
         private static void ApplyInformativeBoxStyle(HelpBox helpBox)
         {
-            helpBox.style.paddingLeft = 12f;
-            helpBox.style.paddingRight = 12f;
-            helpBox.style.paddingTop = 10f;
-            helpBox.style.paddingBottom = 10f;
+            ApplyOverlayInformativeBoxStyle(helpBox);
         }
 
         /// <summary>
@@ -986,27 +801,7 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
         /// <param name="container">Entry container to style.</param>
         private static void ApplyEntryContainerStyle(VisualElement container)
         {
-            container.style.marginBottom = 6f;
-            container.style.paddingLeft = 8f;
-            container.style.paddingRight = 8f;
-            container.style.paddingTop = 6f;
-            container.style.paddingBottom = 6f;
-            container.style.alignSelf = Align.Stretch;
-            container.style.flexShrink = 0f;
-            container.style.backgroundColor = new StyleColor(
-                new Color32(0x38, 0x38, 0x38, 0xD8));
-            container.style.borderLeftWidth = 1f;
-            container.style.borderRightWidth = 1f;
-            container.style.borderTopWidth = 1f;
-            container.style.borderBottomWidth = 1f;
-            container.style.borderLeftColor = new Color(0.30f, 0.30f, 0.30f, 0.80f);
-            container.style.borderRightColor = new Color(0.30f, 0.30f, 0.30f, 0.80f);
-            container.style.borderTopColor = new Color(0.30f, 0.30f, 0.30f, 0.80f);
-            container.style.borderBottomColor = new Color(0.30f, 0.30f, 0.30f, 0.80f);
-            container.style.borderTopLeftRadius = 6f;
-            container.style.borderTopRightRadius = 6f;
-            container.style.borderBottomLeftRadius = 6f;
-            container.style.borderBottomRightRadius = 6f;
+            ApplyOverlayEntryContainerStyle(container);
         }
 
         /// <summary>
@@ -1015,27 +810,7 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
         /// <param name="foldout">Foldout used to edit one entry.</param>
         private static void ApplyFoldoutStyle(Foldout foldout)
         {
-            foldout.style.flexDirection = FlexDirection.Column;
-            foldout.style.overflow = Overflow.Hidden;
-            foldout.contentContainer.style.flexDirection = FlexDirection.Column;
-            foldout.contentContainer.style.marginTop = 6f;
-
-            Toggle toggle = foldout.Q<Toggle>();
-
-            if (toggle != null)
-            {
-                toggle.style.minWidth = 0f;
-                toggle.style.flexGrow = 1f;
-            }
-
-            Label label = toggle?.Q<Label>();
-
-            if (label != null)
-            {
-                label.style.minWidth = 0f;
-                label.style.flexShrink = 1f;
-                label.style.whiteSpace = WhiteSpace.Normal;
-            }
+            ApplyOverlayFoldoutStyle(foldout);
         }
 
         /// <summary>
@@ -1048,16 +823,20 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
             string labelText,
             VisualElement field)
         {
+            return CreateOverlayFieldSection(labelText, field);
+        }
+
+        /// <summary>
+        /// Creates one full-width field section without a caption label.
+        /// </summary>
+        /// <param name="field">Field element rendered directly in the entry body.</param>
+        /// <returns>The composed unlabeled section.</returns>
+        private static VisualElement CreateFieldControlSection(VisualElement field)
+        {
             VisualElement section = new();
             section.style.flexDirection = FlexDirection.Column;
             section.style.alignSelf = Align.Stretch;
             section.style.marginBottom = 6f;
-
-            Label label = new(labelText);
-            label.style.fontSize = 10f;
-            label.style.marginBottom = 3f;
-            section.Add(label);
-
             ApplyFieldControlStyle(field);
             section.Add(field);
             return section;
@@ -1069,22 +848,45 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
         /// <param name="field">Field element to normalize.</param>
         private static void ApplyFieldControlStyle(VisualElement field)
         {
-            if (field == null)
+            ApplyOverlayFieldControlStyle(field);
+        }
+
+        /// <summary>
+        /// Flattens one wrapper property into direct child fields instead of
+        /// rendering the wrapper itself as a nested foldout.
+        /// </summary>
+        /// <param name="valueProperty">Serialized wrapper property.</param>
+        /// <returns>The direct child field container.</returns>
+        private static VisualElement CreateFlattenedValueFields(SerializedProperty valueProperty)
+        {
+            VisualElement container = new();
+            container.style.flexDirection = FlexDirection.Column;
+            container.style.alignSelf = Align.Stretch;
+
+            if (valueProperty == null)
             {
-                return;
+                return container;
             }
 
-            field.style.alignSelf = Align.Stretch;
-            field.style.flexGrow = 1f;
-            field.style.flexShrink = 1f;
-            field.style.minWidth = 0f;
+            SerializedProperty iterator = valueProperty.Copy();
+            SerializedProperty endProperty = iterator.GetEndProperty();
+            int rootDepth = iterator.depth;
 
-            Label inlineLabel = field.Q<Label>(className: BaseFieldLabelClassName);
-
-            if (inlineLabel != null)
+            while (iterator.NextVisible(true)
+                && !SerializedProperty.EqualContents(iterator, endProperty))
             {
-                inlineLabel.style.display = DisplayStyle.None;
+                if (iterator.depth != rootDepth + 1)
+                {
+                    continue;
+                }
+
+                PropertyField propertyField = new(iterator.Copy(), string.Empty);
+                propertyField.Bind(valueProperty.serializedObject);
+                ApplyFieldControlStyle(propertyField);
+                container.Add(propertyField);
             }
+
+            return container;
         }
 
         /// <summary>
@@ -1093,28 +895,11 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
         /// <param name="entryCount">Current number of authored entries.</param>
         private void RefreshHeader(int entryCount)
         {
-            _bindingLabel.text = _director == null
-                ? "Graph (Unbound)"
-                : $"Graph ({ResolveDirectorDisplayName(_director)})";
-
-            _entryCountLabel.text = entryCount switch
-            {
-                <= 0 => "No entries",
-                1 => "1 entry",
-                _ => $"{entryCount} entries",
-            };
-        }
-
-        /// <summary>
-        /// Toggles the visibility of the blackboard editor content.
-        /// </summary>
-        private void ToggleExpanded()
-        {
-            _isExpanded = !_isExpanded;
-            _contentContainer.style.display = _isExpanded
-                ? DisplayStyle.Flex
-                : DisplayStyle.None;
-            _collapseButton.text = _isExpanded ? "v" : ">";
+            UpdateOverlayHeader(
+                _director == null
+                    ? "Graph (Unbound)"
+                    : $"Graph ({ResolveDirectorDisplayName(_director)})",
+                entryCount);
         }
 
         /// <summary>
@@ -1337,12 +1122,12 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
         /// <returns>The display label used by the type picker.</returns>
         private static string GetEntryTypeDisplayName(SerializedProperty valueProperty)
         {
-            if (valueProperty?.managedReferenceValue is not CutsceneGraphBlackboardValue value)
+            if (valueProperty?.managedReferenceValue is not GraphBlackboardValue value)
             {
                 return DefaultEntryTypeDisplayName();
             }
 
-            return CutsceneBlackboardValueRegistry.GetDisplayName(value);
+            return GraphBlackboardValueRegistry.GetDisplayName(value);
         }
 
         /// <summary>
@@ -1351,7 +1136,7 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
         /// <returns>The ordered picker labels.</returns>
         private static List<string> GetEntryTypeDisplayNames()
         {
-            return CutsceneBlackboardValueRegistry.Descriptors
+            return GraphBlackboardValueRegistry.GetDescriptors(CutsceneGraphFamily.Id)
                 .Where(descriptor => !descriptor.HiddenFromPicker)
                 .Select(descriptor => descriptor.DisplayName)
                 .ToList();
@@ -1362,9 +1147,12 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
         /// </summary>
         /// <param name="displayName">Picker label selected by the author.</param>
         /// <returns>The created wrapper instance.</returns>
-        private static CutsceneGraphBlackboardValue CreateValueInstance(string displayName)
+        private static GraphBlackboardValue CreateValueInstance(string displayName)
         {
-            if (CutsceneBlackboardValueRegistry.TryGetDescriptor(displayName, out var descriptor))
+            if (GraphBlackboardValueRegistry.TryGetDescriptor(
+                    displayName,
+                    CutsceneGraphFamily.Id,
+                    out var descriptor))
             {
                 return descriptor.CreateValue(descriptor.RuntimeValueType);
             }
@@ -1376,13 +1164,14 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
         /// Creates the default payload used by newly added entries.
         /// </summary>
         /// <returns>The default string wrapper.</returns>
-        private static CutsceneGraphBlackboardValue CreateDefaultValueInstance()
+        private static GraphBlackboardValue CreateDefaultValueInstance()
         {
-            return CutsceneBlackboardValueRegistry.TryCreateValue(
+            return GraphBlackboardValueRegistry.TryCreateValue(
                 typeof(string),
-                out CutsceneGraphBlackboardValue value)
+                CutsceneGraphFamily.Id,
+                out GraphBlackboardValue value)
                 ? value
-                : new CutsceneGraphBlackboardStringValue();
+                : new GraphBlackboardStringValue();
         }
 
         /// <summary>
@@ -1391,8 +1180,9 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
         /// <returns>The string wrapper display label when available.</returns>
         private static string DefaultEntryTypeDisplayName()
         {
-            return CutsceneBlackboardValueRegistry.TryGetDescriptorForRuntimeType(
+            return GraphBlackboardValueRegistry.TryGetDescriptorForRuntimeType(
                 typeof(string),
+                CutsceneGraphFamily.Id,
                 out var descriptor)
                 ? descriptor.DisplayName
                 : "String";
@@ -1405,7 +1195,7 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
         /// <returns>The resolved concrete object type.</returns>
         private static Type ResolveObjectType(SerializedProperty valueProperty)
         {
-            if (valueProperty?.managedReferenceValue is CutsceneGraphBlackboardUnityObjectValue objectValue)
+            if (valueProperty?.managedReferenceValue is GraphBlackboardUnityObjectValue objectValue)
             {
                 return objectValue.ResolveObjectType();
             }
@@ -1420,7 +1210,7 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule
         /// <returns>The resolved concrete enum type when available.</returns>
         private static Type ResolveEnumType(SerializedProperty valueProperty)
         {
-            return valueProperty?.managedReferenceValue is CutsceneGraphBlackboardEnumValue enumValue
+            return valueProperty?.managedReferenceValue is GraphBlackboardEnumValue enumValue
                 ? enumValue.ResolveEnumType()
                 : null;
         }

@@ -161,9 +161,9 @@ This is useful when other branch systems need to react to a build swap.
 - use assets that derive from `FSMStatsAsset`
 - keep the registry on the same branch as the owning `FSMBrain`
 
-The sample `FSM CCPro Starter Kit` follows this pattern by placing the registry
+The sample `FSM CCPro Example` follows this pattern by placing the registry
 on the `FSM` object and pointing it at the sample stats assets under
-`Samples/FSM CCPro Starter Kit/Objects`.
+`Samples/FSM CCPro Example/Objects`.
 
 ## Guidance For Humans
 

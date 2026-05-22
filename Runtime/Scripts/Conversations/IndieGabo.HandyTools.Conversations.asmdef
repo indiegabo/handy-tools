@@ -1,0 +1,19 @@
+{
+    "name": "IndieGabo.HandyTools.Conversations",
+    "rootNamespace": "IndieGabo.HandyTools.ConversationsModule",
+    "references": [
+        "IndieGabo.HandyTools.Runtime",
+        "IndieGabo.HandyTools.GraphCore",
+        "IndieGabo.HandyTools.Utils",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

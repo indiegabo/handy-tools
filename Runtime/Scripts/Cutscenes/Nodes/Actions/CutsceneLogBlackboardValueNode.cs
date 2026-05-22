@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using IndieGabo.HandyTools.CutscenesModule.Core;
+using IndieGabo.HandyTools.GraphCore;
 using IndieGabo.HandyTools.LoggerModule;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -72,7 +73,7 @@ namespace IndieGabo.HandyTools.CutscenesModule.Nodes.Actions
         {
             EnsureConfiguration();
 
-            if (!_variable.TryResolveEntry(context.Blackboard, out CutsceneGraphBlackboardEntry entry)
+            if (!context.TryGetRuntimeBlackboardEntry(_variable, out GraphBlackboardEntry entry)
                 || entry?.Value == null)
             {
                 string variableKey = string.IsNullOrWhiteSpace(_variable.EntryKey)
@@ -351,14 +352,14 @@ namespace IndieGabo.HandyTools.CutscenesModule.Nodes.Actions
                 }
 
                 if (_targetVariable.TryResolveEntry(
-                        context.Blackboard,
-                        out CutsceneGraphBlackboardEntry entry)
+                        context.RuntimeBlackboard,
+                        out GraphBlackboardEntry entry)
                     && entry?.Value != null)
                 {
                     Type targetType = entry.Value.GetExpectedValueType();
 
                     if (!_valueSource.TryGetValue(
-                            context.Blackboard,
+                            context.RuntimeBlackboard,
                             targetType,
                             out object resolvedValue))
                     {
@@ -388,7 +389,7 @@ namespace IndieGabo.HandyTools.CutscenesModule.Nodes.Actions
                 }
 
                 if (!_valueSource.TryGetValue(
-                        context.Blackboard,
+                    context.RuntimeBlackboard,
                         fallbackValueType,
                         out object fallbackValue))
                 {

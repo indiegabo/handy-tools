@@ -1,0 +1,18 @@
+{
+    "name": "IndieGabo.HandyTools.Conversations.Samples",
+    "rootNamespace": "IndieGabo.HandyTools.ConversationsModule.Samples",
+    "references": [
+        "IndieGabo.HandyTools.Conversations",
+        "IndieGabo.HandyTools.GraphCore",
+        "IndieGabo.HandyTools.Utils"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

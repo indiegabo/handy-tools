@@ -188,7 +188,7 @@ namespace IndieGabo.HandyTools.GameplayModule
 
             if (!ReferenceEquals(_interruptionOwner, interruptionOwner))
             {
-                HandyLogger.Error(
+                HandyLogger.Warning(
                     $"{nameof(GameplayService)}",
                     $"Trying to resume gameplay with owner '{DescribeOwner(interruptionOwner)}' while the interruption is owned by '{DescribeOwner(_interruptionOwner)}'.",
                     this

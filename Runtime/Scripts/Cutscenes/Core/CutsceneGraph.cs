@@ -2,23 +2,93 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using IndieGabo.HandyTools.CutscenesModule.Nodes.Flow;
+using IndieGabo.HandyTools.GraphCore;
 using IndieGabo.HandyTools.Utils;
 using UnityEngine;
 
 namespace IndieGabo.HandyTools.CutscenesModule.Core
 {
     [Serializable]
-    public sealed class CutsceneGraph
+    public sealed class CutsceneGraph : GraphDefinition, ISerializationCallbackReceiver
     {
-        [SerializeReference] private List<CutsceneNodeBase> _nodes = new();
-        [SerializeField] private List<CutsceneConnection> _connections = new();
-        [SerializeField] private CutsceneGraphBlackboard _blackboard = new();
+        private readonly CutsceneTypedReadOnlyListAdapter<GraphNodeBase, CutsceneNodeBase>
+            _nodesView;
+        private readonly CutsceneTypedReadOnlyListAdapter<GraphConnection, CutsceneConnection>
+            _connectionsView;
 
-        public IReadOnlyList<CutsceneNodeBase> Nodes => _nodes;
+        public CutsceneGraph()
+        {
+            EnsureBlackboardShape();
+            _nodesView = new CutsceneTypedReadOnlyListAdapter<GraphNodeBase, CutsceneNodeBase>(
+                () => base.Nodes);
+            _connectionsView = new CutsceneTypedReadOnlyListAdapter<GraphConnection, CutsceneConnection>(
+                () => base.Connections);
+        }
 
-        public IReadOnlyList<CutsceneConnection> Connections => _connections;
+        public new IReadOnlyList<CutsceneNodeBase> Nodes
+        {
+            get
+            {
+                NormalizeGraphShapes();
+                return _nodesView;
+            }
+        }
 
-        public CutsceneGraphBlackboard Blackboard => _blackboard ??= new CutsceneGraphBlackboard();
+        public new IReadOnlyList<CutsceneConnection> Connections
+        {
+            get
+            {
+                NormalizeGraphShapes();
+                return _connectionsView;
+            }
+        }
+
+        public new CutsceneGraphBlackboard Blackboard
+        {
+            get
+            {
+                NormalizeGraphShapes();
+                return EnsureBlackboardShape();
+            }
+        }
+
+        /// <inheritdoc />
+        protected override GraphBlackboard CreateBlackboard()
+        {
+            return new CutsceneGraphBlackboard();
+        }
+
+        /// <inheritdoc />
+        protected override GraphConnection CreateConnection(
+            SerializableGuid fromNodeId,
+            string outputKey,
+            SerializableGuid toNodeId)
+        {
+            return new CutsceneConnection(fromNodeId, outputKey, toNodeId);
+        }
+
+        /// <summary>
+        /// Restores the blackboard instance during migration or import flows.
+        /// </summary>
+        /// <param name="blackboard">Blackboard instance that should back the graph.</param>
+        public void RestoreBlackboard(CutsceneGraphBlackboard blackboard)
+        {
+            base.RestoreBlackboard(blackboard ?? new CutsceneGraphBlackboard());
+        }
+
+        /// <inheritdoc />
+        public void OnBeforeSerialize()
+        {
+            EnsureBlackboardShape();
+            NormalizeGraphShapes();
+        }
+
+        /// <inheritdoc />
+        public void OnAfterDeserialize()
+        {
+            EnsureBlackboardShape();
+            NormalizeGraphShapes();
+        }
 
         public static CutsceneGraph CreateDefault()
         {
@@ -34,69 +104,54 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
             return graph;
         }
 
-        public void Clear()
+        public new void Clear()
         {
-            _nodes.Clear();
-            _connections.Clear();
-            _blackboard?.Clear();
+            base.Clear();
         }
 
-        public void EnsureNodeIds()
+        public new void EnsureNodeIds()
         {
-            for (int i = 0; i < _nodes.Count; i++)
-            {
-                _nodes[i]?.EnsureId();
-            }
-
-            _blackboard?.EnsureEntryIds();
+            NormalizeGraphShapes();
+            base.EnsureNodeIds();
         }
 
         public void AddNode(CutsceneNodeBase node)
         {
-            if (node == null)
-            {
-                return;
-            }
-
-            node.EnsureId();
-            _nodes.Add(node);
+            base.AddNode(node);
         }
 
-        public bool RemoveNode(SerializableGuid nodeId)
+        public new bool RemoveNode(SerializableGuid nodeId)
         {
-            int removedNodes = _nodes.RemoveAll(node => node != null && node.Id == nodeId);
-            int removedConnections = _connections.RemoveAll(connection => connection.FromNodeId == nodeId || connection.ToNodeId == nodeId);
-            return removedNodes > 0 || removedConnections > 0;
+            return base.RemoveNode(nodeId);
         }
 
-        public void Connect(SerializableGuid fromNodeId, string outputKey, SerializableGuid toNodeId)
+        /// <summary>
+        /// Adds one serialized connection without replacing existing entries for the
+        /// same output key. This is intended for migration, import, and validation
+        /// flows that must preserve authored graph state exactly as stored.
+        /// </summary>
+        /// <param name="connection">Connection to append.</param>
+        public void AddConnection(CutsceneConnection connection)
         {
-            CutsceneConnection existingConnection = _connections.FirstOrDefault(
-                connection => connection.FromNodeId == fromNodeId
-                    && string.Equals(connection.OutputKey, outputKey, StringComparison.OrdinalIgnoreCase));
-
-            if (existingConnection != null)
-            {
-                existingConnection.SetTarget(toNodeId);
-                return;
-            }
-
-            _connections.Add(new CutsceneConnection(fromNodeId, outputKey, toNodeId));
-        }
-
-        public void Disconnect(SerializableGuid fromNodeId, string outputKey)
-        {
-            _connections.RemoveAll(connection => connection.FromNodeId == fromNodeId
-                && string.Equals(connection.OutputKey, outputKey, StringComparison.OrdinalIgnoreCase));
+            base.AddConnection(connection);
         }
 
         public bool TryGetNode(SerializableGuid nodeId, out CutsceneNodeBase node)
         {
-            node = _nodes.FirstOrDefault(candidate => candidate != null && candidate.Id == nodeId);
-            return node != null;
+            NormalizeGraphShapes();
+            node = null;
+
+            if (!base.TryGetNode(nodeId, out GraphNodeBase candidate)
+                || candidate is not CutsceneNodeBase cutsceneNode)
+            {
+                return false;
+            }
+
+            node = cutsceneNode;
+            return true;
         }
 
-        public T CreateNode<T>() where T : CutsceneNodeBase, new()
+        public new T CreateNode<T>() where T : CutsceneNodeBase, new()
         {
             T node = new();
             AddNode(node);
@@ -105,50 +160,87 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
 
         public CutsceneEntryNode GetEntryNode()
         {
-            return _nodes.OfType<CutsceneEntryNode>().FirstOrDefault();
+            return Nodes.OfType<CutsceneEntryNode>().FirstOrDefault();
         }
 
-        public IEnumerable<CutsceneConnection> GetOutgoingConnections(SerializableGuid nodeId)
+        public new IEnumerable<CutsceneConnection> GetOutgoingConnections(SerializableGuid nodeId)
         {
-            return _connections.Where(connection => connection.FromNodeId == nodeId);
+            NormalizeGraphShapes();
+            return base.GetOutgoingConnections(nodeId).Cast<CutsceneConnection>();
         }
 
         public bool TryGetOutgoingConnection(SerializableGuid nodeId, string outputKey, out CutsceneConnection connection)
         {
-            connection = _connections.FirstOrDefault(candidate => candidate.FromNodeId == nodeId
-                && string.Equals(candidate.OutputKey, outputKey, StringComparison.OrdinalIgnoreCase));
+            NormalizeGraphShapes();
+            connection = null;
 
-            return connection != null;
-        }
-
-        public bool TrySetConnectionColor(
-            SerializableGuid fromNodeId,
-            string outputKey,
-            Color color)
-        {
-            if (!TryGetOutgoingConnection(fromNodeId, outputKey, out CutsceneConnection connection))
+            if (!base.TryGetOutgoingConnection(nodeId, outputKey, out GraphConnection candidate)
+                || candidate is not CutsceneConnection cutsceneConnection)
             {
                 return false;
             }
 
-            connection.SetCustomColor(color);
+            connection = cutsceneConnection;
             return true;
         }
 
-        public bool TryClearConnectionColor(SerializableGuid fromNodeId, string outputKey)
+        private void NormalizeGraphShapes()
         {
-            if (!TryGetOutgoingConnection(fromNodeId, outputKey, out CutsceneConnection connection))
+            EnsureBlackboardShape();
+
+            for (int index = 0; index < NodesInternal.Count; index++)
             {
-                return false;
+                GraphNodeBase node = NodesInternal[index];
+
+                if (node == null || node is CutsceneNodeBase)
+                {
+                    continue;
+                }
+
+                CutsceneNodeBase normalizedNode =
+                    CutsceneGraphCoreRuntimeMigrationUtility.CreateCutsceneAuthoringNode(node);
+
+                if (normalizedNode != null)
+                {
+                    NodesInternal[index] = normalizedNode;
+                }
             }
 
-            connection.ClearCustomColor();
-            return true;
+            for (int index = 0; index < ConnectionsInternal.Count; index++)
+            {
+                GraphConnection connection = ConnectionsInternal[index];
+
+                if (connection == null || connection is CutsceneConnection)
+                {
+                    continue;
+                }
+
+                CutsceneConnection normalizedConnection = new(
+                    connection.FromNodeId,
+                    connection.OutputKey,
+                    connection.ToNodeId);
+
+                if (connection.HasCustomColor)
+                {
+                    normalizedConnection.SetCustomColor(connection.CustomColor);
+                }
+
+                ConnectionsInternal[index] = normalizedConnection;
+            }
         }
 
-        public bool HasIncomingConnections(SerializableGuid nodeId)
+        private CutsceneGraphBlackboard EnsureBlackboardShape()
         {
-            return _connections.Any(connection => connection.ToNodeId == nodeId);
+            if (BlackboardInternal is CutsceneGraphBlackboard cutsceneBlackboard)
+            {
+                return cutsceneBlackboard;
+            }
+
+            CutsceneGraphBlackboard promotedBlackboard =
+                CutsceneGraphCoreRuntimeMigrationUtility.CreateCutsceneGraphBlackboard(
+                    BlackboardInternal ?? base.Blackboard);
+            base.RestoreBlackboard(promotedBlackboard);
+            return promotedBlackboard;
         }
     }
 }

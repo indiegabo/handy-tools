@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using IndieGabo.HandyTools.Editor.GraphCore;
 using IndieGabo.HandyTools.CutscenesModule.Core;
 using IndieGabo.HandyTools.Utils;
 using UnityEditor;
@@ -10,7 +11,7 @@ using UnityEngine.UIElements;
 
 namespace IndieGabo.HandyTools.Editor.CutscenesModule.Graph
 {
-    public sealed class CutsceneGraphView : GraphView
+    public sealed class CutsceneGraphView : GraphCanvasView<CutsceneGraphNodeView>
     {
         private const float AutoArrangeLayerGap = 96f;
         private const float AutoArrangeNodeGap = 48f;
@@ -28,48 +29,26 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule.Graph
                 new("Slate", new Color(0.62f, 0.67f, 0.73f)),
             };
 
-        private readonly Dictionary<SerializableGuid, CutsceneGraphNodeView> _nodeViews = new();
         private readonly Dictionary<string, Edge> _edgesByConnectionKey =
             new(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, CutsceneConnection> _connectionsByConnectionKey =
             new(StringComparer.OrdinalIgnoreCase);
-        private readonly HashSet<Port> _portsPendingAlignment = new();
         private readonly CutsceneGridBackground _gridBackground;
-        private readonly CutsceneEdgeConnectorListener _edgeConnectorListener;
 
         private CutsceneDirector _director;
-        private Vector2 _cachedMousePosition;
         private bool _isRebuildingGraph;
         private bool _isApplyingNodePositions;
-        private bool _hasPendingSelectionNotification;
-        private SerializableGuid _lastSelectedNodeId;
 
         internal CutsceneGraphView()
         {
-            style.flexGrow = 1f;
-            SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
-
             _gridBackground = new CutsceneGridBackground(this);
-            Insert(0, _gridBackground);
-
-            this.AddManipulator(new ContentDragger());
-            this.AddManipulator(new SelectionDragger());
-            this.AddManipulator(new RectangleSelector());
-
-            _edgeConnectorListener = new CutsceneEdgeConnectorListener(this);
+            InitializeCanvas(
+                _gridBackground,
+                HandleConnectionDropOutsidePort,
+                CleanupTransientEdge);
 
             graphViewChanged = HandleGraphViewChanged;
-            viewTransformChanged = _ => _gridBackground.MarkDirtyRepaint();
-            nodeCreationRequest = _ => NodeCreationRequested?.Invoke(_cachedMousePosition);
-            RegisterCallback<GeometryChangedEvent>(_ => _gridBackground.MarkDirtyRepaint());
-            RegisterCallback<MouseMoveEvent>(HandleMouseMove);
-            RegisterCallback<MouseDownEvent>(HandleMouseDown);
-            RegisterCallback<KeyUpEvent>(_ => ScheduleSelectionChangedNotification());
         }
-
-        public event Action<CutsceneGraphNodeView> NodeSelected;
-
-        public event Action<Vector2> NodeCreationRequested;
 
         public event Action<ConnectedNodeCreationRequest> ConnectedNodeCreationRequested;
 
@@ -99,24 +78,14 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule.Graph
         public void BindDirector(CutsceneDirector director)
         {
             _director = director;
-            _lastSelectedNodeId = SerializableGuid.Empty;
-            _hasPendingSelectionNotification = false;
+            ResetCanvasSelectionState();
             RebuildGraph();
             RefreshRuntimeState();
         }
 
         internal void AlignNodeInputPortToDropPosition(SerializableGuid nodeId)
         {
-            if (!_nodeViews.TryGetValue(nodeId, out CutsceneGraphNodeView nodeView)
-                || nodeView.InputPort == null)
-            {
-                return;
-            }
-
-            if (_portsPendingAlignment.Add(nodeView.InputPort))
-            {
-                nodeView.InputPort.RegisterCallback<GeometryChangedEvent>(HandlePendingPortAlignment);
-            }
+            AlignRegisteredNodeInputPortToDropPosition(nodeId);
         }
 
         public void RebuildGraph(SerializableGuid selectedNodeId = default)
@@ -127,7 +96,7 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule.Graph
             {
                 DeleteElements(edges.ToList());
                 DeleteElements(nodes.ToList());
-                _nodeViews.Clear();
+                ClearRegisteredNodeViews();
                 _edgesByConnectionKey.Clear();
                 _connectionsByConnectionKey.Clear();
 
@@ -147,10 +116,9 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule.Graph
                         continue;
                     }
 
-                    CutsceneGraphNodeView nodeView = new(graphNode, _edgeConnectorListener);
-                    nodeView.SelectionStateChanged += HandleNodeViewSelectionStateChanged;
+                    CutsceneGraphNodeView nodeView = new(graphNode, EdgeConnectorListener);
                     AddElement(nodeView);
-                    _nodeViews[graphNode.Id] = nodeView;
+                    RegisterNodeView(nodeView);
                 }
 
                 IReadOnlyList<CutsceneConnection> connections = _director.Graph.Connections;
@@ -160,7 +128,10 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule.Graph
                     TryAddConnectionEdge(connections[index]);
                 }
 
-                if (selectedNodeId != default && _nodeViews.TryGetValue(selectedNodeId, out CutsceneGraphNodeView nodeViewToSelect))
+                if (selectedNodeId != default
+                    && TryGetRegisteredNodeView(
+                        selectedNodeId,
+                        out CutsceneGraphNodeView nodeViewToSelect))
                 {
                     ClearSelection();
                     AddToSelection(nodeViewToSelect);
@@ -176,7 +147,7 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule.Graph
         {
             if (_director == null
                 || nodeId == SerializableGuid.Empty
-                || !_nodeViews.TryGetValue(nodeId, out CutsceneGraphNodeView nodeView))
+                || !TryGetRegisteredNodeView(nodeId, out CutsceneGraphNodeView nodeView))
             {
                 return;
             }
@@ -186,7 +157,7 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule.Graph
 
         public void RefreshRuntimeState()
         {
-            foreach (CutsceneGraphNodeView nodeView in _nodeViews.Values)
+            foreach (CutsceneGraphNodeView nodeView in NodeViews.Values)
             {
                 nodeView.SetRuntimeState(false, false, false, false, false);
             }
@@ -219,7 +190,7 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule.Graph
                 }
             }
 
-            foreach (KeyValuePair<SerializableGuid, CutsceneGraphNodeView> pair in _nodeViews)
+            foreach (KeyValuePair<SerializableGuid, CutsceneGraphNodeView> pair in NodeViews)
             {
                 bool isCurrent = run.Status == CutsceneRunStatus.Running
                     && activeNodeIds.Contains(pair.Key);
@@ -246,16 +217,6 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule.Graph
                     traversedConnections.Contains(pair.Key)));
             }
         }
-
-        public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
-        {
-            return ports.ToList().Where(port =>
-                    port != startPort
-                    && port.node != startPort.node
-                    && port.direction != startPort.direction)
-                .ToList();
-        }
-
         private GraphViewChange HandleGraphViewChanged(GraphViewChange graphViewChange)
         {
             if (_director == null || _isRebuildingGraph || _isApplyingNodePositions)
@@ -375,7 +336,7 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule.Graph
 
         internal void AutoArrangeNodes()
         {
-            if (_director == null || _nodeViews.Count == 0)
+            if (_director == null || NodeViews.Count == 0)
             {
                 return;
             }
@@ -467,13 +428,13 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule.Graph
 
         private static float SnapAxis(float value)
         {
-            return Mathf.Round(value / CutsceneGridBackground.MinorStep)
-                * CutsceneGridBackground.MinorStep;
+            return Mathf.Round(value / CutsceneGridBackground.CutsceneMinorStep)
+                * CutsceneGridBackground.CutsceneMinorStep;
         }
 
         private IReadOnlyList<List<CutsceneGraphNodeView>> BuildLayoutLayers()
         {
-            Dictionary<SerializableGuid, CutsceneGraphNodeView> arrangeableNodes = _nodeViews
+            Dictionary<SerializableGuid, CutsceneGraphNodeView> arrangeableNodes = NodeViews
                 .Where(pair => pair.Value.Node.ParticipatesInAutoArrange)
                 .ToDictionary(pair => pair.Key, pair => pair.Value);
 
@@ -774,8 +735,8 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule.Graph
 
         private void TryAddConnectionEdge(CutsceneConnection connection)
         {
-            if (!_nodeViews.TryGetValue(connection.FromNodeId, out CutsceneGraphNodeView fromNodeView)
-                || !_nodeViews.TryGetValue(connection.ToNodeId, out CutsceneGraphNodeView toNodeView)
+            if (!TryGetRegisteredNodeView(connection.FromNodeId, out CutsceneGraphNodeView fromNodeView)
+                || !TryGetRegisteredNodeView(connection.ToNodeId, out CutsceneGraphNodeView toNodeView)
                 || !fromNodeView.OutputPorts.TryGetValue(connection.OutputKey, out Port outputPort)
                 || toNodeView.InputPort == null)
             {
@@ -872,63 +833,32 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule.Graph
                 return;
             }
 
+            if (edge is CutsceneGraphEdge cutsceneEdge)
+            {
+                cutsceneEdge.SetColor(color);
+                return;
+            }
+
+            ApplyEdgeColor(edge, color);
+        }
+
+        private static void ApplyEdgeColor(Edge edge, Color color)
+        {
             edge.edgeControl.inputColor = color;
             edge.edgeControl.outputColor = color;
             edge.MarkDirtyRepaint();
         }
 
-        private void ScheduleSelectionChangedNotification()
+        private static string CreateConnectionKey(SerializableGuid nodeId, string outputKey)
         {
-            if (_hasPendingSelectionNotification)
-            {
-                return;
-            }
-
-            _hasPendingSelectionNotification = true;
-            schedule.Execute(() =>
-            {
-                _hasPendingSelectionNotification = false;
-                NotifySelectionChanged();
-            }).ExecuteLater(0);
+            return $"{nodeId.ToHexString()}::{outputKey}";
         }
 
-        private void NotifySelectionChanged()
+        protected override void HandleNodeInputPortAligned(
+            CutsceneGraphNodeView nodeView,
+            Vector2 alignedPosition)
         {
-            CutsceneGraphNodeView selectedNodeView =
-                selection?.OfType<CutsceneGraphNodeView>().FirstOrDefault();
-            SerializableGuid selectedNodeId = selectedNodeView?.Node.Id
-                ?? SerializableGuid.Empty;
-
-            if (selectedNodeId == _lastSelectedNodeId)
-            {
-                return;
-            }
-
-            _lastSelectedNodeId = selectedNodeId;
-            NodeSelected?.Invoke(selectedNodeView);
-        }
-
-        private void HandlePendingPortAlignment(GeometryChangedEvent evt)
-        {
-            if (evt.target is not Port port || !_portsPendingAlignment.Remove(port))
-            {
-                return;
-            }
-
-            port.UnregisterCallback<GeometryChangedEvent>(HandlePendingPortAlignment);
-
-            if (port.node is not CutsceneGraphNodeView nodeView)
-            {
-                return;
-            }
-
-            Vector2 offset = nodeView.mainContainer.WorldToLocal(
-                port.GetGlobalCenter() + new Vector3(3f, 3f, 0f));
-            Rect position = nodeView.GetPosition();
-            position.position -= offset;
-
-            nodeView.SetPosition(position);
-            nodeView.Node.Position = position.position;
+            nodeView.Node.Position = alignedPosition;
 
             RefreshEdges();
 
@@ -938,24 +868,22 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule.Graph
             }
         }
 
-        private void HandleNodeViewSelectionStateChanged()
+        protected override void ApplyAlignedNodePosition(
+            CutsceneGraphNodeView nodeView,
+            Rect position)
         {
-            ScheduleSelectionChangedNotification();
-        }
+            _isApplyingNodePositions = true;
 
-        private void HandleMouseDown(MouseDownEvent evt)
-        {
-            _cachedMousePosition = evt.mousePosition;
-        }
+            try
+            {
+                nodeView.SetPosition(position);
+            }
+            finally
+            {
+                _isApplyingNodePositions = false;
+            }
 
-        private void HandleMouseMove(MouseMoveEvent evt)
-        {
-            _cachedMousePosition = evt.mousePosition;
-        }
-
-        private static string CreateConnectionKey(SerializableGuid nodeId, string outputKey)
-        {
-            return $"{nodeId.ToHexString()}::{outputKey}";
+            HandleNodeInputPortAligned(nodeView, position.position);
         }
 
         private readonly struct EdgeColorPreset
@@ -974,11 +902,21 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule.Graph
         private sealed class CutsceneGraphEdge : Edge
         {
             private readonly Action<Color?> _applyColor;
+            private Color _currentColor = DefaultEdgeColor;
 
             public CutsceneGraphEdge(Action<Color?> applyColor)
             {
                 _applyColor = applyColor;
                 RegisterCallback<ContextualMenuPopulateEvent>(PopulateContextualMenu);
+                RegisterCallback<GeometryChangedEvent>(_ => ApplyCurrentColor());
+                RegisterCallback<AttachToPanelEvent>(_ => schedule.Execute(ApplyCurrentColor).ExecuteLater(0));
+            }
+
+            public void SetColor(Color color)
+            {
+                _currentColor = color;
+                ApplyCurrentColor();
+                schedule.Execute(ApplyCurrentColor).ExecuteLater(0);
             }
 
             private void PopulateContextualMenu(ContextualMenuPopulateEvent evt)
@@ -999,58 +937,12 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule.Graph
                     _ => _applyColor?.Invoke(null),
                     _ => DropdownMenuAction.Status.Normal);
             }
-        }
 
-        private sealed class CutsceneEdgeConnectorListener : IEdgeConnectorListener
-        {
-            private readonly CutsceneGraphView _graphView;
-
-            public CutsceneEdgeConnectorListener(CutsceneGraphView graphView)
+            private void ApplyCurrentColor()
             {
-                _graphView = graphView;
-            }
-
-            public void OnDropOutsidePort(Edge edge, Vector2 position)
-            {
-                _graphView.HandleConnectionDropOutsidePort(edge, position);
-            }
-
-            public void OnDrop(GraphView graphView, Edge edge)
-            {
-                if (edge?.input == null || edge.output == null)
-                {
-                    CleanupTransientEdge(edge);
-                    return;
-                }
-
-                List<GraphElement> elementsToRemove = new();
-
-                if (edge.input.capacity == Port.Capacity.Single)
-                {
-                    elementsToRemove.AddRange(
-                        edge.input.connections
-                            .Where(existingEdge => existingEdge != edge)
-                            .Cast<GraphElement>());
-                }
-
-                if (edge.output.capacity == Port.Capacity.Single)
-                {
-                    elementsToRemove.AddRange(
-                        edge.output.connections
-                            .Where(existingEdge => existingEdge != edge)
-                            .Cast<GraphElement>());
-                }
-
-                GraphViewChange graphViewChange = new()
-                {
-                    edgesToCreate = new List<Edge> { edge },
-                    elementsToRemove = elementsToRemove.Count > 0
-                        ? elementsToRemove.Distinct().ToList()
-                        : null,
-                };
-
-                _graphView.graphViewChanged?.Invoke(graphViewChange);
+                ApplyEdgeColor(this, _currentColor);
             }
         }
+
     }
 }

@@ -527,10 +527,37 @@ namespace IndieGabo.HandyTools.PoolingModule
 
                 return byPrefab.HasIdentifier
                     ? byPrefab
-                    : CreateDynamicDefinition(prefab, identifier);
+                    : PromoteDefinitionIdentifier(byPrefab, identifier);
             }
 
-            return CreateDynamicDefinition(prefab, identifier);
+            return RegisterDynamicDefinition(CreateDynamicDefinition(prefab, identifier));
+        }
+
+        private PoolRuntimeDefinition<TBehaviour> PromoteDefinitionIdentifier(
+            PoolRuntimeDefinition<TBehaviour> definition,
+            PoolIdentifier identifier
+        )
+        {
+            PoolRuntimeDefinition<TBehaviour> promotedDefinition = new(
+                definition.Prefab,
+                identifier,
+                true,
+                definition.InitialCapacity,
+                definition.MaxSize,
+                definition.PrewarmCount,
+                definition.CollectionCheck
+            );
+
+            _configuredByPrefab[definition.Prefab] = promotedDefinition;
+            _configuredByIdentifier[identifier] = promotedDefinition;
+
+            if (_activeByPrefab.TryGetValue(definition.Prefab, out PoolEntryRuntime activeEntry))
+            {
+                activeEntry.PromoteIdentifier(identifier);
+                _activeByIdentifier[identifier] = activeEntry;
+            }
+
+            return promotedDefinition;
         }
 
         private PoolRuntimeDefinition<TBehaviour> CreateDynamicDefinition(
@@ -547,6 +574,23 @@ namespace IndieGabo.HandyTools.PoolingModule
                 0,
                 true
             );
+        }
+
+        private PoolRuntimeDefinition<TBehaviour> RegisterDynamicDefinition(
+            PoolRuntimeDefinition<TBehaviour> definition
+        )
+        {
+            if (definition.Prefab != null && !_configuredByPrefab.ContainsKey(definition.Prefab))
+            {
+                _configuredByPrefab.Add(definition.Prefab, definition);
+            }
+
+            if (definition.HasIdentifier && !_configuredByIdentifier.ContainsKey(definition.Identifier))
+            {
+                _configuredByIdentifier.Add(definition.Identifier, definition);
+            }
+
+            return definition;
         }
 
         #endregion
@@ -568,6 +612,12 @@ namespace IndieGabo.HandyTools.PoolingModule
         {
             if (_activeByPrefab.TryGetValue(definition.Prefab, out PoolEntryRuntime existingEntry))
             {
+                if (definition.HasIdentifier)
+                {
+                    existingEntry.PromoteIdentifier(definition.Identifier);
+                    _activeByIdentifier[definition.Identifier] = existingEntry;
+                }
+
                 existingEntry.Prewarm(Mathf.Max(0, Mathf.CeilToInt(additionalPrewarmCount)));
                 return existingEntry;
             }
@@ -593,6 +643,7 @@ namespace IndieGabo.HandyTools.PoolingModule
             private readonly HashSet<TBehaviour> _createdSubjects;
             private readonly List<TBehaviour> _destroyBuffer;
             private readonly List<TBehaviour> _prewarmBuffer;
+            private PoolIdentifier _identifier;
             private ObjectPool<TBehaviour> _pool;
             private bool _isRegistered;
 
@@ -606,9 +657,10 @@ namespace IndieGabo.HandyTools.PoolingModule
                 _createdSubjects = new HashSet<TBehaviour>();
                 _destroyBuffer = new List<TBehaviour>();
                 _prewarmBuffer = new List<TBehaviour>();
+                _identifier = definition.Identifier;
             }
 
-            public PoolIdentifier Identifier => _definition.Identifier;
+            public PoolIdentifier Identifier => _identifier;
 
             public TBehaviour Prefab => _definition.Prefab;
 
@@ -704,7 +756,6 @@ namespace IndieGabo.HandyTools.PoolingModule
                     return;
                 }
 
-                _pool.Clear();
                 _destroyBuffer.Clear();
 
                 foreach (TBehaviour subject in _createdSubjects)
@@ -719,13 +770,41 @@ namespace IndieGabo.HandyTools.PoolingModule
                 {
                     TBehaviour subject = _destroyBuffer[index];
                     _owner.ForgetSubject(subject);
-                    UnityEngine.Object.Destroy(subject.gameObject);
+                    DestroyOwnedSubject(subject.gameObject);
                 }
 
                 _destroyBuffer.Clear();
                 _createdSubjects.Clear();
                 _prewarmBuffer.Clear();
                 _pool = null;
+            }
+
+            public void PromoteIdentifier(PoolIdentifier identifier)
+            {
+                if (!identifier.IsValid)
+                {
+                    return;
+                }
+
+                if (_identifier.IsValid)
+                {
+                    if (_identifier != identifier)
+                    {
+                        throw new InvalidOperationException(
+                            $"Pool '{GetDisplayName()}' already uses identifier '{_identifier}'."
+                        );
+                    }
+
+                    return;
+                }
+
+                _identifier = identifier;
+
+                if (_pool != null && !_isRegistered)
+                {
+                    PoolRegistry.Register(_identifier, this);
+                    _isRegistered = true;
+                }
             }
 
             private void EnsurePool()
@@ -745,9 +824,9 @@ namespace IndieGabo.HandyTools.PoolingModule
                     _definition.MaxSize
                 );
 
-                if (_definition.HasIdentifier)
+                if (_identifier.IsValid)
                 {
-                    PoolRegistry.Register(_definition.Identifier, this);
+                    PoolRegistry.Register(_identifier, this);
                     _isRegistered = true;
                 }
             }
@@ -785,8 +864,24 @@ namespace IndieGabo.HandyTools.PoolingModule
 
                 if (subject != null)
                 {
-                    UnityEngine.Object.Destroy(subject.gameObject);
+                    DestroyOwnedSubject(subject.gameObject);
                 }
+            }
+
+            private static void DestroyOwnedSubject(GameObject subjectObject)
+            {
+                if (subjectObject == null)
+                {
+                    return;
+                }
+
+                if (Application.isPlaying)
+                {
+                    UnityEngine.Object.Destroy(subjectObject);
+                    return;
+                }
+
+                UnityEngine.Object.DestroyImmediate(subjectObject);
             }
 
             private string GetDisplayName()

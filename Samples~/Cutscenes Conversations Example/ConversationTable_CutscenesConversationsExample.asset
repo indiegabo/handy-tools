@@ -1,0 +1,263 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56932d041ada8c143ad4168149918727, type: 3}
+  m_Name: ConversationTable_CutscenesConversationsExample
+  m_EditorClassIdentifier: IndieGabo.HandyTools.Conversations::IndieGabo.HandyTools.ConversationsModule.Core.ConversationTable
+  _conversations:
+  - _conversationId:
+      Part1: 1464565952
+      Part2: 2037530775
+      Part3: 2774102311
+      Part4: 2249758029
+    _title: Act 1/Briefing
+    _graph:
+      _nodes:
+      - rid: 410000000000000001
+      - rid: 410000000000000002
+      - rid: 410000000000000003
+      - rid: 410000000000000004
+      _connections:
+      - _fromNodeId:
+          Part1: 2662038864
+          Part2: 1795051398
+          Part3: 2361966956
+          Part4: 4258990900
+        _outputKey: Next
+        _toNodeId:
+          Part1: 1853940858
+          Part2: 4003612793
+          Part3: 3002061837
+          Part4: 619462457
+        _hasCustomColor: 0
+        _customColor: {r: 0.45, g: 0.45, b: 0.45, a: 1}
+      - _fromNodeId:
+          Part1: 1853940858
+          Part2: 4003612793
+          Part3: 3002061837
+          Part4: 619462457
+        _outputKey: Next
+        _toNodeId:
+          Part1: 815376823
+          Part2: 368527277
+          Part3: 2857172829
+          Part4: 3911801802
+        _hasCustomColor: 0
+        _customColor: {r: 0.45, g: 0.45, b: 0.45, a: 1}
+      - _fromNodeId:
+          Part1: 815376823
+          Part2: 368527277
+          Part3: 2857172829
+          Part4: 3911801802
+        _outputKey: Next
+        _toNodeId:
+          Part1: 883722480
+          Part2: 1699693410
+          Part3: 2492600745
+          Part4: 4140407113
+        _hasCustomColor: 0
+        _customColor: {r: 0.45, g: 0.45, b: 0.45, a: 1}
+      _blackboard:
+        _entries: []
+    _presenterOverridePrefab: {fileID: 0}
+  - _conversationId:
+      Part1: 4216423993
+      Part2: 3222949887
+      Part3: 3016024918
+      Part4: 1607211990
+    _title: Act 1/Checkpoint
+    _graph:
+      _nodes:
+      - rid: 410000000000000005
+      - rid: 410000000000000006
+      - rid: 410000000000000007
+      _connections:
+      - _fromNodeId:
+          Part1: 3030112152
+          Part2: 4236527895
+          Part3: 2734479314
+          Part4: 3832010023
+        _outputKey: Next
+        _toNodeId:
+          Part1: 3521819385
+          Part2: 3496298710
+          Part3: 2303831684
+          Part4: 453713770
+        _hasCustomColor: 0
+        _customColor: {r: 0.45, g: 0.45, b: 0.45, a: 1}
+      - _fromNodeId:
+          Part1: 3521819385
+          Part2: 3496298710
+          Part3: 2303831684
+          Part4: 453713770
+        _outputKey: Next
+        _toNodeId:
+          Part1: 3292982279
+          Part2: 4082518371
+          Part3: 2876909862
+          Part4: 662572122
+        _hasCustomColor: 0
+        _customColor: {r: 0.45, g: 0.45, b: 0.45, a: 1}
+      _blackboard:
+        _entries: []
+    _presenterOverridePrefab: {fileID: 0}
+  _actors:
+  - _actorId:
+      Part1: 2022151842
+      Part2: 3164098359
+      Part3: 2683776708
+      Part4: 2783054873
+    _key: director
+    _displayName: Director
+    _portrait: {fileID: 21300000, guid: b0fdf9c303d8a884694dfcab1dbd26e9, type: 3}
+    _themeColor: {r: 0.28, g: 0.54, b: 0.85, a: 1}
+    _notes: 
+  - _actorId:
+      Part1: 4238429215
+      Part2: 3339340821
+      Part3: 2657599646
+      Part4: 935869194
+    _key: operative
+    _displayName: Operative
+    _portrait: {fileID: 21300000, guid: 7aebe8557f94f7246ae69ad6833c14c0, type: 3}
+    _themeColor: {r: 0.86, g: 0.54, b: 0.34, a: 1}
+    _notes: 
+  - _actorId:
+      Part1: 790548711
+      Part2: 1478246768
+      Part3: 2665224835
+      Part4: 998054007
+    _key: spotter
+    _displayName: Spotter
+    _portrait: {fileID: 21300000, guid: 1d4f17c896272964ea33d3b51e24f326, type: 3}
+    _themeColor: {r: 0.75, g: 0.84, b: 0.36, a: 1}
+    _notes: 
+  _displayName: Cutscenes
+  _continueAction: {fileID: 9120403175427506597, guid: 911b0a49865f48bb9ac70e222f1b891b, type: 3}
+  _cancelAction: {fileID: -7958101087658997014, guid: 911b0a49865f48bb9ac70e222f1b891b, type: 3}
+  _skipAction: {fileID: -7958101087658997014, guid: 911b0a49865f48bb9ac70e222f1b891b, type: 3}
+  _defaultPresenterPrefab: {fileID: 780100000000000001, guid: 449416169670a9e49958d11ac1d1a9c4, type: 3}
+  references:
+    version: 2
+    RefIds:
+    - rid: 410000000000000001
+      type: {class: ConversationEntryNode, ns: IndieGabo.HandyTools.ConversationsModule.Nodes, asm: IndieGabo.HandyTools.Conversations}
+      data:
+        _id:
+          Part1: 2662038864
+          Part2: 1795051398
+          Part3: 2361966956
+          Part4: 4258990900
+        _title: 
+        _position: {x: 0, y: 0}
+    - rid: 410000000000000002
+      type: {class: ConversationLineNode, ns: IndieGabo.HandyTools.ConversationsModule.Nodes, asm: IndieGabo.HandyTools.Conversations}
+      data:
+        _id:
+          Part1: 1853940858
+          Part2: 4003612793
+          Part3: 3002061837
+          Part4: 619462457
+        _title: 
+        _position: {x: 240, y: 0}
+        _lineText: Operative the route is clear. Keep your pace and wait for the
+          next call.
+        _speakerActorId:
+          Part1: 2022151842
+          Part2: 3164098359
+          Part3: 2683776708
+          Part4: 2783054873
+        _listenerActorId:
+          Part1: 4238429215
+          Part2: 3339340821
+          Part3: 2657599646
+          Part4: 935869194
+        _speakerSlot: 0
+        _listenerSlot: 0
+    - rid: 410000000000000003
+      type: {class: ConversationNarrationLineNode, ns: IndieGabo.HandyTools.ConversationsModule.Nodes, asm: IndieGabo.HandyTools.Conversations}
+      data:
+        _id:
+          Part1: 815376823
+          Part2: 368527277
+          Part3: 2857172829
+          Part4: 3911801802
+        _title: 
+        _position: {x: 480, y: 0}
+        _lineText: The rooftop lights dim while the cutscene holds on the silent
+          relay.
+    - rid: 410000000000000004
+      type: {class: ConversationLineNode, ns: IndieGabo.HandyTools.ConversationsModule.Nodes, asm: IndieGabo.HandyTools.Conversations}
+      data:
+        _id:
+          Part1: 883722480
+          Part2: 1699693410
+          Part3: 2492600745
+          Part4: 4140407113
+        _title: 
+        _position: {x: 720, y: 0}
+        _lineText: Copy. I am moving to the relay and waiting for the checkpoint.
+        _speakerActorId:
+          Part1: 4238429215
+          Part2: 3339340821
+          Part3: 2657599646
+          Part4: 935869194
+        _listenerActorId:
+          Part1: 2022151842
+          Part2: 3164098359
+          Part3: 2683776708
+          Part4: 2783054873
+        _speakerSlot: 0
+        _listenerSlot: 0
+    - rid: 410000000000000005
+      type: {class: ConversationEntryNode, ns: IndieGabo.HandyTools.ConversationsModule.Nodes, asm: IndieGabo.HandyTools.Conversations}
+      data:
+        _id:
+          Part1: 3030112152
+          Part2: 4236527895
+          Part3: 2734479314
+          Part4: 3832010023
+        _title: 
+        _position: {x: 0, y: 0}
+    - rid: 410000000000000006
+      type: {class: ConversationLineNode, ns: IndieGabo.HandyTools.ConversationsModule.Nodes, asm: IndieGabo.HandyTools.Conversations}
+      data:
+        _id:
+          Part1: 3521819385
+          Part2: 3496298710
+          Part3: 2303831684
+          Part4: 453713770
+        _title: 
+        _position: {x: 240, y: 0}
+        _lineText: Hold. I have movement near the relay. Do you confirm visual.
+        _speakerActorId:
+          Part1: 790548711
+          Part2: 1478246768
+          Part3: 2665224835
+          Part4: 998054007
+        _listenerActorId:
+          Part1: 4238429215
+          Part2: 3339340821
+          Part3: 2657599646
+          Part4: 935869194
+        _speakerSlot: 0
+        _listenerSlot: 0
+    - rid: 410000000000000007
+      type: {class: ConversationNarrationLineNode, ns: IndieGabo.HandyTools.ConversationsModule.Nodes, asm: IndieGabo.HandyTools.Conversations}
+      data:
+        _id:
+          Part1: 3292982279
+          Part2: 4082518371
+          Part3: 2876909862
+          Part4: 662572122
+        _title: 
+        _position: {x: 480, y: 0}
+        _lineText: The transmission drops before the answer reaches the channel.

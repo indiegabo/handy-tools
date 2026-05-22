@@ -1,0 +1,17 @@
+{
+    "name": "IndieGabo.HandyTools.Scenes.Samples",
+    "rootNamespace": "IndieGabo.HandyTools.Scenes.Samples",
+    "references": [
+        "IndieGabo.HandyTools.Scenes",
+        "IndieGabo.HandyTools.Utils"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

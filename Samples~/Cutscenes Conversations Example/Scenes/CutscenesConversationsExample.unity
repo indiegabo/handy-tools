@@ -1,0 +1,682 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!29 &1
+OcclusionCullingSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_OcclusionBakeSettings:
+    smallestOccluder: 5
+    smallestHole: 0.25
+    backfaceThreshold: 100
+  m_SceneGUID: 00000000000000000000000000000000
+  m_OcclusionCullingData: {fileID: 0}
+--- !u!104 &2
+RenderSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 10
+  m_Fog: 0
+  m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  m_FogMode: 3
+  m_FogDensity: 0.01
+  m_LinearFogStart: 0
+  m_LinearFogEnd: 300
+  m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
+  m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
+  m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
+  m_AmbientIntensity: 1
+  m_AmbientMode: 0
+  m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
+  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_HaloStrength: 0.5
+  m_FlareStrength: 1
+  m_FlareFadeSpeed: 3
+  m_HaloTexture: {fileID: 0}
+  m_SpotCookie: {fileID: 10001, guid: 0000000000000000e000000000000000, type: 0}
+  m_DefaultReflectionMode: 0
+  m_DefaultReflectionResolution: 128
+  m_ReflectionBounces: 1
+  m_ReflectionIntensity: 1
+  m_CustomReflection: {fileID: 0}
+  m_Sun: {fileID: 0}
+  m_UseRadianceAmbientProbe: 0
+--- !u!157 &3
+LightmapSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 13
+  m_BakeOnSceneLoad: 0
+  m_GISettings:
+    serializedVersion: 2
+    m_BounceScale: 1
+    m_IndirectOutputScale: 1
+    m_AlbedoBoost: 1
+    m_EnvironmentLightingMode: 0
+    m_EnableBakedLightmaps: 1
+    m_EnableRealtimeLightmaps: 0
+  m_LightmapEditorSettings:
+    serializedVersion: 12
+    m_Resolution: 2
+    m_BakeResolution: 40
+    m_AtlasSize: 1024
+    m_AO: 0
+    m_AOMaxDistance: 1
+    m_CompAOExponent: 1
+    m_CompAOExponentDirect: 0
+    m_ExtractAmbientOcclusion: 0
+    m_Padding: 2
+    m_LightmapParameters: {fileID: 0}
+    m_LightmapsBakeMode: 1
+    m_TextureCompression: 1
+    m_ReflectionCompression: 2
+    m_MixedBakeMode: 2
+    m_BakeBackend: 1
+    m_PVRSampling: 1
+    m_PVRDirectSampleCount: 32
+    m_PVRSampleCount: 512
+    m_PVRBounces: 2
+    m_PVREnvironmentSampleCount: 256
+    m_PVREnvironmentReferencePointCount: 2048
+    m_PVRFilteringMode: 1
+    m_PVRDenoiserTypeDirect: 1
+    m_PVRDenoiserTypeIndirect: 1
+    m_PVRDenoiserTypeAO: 1
+    m_PVRFilterTypeDirect: 0
+    m_PVRFilterTypeIndirect: 0
+    m_PVRFilterTypeAO: 0
+    m_PVREnvironmentMIS: 1
+    m_PVRCulling: 1
+    m_PVRFilteringGaussRadiusDirect: 1
+    m_PVRFilteringGaussRadiusIndirect: 1
+    m_PVRFilteringGaussRadiusAO: 1
+    m_PVRFilteringAtrousPositionSigmaDirect: 0.5
+    m_PVRFilteringAtrousPositionSigmaIndirect: 2
+    m_PVRFilteringAtrousPositionSigmaAO: 1
+    m_ExportTrainingData: 0
+    m_TrainingDataDestination: TrainingData
+    m_LightProbeSampleCountMultiplier: 4
+  m_LightingDataAsset: {fileID: 20201, guid: 0000000000000000f000000000000000, type: 0}
+  m_LightingSettings: {fileID: 0}
+--- !u!196 &4
+NavMeshSettings:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_BuildSettings:
+    serializedVersion: 3
+    agentTypeID: 0
+    agentRadius: 0.5
+    agentHeight: 2
+    agentSlope: 45
+    agentClimb: 0.4
+    ledgeDropHeight: 0
+    maxJumpAcrossDistance: 0
+    minRegionArea: 2
+    manualCellSize: 0
+    cellSize: 0.16666667
+    manualTileSize: 0
+    tileSize: 256
+    buildHeightMesh: 0
+    maxJobWorkers: 0
+    preserveTilesOutsideBounds: 0
+    debug:
+      m_Flags: 0
+  m_NavMeshData: {fileID: 0}
+--- !u!1 &2000
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2001}
+  - component: {fileID: 2002}
+  - component: {fileID: 2003}
+  m_Layer: 0
+  m_Name: Cutscenes Conversations Example
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2001
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2000}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3bf67273a3c42a8a092857e952ea278, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36df7e5e945d47de88a095e299da978a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: IndieGabo.HandyTools.Cutscenes::IndieGabo.HandyTools.CutscenesModule.Core.CutsceneDirector
+  _title: Cutscene Conversations Example
+  _description: 
+  _playPolicy: 0
+  _timeMode: 0
+  _autoplayOnStart: 0
+  _oneShot: 0
+  _cancelOnDisable: 1
+  _graph:
+    _nodes:
+    - rid: 510000000000000001
+    - rid: 510000000000000002
+    - rid: 510000000000000003
+    - rid: 510000000000000004
+    - rid: 510000000000000005
+    - rid: 510000000000000006
+    - rid: 510000000000000007
+    - rid: 510000000000000008
+    - rid: 510000000000000009
+    _connections:
+    - _fromNodeId:
+        Part1: 2610179177
+        Part2: 4219617983
+        Part3: 2573904710
+        Part4: 2378146984
+      _outputKey: Next
+      _toNodeId:
+        Part1: 144490034
+        Part2: 3634316146
+        Part3: 2996633807
+        Part4: 1911295199
+      _hasCustomColor: 0
+      _customColor: {r: 0.45, g: 0.45, b: 0.45, a: 1}
+    - _fromNodeId:
+        Part1: 144490034
+        Part2: 3634316146
+        Part3: 2996633807
+        Part4: 1911295199
+      _outputKey: Next
+      _toNodeId:
+        Part1: 2383283858
+        Part2: 1060521660
+        Part3: 2498728047
+        Part4: 1513402091
+      _hasCustomColor: 0
+      _customColor: {r: 0.45, g: 0.45, b: 0.45, a: 1}
+    - _fromNodeId:
+        Part1: 2383283858
+        Part2: 1060521660
+        Part3: 2498728047
+        Part4: 1513402091
+      _outputKey: Next
+      _toNodeId:
+        Part1: 2685109112
+        Part2: 2718910916
+        Part3: 2481722299
+        Part4: 656554851
+      _hasCustomColor: 0
+      _customColor: {r: 0.45, g: 0.45, b: 0.45, a: 1}
+    - _fromNodeId:
+        Part1: 2685109112
+        Part2: 2718910916
+        Part3: 2481722299
+        Part4: 656554851
+      _outputKey: Next
+      _toNodeId:
+        Part1: 3296778965
+        Part2: 2098349815
+        Part3: 2684988606
+        Part4: 2460465625
+      _hasCustomColor: 0
+      _customColor: {r: 0.45, g: 0.45, b: 0.45, a: 1}
+    - _fromNodeId:
+        Part1: 3296778965
+        Part2: 2098349815
+        Part3: 2684988606
+        Part4: 2460465625
+      _outputKey: Next
+      _toNodeId:
+        Part1: 1862371163
+        Part2: 1975275391
+        Part3: 2800206012
+        Part4: 2261387554
+      _hasCustomColor: 0
+      _customColor: {r: 0.45, g: 0.45, b: 0.45, a: 1}
+    - _fromNodeId:
+        Part1: 1862371163
+        Part2: 1975275391
+        Part3: 2800206012
+        Part4: 2261387554
+      _outputKey: Next
+      _toNodeId:
+        Part1: 2463391353
+        Part2: 3146403198
+        Part3: 2167999593
+        Part4: 46773829
+      _hasCustomColor: 0
+      _customColor: {r: 0.45, g: 0.45, b: 0.45, a: 1}
+    - _fromNodeId:
+        Part1: 2463391353
+        Part2: 3146403198
+        Part3: 2167999593
+        Part4: 46773829
+      _outputKey: Next
+      _toNodeId:
+        Part1: 3645188192
+        Part2: 3247393556
+        Part3: 2573410573
+        Part4: 1974667092
+      _hasCustomColor: 0
+      _customColor: {r: 0.45, g: 0.45, b: 0.45, a: 1}
+    - _fromNodeId:
+        Part1: 3645188192
+        Part2: 3247393556
+        Part3: 2573410573
+        Part4: 1974667092
+      _outputKey: Next
+      _toNodeId:
+        Part1: 3499876212
+        Part2: 3874570883
+        Part3: 3132976923
+        Part4: 194929194
+      _hasCustomColor: 0
+      _customColor: {r: 0.45, g: 0.45, b: 0.45, a: 1}
+    _blackboard:
+      _entries: []
+  _blackboardFoldoutStates: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 510000000000000001
+      type: {class: CutsceneEntryNode, ns: IndieGabo.HandyTools.CutscenesModule.Nodes.Flow, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        _id:
+          Part1: 2610179177
+          Part2: 4219617983
+          Part3: 2573904710
+          Part4: 2378146984
+        _title: 
+        _position: {x: 0, y: 0}
+    - rid: 510000000000000002
+      type: {class: CutsceneLogNode, ns: IndieGabo.HandyTools.CutscenesModule.Nodes.Actions, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        _id:
+          Part1: 144490034
+          Part2: 3634316146
+          Part3: 2996633807
+          Part4: 1911295199
+        _title: Log
+        _position: {x: 288, y: 0}
+        _messageSource:
+          _mode: 0
+          _blackboardVariable:
+            _scope: 0
+            _scopeKey: 
+            _entryId:
+              Part1: 0
+              Part2: 0
+              Part3: 0
+              Part4: 0
+            _entryKey: 
+            _valueTypeName: 
+          _directValue:
+            rid: 1096524756874166932
+          _expectedValueTypeName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        _warningSource:
+          _mode: 0
+          _blackboardVariable:
+            _scope: 0
+            _scopeKey: 
+            _entryId:
+              Part1: 0
+              Part2: 0
+              Part3: 0
+              Part4: 0
+            _entryKey: 
+            _valueTypeName: 
+          _directValue:
+            rid: 1096524756874166933
+          _expectedValueTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        _errorSource:
+          _mode: 0
+          _blackboardVariable:
+            _scope: 0
+            _scopeKey: 
+            _entryId:
+              Part1: 0
+              Part2: 0
+              Part3: 0
+              Part4: 0
+            _entryKey: 
+            _valueTypeName: 
+          _directValue:
+            rid: 1096524756874166934
+          _expectedValueTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+    - rid: 510000000000000003
+      type: {class: CutsceneWaitNode, ns: IndieGabo.HandyTools.CutscenesModule.Nodes.Actions, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        _id:
+          Part1: 2383283858
+          Part2: 1060521660
+          Part3: 2498728047
+          Part4: 1513402091
+        _title: 
+        _position: {x: 576, y: 0}
+        _durationSource:
+          _mode: 0
+          _blackboardVariable:
+            _scope: 0
+            _scopeKey: 
+            _entryId:
+              Part1: 0
+              Part2: 0
+              Part3: 0
+              Part4: 0
+            _entryKey: 
+            _valueTypeName: 
+          _directValue:
+            rid: 1096524756874166935
+          _expectedValueTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        _timeModeSource:
+          _mode: 0
+          _blackboardVariable:
+            _scope: 0
+            _scopeKey: 
+            _entryId:
+              Part1: 0
+              Part2: 0
+              Part3: 0
+              Part4: 0
+            _entryKey: 
+            _valueTypeName: 
+          _directValue:
+            rid: 1096524756874166936
+          _expectedValueTypeName: IndieGabo.HandyTools.CutscenesModule.Core.CutsceneTimeMode,
+            IndieGabo.HandyTools.Cutscenes, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    - rid: 510000000000000004
+      type: {class: CutsceneConversationReferenceNode, ns: IndieGabo.HandyTools.CutscenesModule.Nodes.Actions, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        _id:
+          Part1: 2685109112
+          Part2: 2718910916
+          Part3: 2481722299
+          Part4: 656554851
+        _title: Start Conversation
+        _position: {x: 872, y: -4.800003}
+        _conversation:
+          _table: {fileID: 11400000, guid: d0f5fca77467476d8bb694edbf2f8134, type: 2}
+          _conversationId:
+            Part1: 1464565952
+            Part2: 2037530775
+            Part3: 2774102311
+            Part4: 2249758029
+          _conversationTitle: Act 1/Briefing
+    - rid: 510000000000000005
+      type: {class: CutsceneLogNode, ns: IndieGabo.HandyTools.CutscenesModule.Nodes.Actions, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        _id:
+          Part1: 3296778965
+          Part2: 2098349815
+          Part3: 2684988606
+          Part4: 2460465625
+        _title: Log
+        _position: {x: 1152, y: 0}
+        _messageSource:
+          _mode: 0
+          _blackboardVariable:
+            _scope: 0
+            _scopeKey: 
+            _entryId:
+              Part1: 0
+              Part2: 0
+              Part3: 0
+              Part4: 0
+            _entryKey: 
+            _valueTypeName: 
+          _directValue:
+            rid: 1096524756874166937
+          _expectedValueTypeName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        _warningSource:
+          _mode: 0
+          _blackboardVariable:
+            _scope: 0
+            _scopeKey: 
+            _entryId:
+              Part1: 0
+              Part2: 0
+              Part3: 0
+              Part4: 0
+            _entryKey: 
+            _valueTypeName: 
+          _directValue:
+            rid: 1096524756874166938
+          _expectedValueTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        _errorSource:
+          _mode: 0
+          _blackboardVariable:
+            _scope: 0
+            _scopeKey: 
+            _entryId:
+              Part1: 0
+              Part2: 0
+              Part3: 0
+              Part4: 0
+            _entryKey: 
+            _valueTypeName: 
+          _directValue:
+            rid: 1096524756874166939
+          _expectedValueTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+    - rid: 510000000000000006
+      type: {class: CutsceneWaitNode, ns: IndieGabo.HandyTools.CutscenesModule.Nodes.Actions, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        _id:
+          Part1: 1862371163
+          Part2: 1975275391
+          Part3: 2800206012
+          Part4: 2261387554
+        _title: 
+        _position: {x: 1440, y: 0}
+        _durationSource:
+          _mode: 0
+          _blackboardVariable:
+            _scope: 0
+            _scopeKey: 
+            _entryId:
+              Part1: 0
+              Part2: 0
+              Part3: 0
+              Part4: 0
+            _entryKey: 
+            _valueTypeName: 
+          _directValue:
+            rid: 1096524756874166940
+          _expectedValueTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        _timeModeSource:
+          _mode: 0
+          _blackboardVariable:
+            _scope: 0
+            _scopeKey: 
+            _entryId:
+              Part1: 0
+              Part2: 0
+              Part3: 0
+              Part4: 0
+            _entryKey: 
+            _valueTypeName: 
+          _directValue:
+            rid: 1096524756874166941
+          _expectedValueTypeName: IndieGabo.HandyTools.CutscenesModule.Core.CutsceneTimeMode,
+            IndieGabo.HandyTools.Cutscenes, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    - rid: 510000000000000007
+      type: {class: CutsceneConversationReferenceNode, ns: IndieGabo.HandyTools.CutscenesModule.Nodes.Actions, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        _id:
+          Part1: 2463391353
+          Part2: 3146403198
+          Part3: 2167999593
+          Part4: 46773829
+        _title: 
+        _position: {x: 1728, y: 0}
+        _conversation:
+          _table: {fileID: 11400000, guid: d0f5fca77467476d8bb694edbf2f8134, type: 2}
+          _conversationId:
+            Part1: 4216423993
+            Part2: 3222949887
+            Part3: 3016024918
+            Part4: 1607211990
+          _conversationTitle: Act 1/Checkpoint
+    - rid: 510000000000000008
+      type: {class: CutsceneLogNode, ns: IndieGabo.HandyTools.CutscenesModule.Nodes.Actions, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        _id:
+          Part1: 3645188192
+          Part2: 3247393556
+          Part3: 2573410573
+          Part4: 1974667092
+        _title: Log
+        _position: {x: 2016, y: 0}
+        _messageSource:
+          _mode: 0
+          _blackboardVariable:
+            _scope: 0
+            _scopeKey: 
+            _entryId:
+              Part1: 0
+              Part2: 0
+              Part3: 0
+              Part4: 0
+            _entryKey: 
+            _valueTypeName: 
+          _directValue:
+            rid: 1096524756874166942
+          _expectedValueTypeName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        _warningSource:
+          _mode: 0
+          _blackboardVariable:
+            _scope: 0
+            _scopeKey: 
+            _entryId:
+              Part1: 0
+              Part2: 0
+              Part3: 0
+              Part4: 0
+            _entryKey: 
+            _valueTypeName: 
+          _directValue:
+            rid: 1096524756874166943
+          _expectedValueTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        _errorSource:
+          _mode: 0
+          _blackboardVariable:
+            _scope: 0
+            _scopeKey: 
+            _entryId:
+              Part1: 0
+              Part2: 0
+              Part3: 0
+              Part4: 0
+            _entryKey: 
+            _valueTypeName: 
+          _directValue:
+            rid: 1096524756874166944
+          _expectedValueTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+    - rid: 510000000000000009
+      type: {class: CutsceneFinishNode, ns: IndieGabo.HandyTools.CutscenesModule.Nodes.Flow, asm: IndieGabo.HandyTools.Cutscenes}
+      data:
+        _id:
+          Part1: 3499876212
+          Part2: 3874570883
+          Part3: 3132976923
+          Part4: 194929194
+        _title: 
+        _position: {x: 2304, y: 0}
+    - rid: 1096524756874166932
+      type: {class: GraphBlackboardStringValue, ns: IndieGabo.HandyTools.GraphCore, asm: IndieGabo.HandyTools.GraphCore}
+      data:
+        _value: Cutscene conversations sample started.
+    - rid: 1096524756874166933
+      type: {class: GraphBlackboardBoolValue, ns: IndieGabo.HandyTools.GraphCore, asm: IndieGabo.HandyTools.GraphCore}
+      data:
+        _value: 0
+    - rid: 1096524756874166934
+      type: {class: GraphBlackboardBoolValue, ns: IndieGabo.HandyTools.GraphCore, asm: IndieGabo.HandyTools.GraphCore}
+      data:
+        _value: 0
+    - rid: 1096524756874166935
+      type: {class: GraphBlackboardFloatValue, ns: IndieGabo.HandyTools.GraphCore, asm: IndieGabo.HandyTools.GraphCore}
+      data:
+        _value: 0.75
+    - rid: 1096524756874166936
+      type: {class: GraphBlackboardEnumValue, ns: IndieGabo.HandyTools.GraphCore, asm: IndieGabo.HandyTools.GraphCore}
+      data:
+        _enumTypeName: IndieGabo.HandyTools.CutscenesModule.Core.CutsceneTimeMode,
+          IndieGabo.HandyTools.Cutscenes, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _valueName: Unscaled
+    - rid: 1096524756874166937
+      type: {class: GraphBlackboardStringValue, ns: IndieGabo.HandyTools.GraphCore, asm: IndieGabo.HandyTools.GraphCore}
+      data:
+        _value: The briefing ends and the cutscene keeps moving.
+    - rid: 1096524756874166938
+      type: {class: GraphBlackboardBoolValue, ns: IndieGabo.HandyTools.GraphCore, asm: IndieGabo.HandyTools.GraphCore}
+      data:
+        _value: 0
+    - rid: 1096524756874166939
+      type: {class: GraphBlackboardBoolValue, ns: IndieGabo.HandyTools.GraphCore, asm: IndieGabo.HandyTools.GraphCore}
+      data:
+        _value: 0
+    - rid: 1096524756874166940
+      type: {class: GraphBlackboardFloatValue, ns: IndieGabo.HandyTools.GraphCore, asm: IndieGabo.HandyTools.GraphCore}
+      data:
+        _value: 0.75
+    - rid: 1096524756874166941
+      type: {class: GraphBlackboardEnumValue, ns: IndieGabo.HandyTools.GraphCore, asm: IndieGabo.HandyTools.GraphCore}
+      data:
+        _enumTypeName: IndieGabo.HandyTools.CutscenesModule.Core.CutsceneTimeMode,
+          IndieGabo.HandyTools.Cutscenes, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _valueName: Unscaled
+    - rid: 1096524756874166942
+      type: {class: GraphBlackboardStringValue, ns: IndieGabo.HandyTools.GraphCore, asm: IndieGabo.HandyTools.GraphCore}
+      data:
+        _value: The checkpoint call returns control to the cutscene.
+    - rid: 1096524756874166943
+      type: {class: GraphBlackboardBoolValue, ns: IndieGabo.HandyTools.GraphCore, asm: IndieGabo.HandyTools.GraphCore}
+      data:
+        _value: 0
+    - rid: 1096524756874166944
+      type: {class: GraphBlackboardBoolValue, ns: IndieGabo.HandyTools.GraphCore, asm: IndieGabo.HandyTools.GraphCore}
+      data:
+        _value: 0
+--- !u!1660057539 &9223372036854775807
+SceneRoots:
+  m_ObjectHideFlags: 0
+  m_Roots:
+  - {fileID: 2001}

@@ -72,7 +72,7 @@ child assembly and CCPro-specific workflows stay unavailable.
 
 ## Samples
 
-The FSM module currently ships the `FSM CCPro Starter Kit` sample.
+The FSM module currently ships the `FSM CCPro Example` sample.
 
 This sample is distributed as a HandyTools package sample and is intended for
 projects that also install Character Controller Pro.
@@ -82,7 +82,7 @@ To import it:
 1. Open Unity Package Manager.
 2. Select `Handy Tools`.
 3. Open the `Samples` tab.
-4. Import `FSM CCPro Starter Kit`.
+4. Import `FSM CCPro Example`.
 
 The sample contains a CCPro-driven scene, state assets, stats assets, and input
 bindings that demonstrate how the integrated FSM module and the optional CCPro
@@ -93,7 +93,7 @@ gated by `HANDY_CHARACTER_CONTROLLER_PRO_PRESENT` and the CCPro-specific sample
 scripts do not compile until the dependency is installed.
 
 Inside the development repository, the sample content lives under
-`Samples/FSM CCPro Starter Kit` so Unity can keep the assets visible and
+`Samples/FSM CCPro Example` so Unity can keep the assets visible and
 editable during package development, and `package.json` keeps the sample path
 under `Samples/`.
 
@@ -111,9 +111,9 @@ The FSM module currently owns these package paths:
 - `Editor/Scripts/FSM`
 - `Editor/Resources/UI Toolkit/FSM`
 - `Docs/FSMModule`
-- `Samples/FSM CCPro Starter Kit` in the development repository
-- `package.json` sample path `Samples/FSM CCPro Starter Kit`
-- `Samples~/FSM CCPro Starter Kit` in the published package payload
+- `Samples/FSM CCPro Example` in the development repository
+- `package.json` sample path `Samples/FSM CCPro Example`
+- `Samples~/FSM CCPro Example` in the published package payload
 
 Treat those paths as the canonical surface when extending or documenting the
 module.

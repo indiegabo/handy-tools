@@ -1,0 +1,27 @@
+{
+    "name": "IndieGabo.HandyTools.Conversations.Editor",
+    "rootNamespace": "IndieGabo.HandyTools.Editor.ConversationsModule",
+    "references": [
+        "IndieGabo.HandyTools.Runtime",
+        "IndieGabo.HandyTools.Editor",
+        "IndieGabo.HandyTools.Conversations",
+        "IndieGabo.HandyTools.GraphCore",
+        "IndieGabo.HandyTools.GraphCore.Editor",
+        "IndieGabo.HandyTools.Utils",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false,
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ]
+}

@@ -67,7 +67,7 @@ Read these when you need to write real gameplay code against the modern
 - `TriggersProvider`: a lightweight named-event channel
 - optional integrations: Simple Blackboard and Character Controller Pro
 - editor tooling: custom inspector, state visualizer, and history tracking
-- package samples: `FSM CCPro Starter Kit`
+- package samples: `FSM CCPro Example`
 
 ## Reading by Goal
 

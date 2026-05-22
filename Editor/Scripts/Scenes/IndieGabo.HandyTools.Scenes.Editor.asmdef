@@ -1,0 +1,18 @@
+{
+    "name": "IndieGabo.HandyTools.Scenes.Editor",
+    "rootNamespace": "IndieGabo.HandyTools.Editor.Scenes",
+    "references": [
+        "IndieGabo.HandyTools.Scenes"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

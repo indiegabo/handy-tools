@@ -52,8 +52,8 @@ the whole runtime first.
 
 If you need one concrete reference before writing code, inspect these in order:
 
-1. `Samples/Command Pattern Starter Kit/Scripts/CommandPatternSampleController.cs`
-2. `Samples/Command Pattern Starter Kit/Scripts/SampleMoveGridCommand.cs`
+1. `Samples/Command Pattern Example/Scripts/CommandPatternSampleController.cs`
+2. `Samples/Command Pattern Example/Scripts/SampleMoveGridCommand.cs`
 3. `Tests/CommandPatternEditMode/CommandServiceEditModeTests.cs`
 4. `Tests/CommandPatternPlayMode/CommandServicePlayModeTests.cs`
 
@@ -375,8 +375,8 @@ commandService.LifecycleEventPublished += lifecycleEvent =>
 When implementing or expanding the slice, these files are the best package
 local examples to inspect first:
 
-- `Samples/Command Pattern Starter Kit/Scripts/SampleMoveGridCommand.cs`
-- `Samples/Command Pattern Starter Kit/Scripts/CommandPatternSampleController.cs`
+- `Samples/Command Pattern Example/Scripts/SampleMoveGridCommand.cs`
+- `Samples/Command Pattern Example/Scripts/CommandPatternSampleController.cs`
 - `Tests/CommandPatternEditMode/CommandServiceEditModeTests.cs`
 - `Tests/CommandPatternPlayMode/CommandServicePlayModeTests.cs`
 - `Tests/CommandPatternEditMode/CommandPatternMonitorWindowTests.cs`
@@ -506,11 +506,11 @@ module remains out of the shared modules window.
 
 The module now ships one authored sample under:
 
-- `Samples/Command Pattern Starter Kit`
+- `Samples/Command Pattern Example`
 
-The starter kit includes:
+The example includes:
 
-- `Scenes/CommandPatternStarterKit.unity`,
+- `Scenes/CommandPatternExample.unity`,
 - one discrete grid actor with a persistent trail,
 - immediate and scheduled movement submission buttons,
 - undo and redo controls, and

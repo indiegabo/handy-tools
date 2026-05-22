@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using IndieGabo.HandyTools.GraphCore;
 using IndieGabo.HandyTools.CutscenesModule.Services;
 using IndieGabo.HandyTools.HandyServiceLocatorModule;
 using UnityEngine;
@@ -7,7 +8,7 @@ using UnityEngine;
 namespace IndieGabo.HandyTools.CutscenesModule.Core
 {
     [DisallowMultipleComponent]
-    public sealed class CutsceneDirector : HandyBehaviour
+    public sealed class CutsceneDirector : HandyBehaviour, IGraphHost
     {
         /// <summary>
         /// Stores one persisted foldout state for the graph blackboard UI.
@@ -115,7 +116,20 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
 
         public CutsceneGraph Graph => _graph ??= CutsceneGraph.CreateDefault();
 
-        public bool IsRunning => _service != null && _service.IsRunning(this);
+        public string GraphFamilyId => CutsceneGraphFamily.Id;
+
+        public GraphHostKind HostKind => GraphHostKind.SceneObject;
+
+        public UnityEngine.Object HostObject => this;
+
+        public bool IsRunning
+        {
+            get
+            {
+                ResolveService();
+                return IsServiceAlive(_service) && _service.IsRunning(this);
+            }
+        }
 
         public CutsceneRunStatus RuntimeStatus
         {
@@ -137,7 +151,14 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
             }
         }
 
-        public bool CanPlay => _service != null && (!_oneShot || !_hasPlayedOnce || IsRunning);
+        public bool CanPlay
+        {
+            get
+            {
+                ResolveService();
+                return IsServiceAlive(_service) && (!_oneShot || !_hasPlayedOnce || IsRunning);
+            }
+        }
 
         private void Awake()
         {
@@ -229,6 +250,17 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
             _graph = graph ?? CutsceneGraph.CreateDefault();
             _graph.EnsureNodeIds();
             _latestRun = null;
+        }
+
+        /// <summary>
+        /// Clears non-serialized runtime state so the director starts from a
+        /// fresh session even when Unity skips domain and scene reload.
+        /// </summary>
+        public void ResetRuntimeState()
+        {
+            _service = null;
+            _latestRun = null;
+            _hasPlayedOnce = false;
         }
 
         /// <summary>
@@ -363,12 +395,27 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
 
         private void ResolveService()
         {
-            if (_service != null)
+            if (ServiceLocator.TryGet(out ICutsceneService resolvedService)
+                && IsServiceAlive(resolvedService))
             {
+                _service = resolvedService;
                 return;
             }
 
-            ServiceLocator.TryGet(out _service);
+            if (!IsServiceAlive(_service))
+            {
+                _service = null;
+            }
+        }
+
+        private static bool IsServiceAlive(ICutsceneService service)
+        {
+            if (service == null)
+            {
+                return false;
+            }
+
+            return service is not UnityEngine.Object unityObject || unityObject != null;
         }
 
         /// <summary>

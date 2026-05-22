@@ -8,15 +8,15 @@ namespace IndieGabo.HandyTools.AnimationEventsModule
     /// configured threshold is reached within a loop.
     /// </summary>
     [Serializable]
-    public sealed class AnimationStateEventTrigger
+    public class AnimationStateEventTrigger
     {
         #region Inspector
 
-        [SerializeField] private string _eventName;
+        [SerializeField] protected string _eventName;
 
         [SerializeField]
         [Range(0f, 1f)]
-        private float _triggerTime;
+        protected float _triggerTime;
 
         #endregion
 
@@ -47,7 +47,7 @@ namespace IndieGabo.HandyTools.AnimationEventsModule
         /// <summary>
         /// Resets the per-state runtime trigger flag.
         /// </summary>
-        public void ResetRuntimeState()
+        public virtual void ResetRuntimeState()
         {
             _hasTriggered = false;
             _currentLoop = -1;

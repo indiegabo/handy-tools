@@ -1,10 +1,11 @@
 using IndieGabo.HandyTools.CutscenesModule.Services;
+using IndieGabo.HandyTools.GraphCore;
 using IndieGabo.HandyTools.HandyServiceLocatorModule;
 using IndieGabo.HandyTools.Utils;
 
 namespace IndieGabo.HandyTools.CutscenesModule.Core
 {
-    public sealed class CutsceneExecutionContext
+    public sealed class CutsceneExecutionContext : IGraphNodeExecutionContext, IGraphNodeTimeContext
     {
         private readonly CutsceneRun _run;
         private readonly SerializableGuid _currentNodeId;
@@ -42,7 +43,28 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
             return _run.TryCompleteNode(CurrentNodeExecutionId, result);
         }
 
+        /// <summary>
+        /// Attempts to complete the current node execution using one GraphCore execution result.
+        /// </summary>
+        /// <param name="result">GraphCore execution result to publish.</param>
+        /// <returns>True when the completion was accepted.</returns>
+        public bool TryComplete(GraphExecutionResult result)
+        {
+            return _run.TryCompleteNode(CurrentNodeExecutionId, result);
+        }
+
         public bool TryCompleteNode(SerializableGuid executionId, CutsceneNodeResult result)
+        {
+            return _run.TryCompleteNode(executionId, result);
+        }
+
+        /// <summary>
+        /// Attempts to complete one node execution using one GraphCore execution result.
+        /// </summary>
+        /// <param name="executionId">Execution identifier to complete.</param>
+        /// <param name="result">GraphCore execution result to publish.</param>
+        /// <returns>True when the completion was accepted.</returns>
+        public bool TryCompleteNode(SerializableGuid executionId, GraphExecutionResult result)
         {
             return _run.TryCompleteNode(executionId, result);
         }
@@ -83,9 +105,14 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
         }
 
         /// <summary>
-        /// Exposes the graph-level blackboard so nodes can read and write shared values.
+        /// Exposes the authored cutscene blackboard serialized on the graph host.
         /// </summary>
         public CutsceneGraphBlackboard Blackboard => _run.Graph.Blackboard;
+
+        /// <summary>
+        /// Exposes the GraphCore-backed runtime blackboard used during execution.
+        /// </summary>
+        public GraphBlackboard RuntimeBlackboard => _run.RuntimeBlackboard;
 
         /// <summary>
         /// Returns an existing blackboard value or creates one via the provided factory.
@@ -93,7 +120,10 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
         /// </summary>
         public T GetOrCreateBlackboardValue<T>(string key, System.Func<T> factory)
         {
-            return _run.Graph.Blackboard.GetOrCreateValue(key, factory);
+            return _run.RuntimeBlackboard.GetOrCreateValue(
+                key,
+                factory,
+                CutsceneGraphFamily.Id);
         }
 
         /// <summary>
@@ -101,7 +131,7 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
         /// </summary>
         public bool TryGetBlackboardValue<T>(string key, out T value)
         {
-            return _run.Graph.Blackboard.TryGetValue(key, out value);
+            return _run.RuntimeBlackboard.TryGetValue(key, out value);
         }
 
         /// <summary>
@@ -114,7 +144,20 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
             value = default;
 
             return variableReference != null
-                && variableReference.TryGetValue(_run.Graph.Blackboard, out value);
+                && variableReference.TryGetValue(_run.RuntimeBlackboard, out value);
+        }
+
+        /// <summary>
+        /// Attempts to resolve one runtime GraphCore blackboard entry through one stable variable reference.
+        /// </summary>
+        public bool TryGetRuntimeBlackboardEntry(
+            CutsceneBlackboardVariableReference variableReference,
+            out GraphBlackboardEntry entry)
+        {
+            entry = null;
+
+            return variableReference != null
+                && variableReference.TryResolveEntry(_run.RuntimeBlackboard, out entry);
         }
 
         /// <summary>
@@ -135,6 +178,7 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
         /// </summary>
         public void SetBlackboardValue<T>(string key, T value)
         {
+            _run.RuntimeBlackboard.SetValue(key, value, CutsceneGraphFamily.Id);
             _run.Graph.Blackboard.SetValue(key, value);
         }
 
@@ -146,7 +190,21 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
             object value,
             System.Type valueType = null)
         {
-            return _run.Graph.Blackboard.TrySetBoxedValue(key, value, valueType);
+            bool runtimeUpdated = _run.RuntimeBlackboard.TrySetBoxedValue(
+                key,
+                value,
+                valueType,
+                CutsceneGraphFamily.Id);
+
+            if (!runtimeUpdated)
+            {
+                return false;
+            }
+
+            return _run.Graph.Blackboard.TrySetBoxedValue(
+                key,
+                value,
+                valueType);
         }
 
         /// <summary>
@@ -156,15 +214,17 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
             CutsceneBlackboardVariableReference variableReference,
             T value)
         {
-            if (!TryGetBlackboardEntry(variableReference, out CutsceneGraphBlackboardEntry entry))
+            if (!TryGetRuntimeBlackboardEntry(variableReference, out GraphBlackboardEntry entry))
             {
                 return;
             }
 
             if (!entry.TrySetValue(value))
             {
-                _run.Graph.Blackboard.SetValue(entry.Key, value);
+                _run.RuntimeBlackboard.SetValue(entry.Key, value, CutsceneGraphFamily.Id);
             }
+
+            _run.Graph.Blackboard.SetValue(entry.Key, value);
         }
 
         /// <summary>
@@ -172,6 +232,7 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
         /// </summary>
         public void RemoveBlackboardValue(string key)
         {
+            _run.RuntimeBlackboard.Remove(key);
             _run.Graph.Blackboard.Remove(key);
         }
 

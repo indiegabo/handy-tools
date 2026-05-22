@@ -43,6 +43,78 @@ namespace IndieGabo.HandyTools.CutscenesModule.Nodes.Actions
         private CutsceneValueSource _continueOnFailureSource =
             CutsceneValueSource.CreateDirect(false);
 
+        /// <summary>
+        /// Exposes the authored conversation-title source for runtime migration.
+        /// </summary>
+        internal CutsceneValueSource ConversationTitleSource
+        {
+            get
+            {
+                EnsureValueSourcesConfigured();
+                return _conversationTitleSource;
+            }
+        }
+
+        /// <summary>
+        /// Exposes the authored database-key source for runtime migration.
+        /// </summary>
+        internal CutsceneValueSource DatabaseKeySource
+        {
+            get
+            {
+                EnsureValueSourcesConfigured();
+                return _databaseKeySource;
+            }
+        }
+
+        /// <summary>
+        /// Exposes the authored speaker source for runtime migration.
+        /// </summary>
+        internal CutsceneValueSource SpeakerSource
+        {
+            get
+            {
+                EnsureValueSourcesConfigured();
+                return _speakerSource;
+            }
+        }
+
+        /// <summary>
+        /// Exposes the authored listener source for runtime migration.
+        /// </summary>
+        internal CutsceneValueSource ListenerSource
+        {
+            get
+            {
+                EnsureValueSourcesConfigured();
+                return _listenerSource;
+            }
+        }
+
+        /// <summary>
+        /// Exposes the authored wait-for-end source for runtime migration.
+        /// </summary>
+        internal CutsceneValueSource WaitForConversationEndSource
+        {
+            get
+            {
+                EnsureValueSourcesConfigured();
+                return _waitForConversationEndSource;
+            }
+        }
+
+        /// <summary>
+        /// Exposes the authored continue-on-failure source for runtime migration.
+        /// </summary>
+        internal CutsceneValueSource ContinueOnFailureSource
+        {
+            get
+            {
+                EnsureValueSourcesConfigured();
+                return _continueOnFailureSource;
+            }
+        }
+
         public void Configure(
             string conversationTitle,
             string databaseKey,

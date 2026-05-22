@@ -24,6 +24,30 @@ namespace IndieGabo.HandyTools.CutscenesModule.Nodes.Actions
 
         public override bool RequiresTick => true;
 
+        /// <summary>
+        /// Exposes the authored duration source for runtime migration.
+        /// </summary>
+        internal CutsceneValueSource DurationSource
+        {
+            get
+            {
+                EnsureValueSourcesConfigured();
+                return _durationSource;
+            }
+        }
+
+        /// <summary>
+        /// Exposes the authored time-mode source for runtime migration.
+        /// </summary>
+        internal CutsceneValueSource TimeModeSource
+        {
+            get
+            {
+                EnsureValueSourcesConfigured();
+                return _timeModeSource;
+            }
+        }
+
         public void Configure(float duration, CutsceneTimeMode timeMode)
         {
             EnsureValueSourcesConfigured();

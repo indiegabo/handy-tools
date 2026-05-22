@@ -31,6 +31,7 @@ linked documents in the suggested order.
 - [Input](Docs/10-configurable-modules.md#input)
 - [Gameplay](Docs/10-configurable-modules.md#gameplay)
 - [Cutscenes](Docs/12-cutscenes-module.md)
+- [Conversations](Docs/19-conversations-module.md)
 - [Command Pattern](Docs/16-command-pattern-guide.md)
 - [FSM](Docs/11-auto-activated-modules.md#fsm)
 - [Save System](Docs/10-configurable-modules.md#save-system)
@@ -79,9 +80,11 @@ linked documents in the suggested order.
 6. [Configurable Modules](Docs/10-configurable-modules.md)
 7. [Auto-Activated Modules](Docs/11-auto-activated-modules.md)
 8. [Cutscenes Module](Docs/12-cutscenes-module.md)
-9. [Command Pattern Guide](Docs/16-command-pattern-guide.md)
-10. [FSM Guide](Docs/15-fsm-guide.md)
-11. [Animation Events Guide](Docs/14-animation-events-guide.md)
+9. [Conversations Module](Docs/19-conversations-module.md)
+10. [ConversationTable Window And Presenter Prefabs](Docs/20-conversation-table-window-and-presenter-prefabs.md)
+11. [Command Pattern Guide](Docs/16-command-pattern-guide.md)
+12. [FSM Guide](Docs/15-fsm-guide.md)
+13. [Animation Events Guide](Docs/14-animation-events-guide.md)
 
 ## Documentation Goals
 

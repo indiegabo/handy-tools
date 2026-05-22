@@ -15,6 +15,11 @@ namespace IndieGabo.HandyTools.CutscenesModule.Nodes.Actions
         [SerializeField] private CutsceneBusEventSelector _eventSelector = new();
 
         /// <summary>
+        /// Exposes the authored event selector for runtime migration.
+        /// </summary>
+        internal CutsceneBusEventSelector EventSelector => _eventSelector ??= new CutsceneBusEventSelector();
+
+        /// <summary>
         /// Configures the node to wait for one custom named cutscene event.
         /// </summary>
         /// <param name="eventName">Custom event name routed by the string channel.</param>
@@ -35,7 +40,7 @@ namespace IndieGabo.HandyTools.CutscenesModule.Nodes.Actions
 
         public override string GetSummary()
         {
-            return _eventSelector.GetSummary();
+            return EventSelector.GetSummary();
         }
 
         public override void OnEnter(CutsceneExecutionContext context)

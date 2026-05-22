@@ -15,7 +15,7 @@ namespace IndieGabo.HandyTools.GameplayModule
 
         private EventSubscription<GameplayStatusChangeEvent>
             _gameplayEventSubscription;
-        private float _currentStartedAt = -1;
+        private float _currentStartedAt = float.NaN;
         private LoadedSlotService _loadedSlotHandler;
 
         #endregion
@@ -50,7 +50,7 @@ namespace IndieGabo.HandyTools.GameplayModule
         /// When the transition origin is <see cref="GameplayTransitionOrigin.Pause"/>
         /// or <see cref="GameplayTransitionOrigin.Stop"/>, this method registers
         /// the elapsed gameplay time, then resets <see cref="_currentStartedAt"/>
-        /// to -1.
+        /// to an unset sentinel.
         /// </remarks>
         private void OnGameplayEvent(GameplayStatusChangeEvent @event)
         {
@@ -67,13 +67,13 @@ namespace IndieGabo.HandyTools.GameplayModule
                 return;
             }
 
-            if (_currentStartedAt < 0)
+            if (float.IsNaN(_currentStartedAt))
             {
                 return;
             }
 
             float timeElapsed = Time.time - _currentStartedAt;
-            _currentStartedAt = -1;
+            _currentStartedAt = float.NaN;
             PersistGameplayTime(timeElapsed);
         }
 

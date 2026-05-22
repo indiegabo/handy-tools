@@ -1,8 +1,9 @@
 # Configurable Modules
 
-This document covers the HandyTools modules that appear in the shared modules
-window at `Handy Tools/Modules`. These modules are optional and default to
-inactive unless a project explicitly activates them.
+This document covers the optional HandyTools modules that expose user-facing
+authoring surfaces. Most appear in the shared modules window at
+`Handy Tools/Modules`. Conversations now also appears there for runtime-loading
+configuration, while graph authoring still happens in its dedicated window.
 
 The `Modules` menu no longer exposes one submenu item per configurable module.
 Open the shared window once and use the left sidebar to select the module you
@@ -12,6 +13,10 @@ Cutscenes now appears in the shared modules window. The detailed runtime,
 graph-editor, and optional Dialogue System workflow notes still live in
 [Cutscenes Module](12-cutscenes-module.md).
 
+Conversations now has its own shared modules-window configuration panel and a
+dedicated graph authoring window. The detailed runtime, export, sample, and
+current-scope notes live in [Conversations Module](19-conversations-module.md).
+
 ## Summary Table
 
 | Module        | Id               | Default | Load Order | Dedicated Panel |
@@ -20,6 +25,7 @@ graph-editor, and optional Dialogue System workflow notes still live in
 | Input         | `input`          | Off     | `30`       | Yes             |
 | Gameplay      | `gameplay`       | Off     | `40`       | Yes             |
 | Cutscenes     | `cutscenes`      | Off     | `175`      | Yes             |
+| Conversations | `conversations`  | Off     | `176`      | Yes             |
 | Save System   | `save-system`    | Off     | `100`      | Yes             |
 | Globals       | `global-config`  | Off     | `130`      | Yes             |
 | Steam         | `steam`          | Off     | `150`      | Yes             |
@@ -37,8 +43,10 @@ graph-editor, and optional Dialogue System workflow notes still live in
 
 ### Responsibilities
 
-Cutscenes owns scene-authored graph-based cutscene orchestration, runtime
-execution tracing, graph validation, and the optional Dialogue System bridge.
+Cutscenes owns scene-authored cutscene orchestration, runtime execution,
+graph validation, the shared modules panel entry, and the optional Dialogue
+System bridge while reusing GraphCore for the shared graph model, blackboard,
+value-source system, and reusable editor shell.
 
 ### Runtime Entry Points
 
@@ -62,8 +70,65 @@ properties, and play-mode visualization.
 
 - Keep scene-owned graph data on `CutsceneDirector`; do not move runtime state
   back into serialized node definitions.
+- Put graph-family-neutral runtime or editor mechanics in GraphCore, not back
+  into the Cutscenes slice.
 - Dialogue System remains an optional integration. Keep Pixel Crushers types
   out of the root runtime and root editor asmdefs.
+
+## Conversations
+
+### Activation Profile
+
+- Activation mode: Optional
+- Active by default: No
+- Load order: `176`
+- Declared dependencies: none
+
+### Responsibilities
+
+Conversations owns asset-authored conversation graphs, `ConversationReference`
+selection, table display names for editor-facing pickers, one first line and
+utility action-node catalog, family-specific blackboard values, deterministic
+runtime export, and runtime loading configuration on top of the shared
+GraphCore runtime and editor infrastructure.
+
+### Runtime Entry Points
+
+- `Runtime/Scripts/Conversations/ConversationsModuleDefinition.cs`
+- `Runtime/Scripts/Conversations/ConversationsModuleBootstrapper.cs`
+- `Runtime/Scripts/Conversations/Core/ConversationTable.cs`
+- `Runtime/Scripts/Conversations/Core/ConversationGraph.cs`
+- `Runtime/Scripts/Conversations/Core/ConversationGraphFamily.cs`
+
+### Editor Workflow
+
+Use `Handy Tools/Modules` and select `Conversations` to configure runtime
+loading strategy, cache capacity, and the optional StreamingAssets root
+override.
+
+Create one `ConversationTable` asset through the
+`Create/HandyTools/Conversations/Conversation Table` asset menu, then use the
+inspector `Open Conversations Window` button or open
+`HandyTools/Conversations/Conversations Window` and bind the target asset from
+the shared header. The dedicated window manages table display names,
+conversation selection, graph editing, speaker authoring, and validation.
+
+The window reuses the shared GraphCore canvas and blackboard overlay, but the
+Conversations module still owns its asset host, family id, node catalog, and
+node presentation.
+
+Read [Conversations Module](19-conversations-module.md) for the detailed build
+export flow, runtime loading backends, sample coverage, and current limits.
+Read [ConversationTable Window And Presenter Prefabs](20-conversation-table-window-and-presenter-prefabs.md)
+for the dedicated authoring-window workflow and the presenter-prefab recipe.
+
+### Notes for AI Agents
+
+- Keep Conversations asset-hosted. Do not reintroduce scene bootstrap state
+  into `ConversationTable`.
+- Put reusable graph mechanics in GraphCore, not directly in Conversations.
+- Keep conversation-specific nodes and blackboard wrappers inside the
+  Conversations family.
 
 ## Logging
 

@@ -8,17 +8,13 @@ namespace IndieGabo.HandyTools.AnimationEventsModule
     /// the configured threshold is reached within a loop.
     /// </summary>
     [Serializable]
-    public sealed class AnimationEventBusStateTrigger
+    public sealed class AnimationEventBusStateTrigger : AnimationStateEventTrigger
     {
         #region Inspector
 
         [SerializeField] private AnimatorBusEventReference _eventReference = new();
 
         [SerializeReference] private AnimatorBusEventBase _eventPayload;
-
-        [SerializeField]
-        [Range(0f, 1f)]
-        private float _triggerTime;
 
         #endregion
 
@@ -42,11 +38,6 @@ namespace IndieGabo.HandyTools.AnimationEventsModule
         /// </summary>
         public AnimatorBusEventBase EventPayload => _eventPayload;
 
-        /// <summary>
-        /// Gets the normalized time threshold that emits the event.
-        /// </summary>
-        public float TriggerTime => Mathf.Clamp01(_triggerTime);
-
         #endregion
 
         #region Public API
@@ -54,8 +45,9 @@ namespace IndieGabo.HandyTools.AnimationEventsModule
         /// <summary>
         /// Resets the per-state runtime trigger flag.
         /// </summary>
-        public void ResetRuntimeState()
+        public override void ResetRuntimeState()
         {
+            base.ResetRuntimeState();
             _hasTriggered = false;
             _currentLoop = -1;
         }

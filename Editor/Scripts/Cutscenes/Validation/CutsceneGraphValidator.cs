@@ -3,7 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using IndieGabo.HandyTools.ConversationsModule;
 using IndieGabo.HandyTools.CutscenesModule.Core;
+using IndieGabo.HandyTools.GraphCore;
+using IndieGabo.HandyTools.GraphCore.Validation;
 using IndieGabo.HandyTools.CutscenesModule.Nodes.Actions;
 using IndieGabo.HandyTools.CutscenesModule.Nodes.Flow;
 using IndieGabo.HandyTools.CutscenesModule.ThirdParty.DialogueSystem;
@@ -22,12 +25,16 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule.Validation
                 return Array.Empty<CutsceneGraphValidationIssue>();
             }
 
-            return Validate(director.Graph, DialogueSystemIntegrationAvailability.IsAvailable());
+            return Validate(
+                director.Graph,
+                DialogueSystemIntegrationAvailability.IsAvailable(),
+                ConversationsModuleDefinition.IsActive);
         }
 
         public static IReadOnlyList<CutsceneGraphValidationIssue> Validate(
             CutsceneGraph graph,
-            bool isDialogueSystemAvailable)
+            bool isDialogueSystemAvailable,
+            bool isConversationsModuleActive)
         {
             List<CutsceneGraphValidationIssue> issues = new();
 
@@ -54,14 +61,16 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule.Validation
                 return issues;
             }
 
-            AppendDuplicateIdIssues(nodes, issues);
-            AppendEntryIssues(topologyNodes, issues);
+            AppendSharedTopologyIssues(graph, issues);
             AppendValueBranchIssues(topologyNodes, issues);
-            AppendMandatoryConnectionIssues(graph, topologyNodes, issues);
             AppendReachabilityIssues(graph, topologyNodes, issues);
             AppendNullReferenceIssues(nodes, issues);
             AppendBlackboardBindingIssues(graph.Blackboard, nodes, issues);
             AppendDialogueAvailabilityIssues(nodes, isDialogueSystemAvailable, issues);
+            AppendConversationsModuleAvailabilityIssues(
+                nodes,
+                isConversationsModuleActive,
+                issues);
 
             return issues;
         }
@@ -80,6 +89,86 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule.Validation
                     string.Empty,
                     issues);
             }
+        }
+
+        private static void AppendSharedTopologyIssues(
+            CutsceneGraph graph,
+            ICollection<CutsceneGraphValidationIssue> issues)
+        {
+            GraphDefinition validationGraph = BuildTopologyValidationGraph(graph);
+            GraphTopologyValidationProfile profile = new()
+            {
+                GraphDisplayName = "cutscene graph",
+                RootNodeDisplayName = "Entry",
+                RequireRootNode = true,
+                AllowMultipleRootNodes = false,
+                DetectUnreachableNodes = false,
+                DetectOrphanNodes = false,
+                DetectFamilyMismatch = false,
+                IsRootNode = node => node is CutsceneTopologyValidationNode adaptedNode
+                    && adaptedNode.Source is CutsceneEntryNode,
+                ShouldValidateNode = node => node is CutsceneTopologyValidationNode adaptedNode
+                    && adaptedNode.Source.ParticipatesInTopologyValidation,
+            };
+
+            IReadOnlyList<GraphValidationIssue> topologyIssues =
+                GraphTopologyValidator.Validate(validationGraph, profile);
+
+            for (int index = 0; index < topologyIssues.Count; index++)
+            {
+                GraphValidationIssue issue = topologyIssues[index];
+                issues.Add(new CutsceneGraphValidationIssue(
+                    ConvertSeverity(issue.Severity),
+                    issue.Message,
+                    issue.NodeId));
+            }
+        }
+
+        private static GraphDefinition BuildTopologyValidationGraph(CutsceneGraph graph)
+        {
+            GraphDefinition validationGraph = new();
+
+            for (int index = 0; index < graph.Nodes.Count; index++)
+            {
+                CutsceneNodeBase node = graph.Nodes[index];
+
+                if (node == null)
+                {
+                    continue;
+                }
+
+                validationGraph.AddNode(
+                    new CutsceneTopologyValidationNode(node),
+                    preserveId: true);
+            }
+
+            for (int index = 0; index < graph.Connections.Count; index++)
+            {
+                CutsceneConnection connection = graph.Connections[index];
+
+                if (connection == null)
+                {
+                    continue;
+                }
+
+                validationGraph.AddConnection(new GraphConnection(
+                    connection.FromNodeId,
+                    connection.OutputKey,
+                    connection.ToNodeId));
+            }
+
+            return validationGraph;
+        }
+
+        private static CutsceneGraphValidationSeverity ConvertSeverity(
+            GraphValidationSeverity severity)
+        {
+            return severity switch
+            {
+                GraphValidationSeverity.Info => CutsceneGraphValidationSeverity.Info,
+                GraphValidationSeverity.Warning => CutsceneGraphValidationSeverity.Warning,
+                _ => CutsceneGraphValidationSeverity.Error,
+            };
         }
 
         private static void AppendDuplicateIdIssues(
@@ -598,6 +687,66 @@ namespace IndieGabo.HandyTools.Editor.CutscenesModule.Validation
                 CutsceneGraphValidationSeverity.Warning,
                 "The graph contains Dialogue System conversation nodes, but Dialogue System is not currently available in this project.",
                 SerializableGuid.Empty));
+        }
+
+        private static void AppendConversationsModuleAvailabilityIssues(
+            IReadOnlyList<CutsceneNodeBase> nodes,
+            bool isConversationsModuleActive,
+            ICollection<CutsceneGraphValidationIssue> issues)
+        {
+            if (isConversationsModuleActive
+                || nodes.All(node => node is not CutsceneConversationReferenceNode))
+            {
+                return;
+            }
+
+            issues.Add(new CutsceneGraphValidationIssue(
+                CutsceneGraphValidationSeverity.Warning,
+                "The graph contains Conversations Start Conversation nodes, but the Conversations module is not currently active.",
+                SerializableGuid.Empty));
+        }
+
+        private sealed class CutsceneTopologyValidationNode : GraphNodeBase
+        {
+            private readonly IReadOnlyList<GraphPortDefinition> _outputPorts;
+
+            public CutsceneTopologyValidationNode(CutsceneNodeBase source)
+            {
+                Source = source ?? throw new ArgumentNullException(nameof(source));
+                RestoreId(source.Id);
+                Title = source.DisplayTitle;
+                Position = source.Position;
+                _outputPorts = source.GetOutputPorts()
+                    .Where(port => port != null)
+                    .Select(port => new GraphPortDefinition(
+                        port.Key,
+                        port.DisplayName,
+                        port.IsMandatory))
+                    .ToList();
+            }
+
+            public CutsceneNodeBase Source { get; }
+
+            public override bool HasInputPort => Source.HasInputPort;
+
+            public override bool ParticipatesInAutoArrange => Source.ParticipatesInAutoArrange;
+
+            public override bool ParticipatesInTopologyValidation =>
+                Source.ParticipatesInTopologyValidation;
+
+            public override bool UsesRuntimeStateStyling => Source.UsesRuntimeStateStyling;
+
+            public override bool RequiresTick => Source.RequiresTick;
+
+            public override IReadOnlyList<GraphPortDefinition> GetOutputPorts()
+            {
+                return _outputPorts;
+            }
+
+            public override string GetSummary()
+            {
+                return Source.GetSummary();
+            }
         }
     }
 }

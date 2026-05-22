@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using IndieGabo.HandyTools.GraphCore;
 using IndieGabo.HandyTools.Utils;
 using UnityEngine;
 
@@ -11,227 +12,60 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
     /// with extensible wrapper registration for additional value kinds.
     /// </summary>
     [Serializable]
-    public sealed class CutsceneGraphBlackboard
+    public sealed class CutsceneGraphBlackboard : GraphBlackboard, ISerializationCallbackReceiver
     {
-        [SerializeField]
-        private List<CutsceneGraphBlackboardEntry> _entries = new();
+        private readonly CutsceneTypedReadOnlyListAdapter<GraphBlackboardEntry, CutsceneGraphBlackboardEntry>
+            _entriesView;
+
+        /// <summary>
+        /// Initializes one cutscene-authored blackboard shell.
+        /// </summary>
+        public CutsceneGraphBlackboard()
+        {
+            _entriesView = new CutsceneTypedReadOnlyListAdapter<GraphBlackboardEntry, CutsceneGraphBlackboardEntry>(
+                () => base.Entries);
+        }
 
         /// <summary>
         /// Gets a read-only view of the serialized entries.
         /// </summary>
-        public IReadOnlyList<CutsceneGraphBlackboardEntry> Entries => _entries;
-
-        /// <summary>
-        /// Ensures every serialized entry owns one stable identifier.
-        /// </summary>
-        public void EnsureEntryIds()
+        public new IReadOnlyList<CutsceneGraphBlackboardEntry> Entries
         {
-            HashSet<SerializableGuid> usedIds = new();
-
-            for (int i = 0; i < _entries.Count; i++)
+            get
             {
-                CutsceneGraphBlackboardEntry entry = _entries[i];
-
-                if (entry == null)
-                {
-                    continue;
-                }
-
-                entry.EnsureId();
-
-                if (entry.Id == SerializableGuid.Empty
-                    || !usedIds.Add(entry.Id))
-                {
-                    entry.RegenerateId();
-                    usedIds.Add(entry.Id);
-                }
+                NormalizeEntryShapes();
+                return _entriesView;
             }
         }
 
-        /// <summary>
-        /// Clears all authored entries from the blackboard.
-        /// </summary>
-        public void Clear()
+        /// <inheritdoc />
+        protected override string GetFamilyId()
         {
-            _entries.Clear();
+            return CutsceneGraphFamily.Id;
         }
 
-        /// <summary>
-        /// Attempts to resolve one typed value from the blackboard.
-        /// </summary>
-        /// <typeparam name="T">Requested value type.</typeparam>
-        /// <param name="key">Blackboard entry key.</param>
-        /// <param name="value">Resolved value when the key exists.</param>
-        /// <returns>True when the stored entry can be read as <typeparamref name="T"/>.</returns>
-        public bool TryGetValue<T>(string key, out T value)
-        {
-            value = default;
-
-            return TryGetEntry(key, out CutsceneGraphBlackboardEntry entry)
-                && entry.TryGetValue(out value);
-        }
-
-        /// <summary>
-        /// Attempts to resolve one typed value from the blackboard by entry id.
-        /// </summary>
-        /// <typeparam name="T">Requested value type.</typeparam>
-        /// <param name="entryId">Stable blackboard entry identifier.</param>
-        /// <param name="value">Resolved value when the entry exists.</param>
-        /// <returns>True when the stored entry can be read as <typeparamref name="T"/>.</returns>
-        public bool TryGetValue<T>(SerializableGuid entryId, out T value)
-        {
-            value = default;
-
-            return TryGetEntry(entryId, out CutsceneGraphBlackboardEntry entry)
-                && entry.TryGetValue(out value);
-        }
-
-        /// <summary>
-        /// Returns one existing value or creates a fresh value through the provided factory.
-        /// </summary>
-        /// <typeparam name="T">Requested value type.</typeparam>
-        /// <param name="key">Blackboard entry key.</param>
-        /// <param name="factory">Factory used when the key is missing.</param>
-        /// <returns>The existing or created value.</returns>
-        public T GetOrCreateValue<T>(string key, Func<T> factory)
-        {
-            if (TryGetValue(key, out T existing))
-            {
-                return existing;
-            }
-
-            T created = factory();
-            SetValue(key, created);
-            return created;
-        }
-
-        /// <summary>
-        /// Stores one value under the provided key.
-        /// Unsupported value types are ignored without mutating existing data.
-        /// </summary>
-        /// <typeparam name="T">Value type being stored.</typeparam>
-        /// <param name="key">Blackboard entry key.</param>
-        /// <param name="value">Value instance to store.</param>
-        public void SetValue<T>(string key, T value)
-        {
-            if (string.IsNullOrWhiteSpace(key))
-            {
-                return;
-            }
-
-            Type valueType = value == null ? typeof(T) : value.GetType();
-
-            if (!CutsceneBlackboardValueRegistry.TryCreateValue(
-                    valueType,
-                    out CutsceneGraphBlackboardValue replacementValue))
-            {
-                return;
-            }
-
-            if (!replacementValue.TrySetBoxedValue(value))
-            {
-                return;
-            }
-
-            CutsceneGraphBlackboardEntry entry = FindEntryByKey(key);
-
-            if (entry == null)
-            {
-                _entries.Add(new CutsceneGraphBlackboardEntry(key, replacementValue));
-                return;
-            }
-
-            if (entry.Value != null
-                && entry.Value.CanStoreValueType(valueType)
-                && entry.Value.TrySetBoxedValue(value))
-            {
-                return;
-            }
-
-            entry.Value = replacementValue;
-        }
-
-        /// <summary>
-        /// Stores one boxed value under the provided key.
-        /// Unsupported value types are ignored without mutating existing data.
-        /// </summary>
-        /// <param name="key">Blackboard entry key.</param>
-        /// <param name="value">Boxed value instance to store.</param>
-        /// <param name="valueType">Explicit runtime type when the boxed value is null.</param>
-        /// <returns>True when the value could be written.</returns>
-        public bool TrySetBoxedValue(
+        /// <inheritdoc />
+        protected override GraphBlackboardEntry CreateEntry(
             string key,
-            object value,
-            Type valueType = null)
+            GraphBlackboardValue value)
         {
-            if (string.IsNullOrWhiteSpace(key))
-            {
-                return false;
-            }
-
-            Type resolvedValueType = valueType ?? value?.GetType();
-
-            if (resolvedValueType == null
-                || !CutsceneBlackboardValueRegistry.TryCreateValue(
-                    resolvedValueType,
-                    out CutsceneGraphBlackboardValue replacementValue)
-                || !replacementValue.TrySetBoxedValue(value))
-            {
-                return false;
-            }
-
-            CutsceneGraphBlackboardEntry entry = FindEntryByKey(key);
-
-            if (entry == null)
-            {
-                _entries.Add(new CutsceneGraphBlackboardEntry(key, replacementValue));
-                EnsureEntryIds();
-                return true;
-            }
-
-            if (entry.TrySetBoxedValue(value))
-            {
-                return true;
-            }
-
-            entry.Value = replacementValue;
-            return true;
+            return new CutsceneGraphBlackboardEntry(key, value);
         }
 
         /// <summary>
-        /// Removes one entry by key.
-        /// </summary>
-        /// <param name="key">Blackboard entry key.</param>
-        /// <returns>True when at least one entry was removed.</returns>
-        public bool Remove(string key)
-        {
-            return _entries.RemoveAll(candidate => string.Equals(
-                candidate.Key,
-                key,
-                StringComparison.Ordinal)) > 0;
-        }
-
-        /// <summary>
-        /// Removes one entry by stable identifier.
-        /// </summary>
-        /// <param name="entryId">Stable blackboard entry identifier.</param>
-        /// <returns>True when at least one entry was removed.</returns>
-        public bool Remove(SerializableGuid entryId)
-        {
-            return _entries.RemoveAll(candidate => candidate != null
-                && candidate.Id == entryId) > 0;
-        }
-
-        /// <summary>
-        /// Attempts to resolve one serialized entry by authored key.
-        /// </summary>
-        /// <param name="key">Blackboard entry key.</param>
-        /// <param name="entry">Resolved entry when it exists.</param>
-        /// <returns>True when the entry exists.</returns>
         public bool TryGetEntry(string key, out CutsceneGraphBlackboardEntry entry)
         {
-            entry = string.IsNullOrWhiteSpace(key) ? null : FindEntryByKey(key);
-            return entry != null;
+            NormalizeEntryShapes();
+            entry = null;
+
+            if (!base.TryGetEntry(key, out GraphBlackboardEntry candidate)
+                || candidate is not CutsceneGraphBlackboardEntry cutsceneEntry)
+            {
+                return false;
+            }
+
+            entry = cutsceneEntry;
+            return true;
         }
 
         /// <summary>
@@ -240,22 +74,76 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
         /// <param name="entryId">Stable blackboard entry identifier.</param>
         /// <param name="entry">Resolved entry when it exists.</param>
         /// <returns>True when the entry exists.</returns>
-        public bool TryGetEntry(SerializableGuid entryId, out CutsceneGraphBlackboardEntry entry)
+        public bool TryGetEntry(
+            SerializableGuid entryId,
+            out CutsceneGraphBlackboardEntry entry)
         {
-            EnsureEntryIds();
-            entry = entryId == SerializableGuid.Empty ? null : _entries.Find(
-                candidate => candidate != null && candidate.Id == entryId);
+            NormalizeEntryShapes();
+            entry = null;
 
-            return entry != null;
+            if (!base.TryGetEntry(entryId, out GraphBlackboardEntry candidate)
+                || candidate is not CutsceneGraphBlackboardEntry cutsceneEntry)
+            {
+                return false;
+            }
+
+            entry = cutsceneEntry;
+            return true;
         }
 
-        private CutsceneGraphBlackboardEntry FindEntryByKey(string key)
+        /// <inheritdoc />
+        public void OnBeforeSerialize()
         {
+            NormalizeEntryShapes();
+        }
+
+        /// <inheritdoc />
+        public void OnAfterDeserialize()
+        {
+            NormalizeEntryShapes();
+        }
+
+        private void NormalizeEntryShapes()
+        {
+            for (int index = 0; index < EntriesInternal.Count; index++)
+            {
+                GraphBlackboardEntry entry = EntriesInternal[index];
+
+                if (entry == null)
+                {
+                    continue;
+                }
+
+                GraphBlackboardValue normalizedValue = NormalizeLegacyValue(entry.Value);
+
+                if (entry is not CutsceneGraphBlackboardEntry cutsceneEntry)
+                {
+                    cutsceneEntry = new CutsceneGraphBlackboardEntry(
+                        entry.Key,
+                        normalizedValue);
+                    cutsceneEntry.AssignId(entry.Id);
+                    EntriesInternal[index] = cutsceneEntry;
+                    continue;
+                }
+
+                if (!ReferenceEquals(cutsceneEntry.Value, normalizedValue))
+                {
+                    cutsceneEntry.Value = normalizedValue;
+                }
+            }
+
             EnsureEntryIds();
-            return _entries.Find(candidate => string.Equals(
-                candidate?.Key,
-                key,
-                StringComparison.Ordinal));
+        }
+
+        private static GraphBlackboardValue NormalizeLegacyValue(GraphBlackboardValue value)
+        {
+            if (value is not CutsceneGraphBlackboardValue legacyValue)
+            {
+                return value;
+            }
+
+            return CutsceneGraphCoreRuntimeMigrationUtility.CreateGraphBlackboardValue(legacyValue)
+                ?? value;
         }
     }
 
@@ -263,42 +151,13 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
     /// Represents one named blackboard entry that wraps a typed value payload.
     /// </summary>
     [Serializable]
-    public sealed class CutsceneGraphBlackboardEntry
+    public class CutsceneGraphBlackboardEntry : GraphBlackboardEntry
     {
-        [SerializeField, HideInInspector]
-        private SerializableGuid _id;
-
-        [SerializeField]
-        private string _key = string.Empty;
-
-        [SerializeReference]
-        private CutsceneGraphBlackboardValue _value;
-
-        /// <summary>
-        /// Gets the stable entry identifier.
-        /// </summary>
-        public SerializableGuid Id => _id;
-
-        /// <summary>
-        /// Gets the authored blackboard key.
-        /// </summary>
-        public string Key => _key;
-
-        /// <summary>
-        /// Gets or sets the stored blackboard payload.
-        /// </summary>
-        public CutsceneGraphBlackboardValue Value
-        {
-            get => _value;
-            set => _value = value;
-        }
-
         /// <summary>
         /// Initializes an empty entry for Unity serialization.
         /// </summary>
         public CutsceneGraphBlackboardEntry()
         {
-            EnsureId();
         }
 
         /// <summary>
@@ -308,99 +167,21 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
         /// <param name="value">Stored blackboard payload.</param>
         public CutsceneGraphBlackboardEntry(
             string key,
+            GraphBlackboardValue value)
+            : base(key, value)
+        {
+        }
+
+        /// <summary>
+        /// Initializes one entry with one legacy cutscene wrapper.
+        /// </summary>
+        /// <param name="key">Authored blackboard key.</param>
+        /// <param name="value">Legacy cutscene wrapper payload.</param>
+        public CutsceneGraphBlackboardEntry(
+            string key,
             CutsceneGraphBlackboardValue value)
+            : base(key, value)
         {
-            EnsureId();
-            _key = key ?? string.Empty;
-            _value = value;
-        }
-
-        /// <summary>
-        /// Ensures the entry owns one stable identifier.
-        /// </summary>
-        public void EnsureId()
-        {
-            if (_id == SerializableGuid.Empty)
-            {
-                _id = SerializableGuid.NewGuid();
-            }
-        }
-
-        /// <summary>
-        /// Replaces the entry identifier with a fresh value.
-        /// </summary>
-        public void RegenerateId()
-        {
-            _id = SerializableGuid.NewGuid();
-        }
-
-        /// <summary>
-        /// Attempts to resolve the stored payload as the requested type.
-        /// </summary>
-        /// <typeparam name="T">Requested value type.</typeparam>
-        /// <param name="value">Resolved value when available.</param>
-        /// <returns>True when the payload can be read as <typeparamref name="T"/>.</returns>
-        public bool TryGetValue<T>(out T value)
-        {
-            value = default;
-
-            if (_value == null
-                || !_value.TryGetValue(typeof(T), out object boxedValue))
-            {
-                return false;
-            }
-
-            value = (T)boxedValue;
-            return true;
-        }
-
-        /// <summary>
-        /// Resolves the stored payload as the requested type.
-        /// </summary>
-        /// <typeparam name="T">Requested value type.</typeparam>
-        /// <returns>The resolved value.</returns>
-        /// <exception cref="InvalidOperationException">
-        /// Thrown when the payload cannot be read as <typeparamref name="T"/>.
-        /// </exception>
-        public T GetValue<T>()
-        {
-            if (!TryGetValue(out T value))
-            {
-                throw new InvalidOperationException(
-                    $"Blackboard entry '{_key}' cannot be read as {typeof(T).FullName}.");
-            }
-
-            return value;
-        }
-
-        /// <summary>
-        /// Attempts to replace the stored payload with one typed value.
-        /// </summary>
-        /// <typeparam name="T">Payload type.</typeparam>
-        /// <param name="value">Value to store.</param>
-        /// <returns>True when the existing wrapper accepted the value.</returns>
-        public bool TrySetValue<T>(T value)
-        {
-            Type valueType = value == null ? typeof(T) : value.GetType();
-
-            return _value != null
-                && _value.CanStoreValueType(valueType)
-                && _value.TrySetBoxedValue(value);
-        }
-
-        /// <summary>
-        /// Attempts to replace the stored payload with one boxed value.
-        /// </summary>
-        /// <param name="value">Boxed value payload.</param>
-        /// <returns>True when the existing wrapper accepted the value.</returns>
-        public bool TrySetBoxedValue(object value)
-        {
-            Type valueType = value?.GetType() ?? _value?.GetExpectedValueType();
-
-            return valueType != null
-                && _value != null
-                && _value.CanStoreValueType(valueType)
-                && _value.TrySetBoxedValue(value);
         }
     }
 
@@ -408,111 +189,8 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
     /// Base class for graph blackboard value wrappers.
     /// </summary>
     [Serializable]
-    public abstract class CutsceneGraphBlackboardValue
+    public abstract class CutsceneGraphBlackboardValue : GraphBlackboardValue
     {
-        /// <summary>
-        /// Initializes the wrapper for the requested runtime type.
-        /// </summary>
-        /// <param name="valueType">Runtime type the wrapper should represent.</param>
-        public virtual void InitializeForValueType(Type valueType)
-        {
-        }
-
-        /// <summary>
-        /// Gets the runtime type currently represented by the wrapper.
-        /// </summary>
-        /// <returns>The represented runtime type.</returns>
-        public abstract Type GetExpectedValueType();
-
-        /// <summary>
-        /// Determines whether the wrapper can store values of the requested type.
-        /// </summary>
-        /// <param name="valueType">Runtime type being requested.</param>
-        /// <returns>True when the wrapper can store the requested type.</returns>
-        public virtual bool CanStoreValueType(Type valueType)
-        {
-            if (valueType == null)
-            {
-                return false;
-            }
-
-            Type expectedType = GetExpectedValueType();
-
-            if (expectedType == null)
-            {
-                return false;
-            }
-
-            return expectedType == valueType
-                || expectedType.IsAssignableFrom(valueType);
-        }
-
-        /// <summary>
-        /// Resolves the boxed value stored by the wrapper.
-        /// </summary>
-        /// <returns>The boxed value payload.</returns>
-        public abstract object GetBoxedValue();
-
-        /// <summary>
-        /// Attempts to replace the stored value payload.
-        /// </summary>
-        /// <param name="value">Boxed value payload.</param>
-        /// <returns>True when the payload was accepted.</returns>
-        public abstract bool TrySetBoxedValue(object value);
-
-        /// <summary>
-        /// Attempts to resolve the stored payload as the requested runtime type.
-        /// </summary>
-        /// <param name="requestedType">Runtime type requested by the caller.</param>
-        /// <param name="value">Resolved boxed value when available.</param>
-        /// <returns>True when the stored payload matches the requested type.</returns>
-        public virtual bool TryGetValue(Type requestedType, out object value)
-        {
-            value = null;
-
-            if (requestedType == null)
-            {
-                return false;
-            }
-
-            object boxedValue = GetBoxedValue();
-
-            if (boxedValue == null)
-            {
-                if (!requestedType.IsValueType
-                    || Nullable.GetUnderlyingType(requestedType) != null
-                    || requestedType == typeof(object))
-                {
-                    return true;
-                }
-
-                return false;
-            }
-
-            if (requestedType == typeof(object)
-                || requestedType.IsInstanceOfType(boxedValue))
-            {
-                value = boxedValue;
-                return true;
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Resolves one runtime type from its serialized assembly-qualified name.
-        /// </summary>
-        /// <param name="serializedTypeName">Serialized type name.</param>
-        /// <param name="fallbackType">Fallback type when the name cannot be resolved.</param>
-        /// <returns>The resolved runtime type.</returns>
-        protected static Type ResolveSerializedType(
-            string serializedTypeName,
-            Type fallbackType)
-        {
-            return string.IsNullOrWhiteSpace(serializedTypeName)
-                ? fallbackType
-                : Type.GetType(serializedTypeName) ?? fallbackType;
-        }
     }
 
     /// <summary>
@@ -1248,7 +926,7 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
 
             _objectTypeName = valueType.AssemblyQualifiedName ?? valueType.FullName ?? string.Empty;
 
-            if (Value != null && !valueType.IsInstanceOfType(Value))
+            if (!IsUnityObjectUnavailable(Value) && !valueType.IsInstanceOfType(Value))
             {
                 Value = null;
             }
@@ -1269,9 +947,9 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
         /// <returns>The concrete Unity object type when available.</returns>
         public Type ResolveObjectType()
         {
-            Type fallbackType = Value != null
-                ? Value.GetType()
-                : typeof(UnityEngine.Object);
+            Type fallbackType = IsUnityObjectUnavailable(Value)
+                ? typeof(UnityEngine.Object)
+                : Value.GetType();
             Type resolvedType = ResolveSerializedType(_objectTypeName, fallbackType);
             return resolvedType != null
                 && typeof(UnityEngine.Object).IsAssignableFrom(resolvedType)
@@ -1295,7 +973,7 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
                 return false;
             }
 
-            if (Value == null)
+            if (IsUnityObjectUnavailable(Value))
             {
                 Type configuredType = GetExpectedValueType();
 
@@ -1325,6 +1003,12 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
                 return false;
             }
 
+            if (IsUnityObjectUnavailable(objectValue))
+            {
+                Value = null;
+                return true;
+            }
+
             Type expectedType = GetExpectedValueType();
 
             if (!TryCoerceUnityObjectValue(objectValue, expectedType, out UnityEngine.Object coercedValue))
@@ -1343,7 +1027,7 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
         {
             value = null;
 
-            if (objectValue == null || requestedType == null)
+            if (IsUnityObjectUnavailable(objectValue) || requestedType == null)
             {
                 return false;
             }
@@ -1365,7 +1049,16 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
             if (typeof(Component).IsAssignableFrom(requestedType)
                 && TryResolveOwnerGameObject(objectValue, out GameObject componentOwner))
             {
-                Component component = componentOwner.GetComponent(requestedType);
+                Component component;
+
+                try
+                {
+                    component = componentOwner.GetComponent(requestedType);
+                }
+                catch (InvalidOperationException)
+                {
+                    component = null;
+                }
 
                 if (component != null)
                 {
@@ -1384,7 +1077,7 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
         {
             coercedValue = null;
 
-            if (objectValue == null || expectedType == null)
+            if (IsUnityObjectUnavailable(objectValue) || expectedType == null)
             {
                 return false;
             }
@@ -1405,7 +1098,16 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
             if (typeof(Component).IsAssignableFrom(expectedType)
                 && TryResolveOwnerGameObject(objectValue, out GameObject componentOwner))
             {
-                Component component = componentOwner.GetComponent(expectedType);
+                Component component;
+
+                try
+                {
+                    component = componentOwner.GetComponent(expectedType);
+                }
+                catch (InvalidOperationException)
+                {
+                    component = null;
+                }
 
                 if (component != null)
                 {
@@ -1421,6 +1123,12 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
             UnityEngine.Object objectValue,
             out GameObject gameObject)
         {
+            if (IsUnityObjectUnavailable(objectValue))
+            {
+                gameObject = null;
+                return false;
+            }
+
             switch (objectValue)
             {
                 case GameObject ownerGameObject:
@@ -1428,12 +1136,37 @@ namespace IndieGabo.HandyTools.CutscenesModule.Core
                     return true;
 
                 case Component component:
-                    gameObject = component.gameObject;
-                    return true;
+                    try
+                    {
+                        gameObject = component.gameObject;
+                        return !IsUnityObjectUnavailable(gameObject);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        gameObject = null;
+                        return false;
+                    }
 
                 default:
                     gameObject = null;
                     return false;
+            }
+        }
+
+        private static bool IsUnityObjectUnavailable(UnityEngine.Object objectValue)
+        {
+            if (ReferenceEquals(objectValue, null))
+            {
+                return true;
+            }
+
+            try
+            {
+                return objectValue == null;
+            }
+            catch (InvalidOperationException)
+            {
+                return false;
             }
         }
     }

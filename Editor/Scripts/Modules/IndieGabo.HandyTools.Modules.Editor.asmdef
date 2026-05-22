@@ -4,6 +4,7 @@
     "references": [
         "IndieGabo.HandyTools.Runtime",
         "IndieGabo.HandyTools.Editor",
+        "IndieGabo.HandyTools.Conversations",
         "IndieGabo.HandyTools.Cutscenes.Editor",
         "IndieGabo.HandyTools.Debugging.Editor",
         "IndieGabo.HandyTools.FSM.Editor",
@@ -13,7 +14,8 @@
         "IndieGabo.HandyTools.Logger.Editor",
         "IndieGabo.HandyTools.SaveSystem.Editor",
         "IndieGabo.HandyTools.ScreenShooter.Editor",
-        "IndieGabo.HandyTools.Steam.Editor"
+        "IndieGabo.HandyTools.Steam.Editor",
+        "Unity.InputSystem"
     ],
     "includePlatforms": [
         "Editor"

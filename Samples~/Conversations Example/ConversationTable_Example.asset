@@ -1,0 +1,176 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56932d041ada8c143ad4168149918727, type: 3}
+  m_Name: ConversationTable_Example
+  m_EditorClassIdentifier: IndieGabo.HandyTools.Conversations::IndieGabo.HandyTools.ConversationsModule.Core.ConversationTable
+  _conversations:
+  - _conversationId:
+      Part1: 3879252832
+      Part2: 1154722652
+      Part3: 2017329847
+      Part4: 39949734
+    _title: Conversation
+    _graph:
+      _nodes:
+      - rid: 1096524733446619406
+      - rid: 1096524733446619420
+      - rid: 1096524756874166360
+      - rid: 1096524756874166361
+      _connections:
+      - _fromNodeId:
+          Part1: 36893419
+          Part2: 1149454426
+          Part3: 2656489367
+          Part4: 1981669825
+        _outputKey: Next
+        _toNodeId:
+          Part1: 4055041039
+          Part2: 1075286931
+          Part3: 3488624006
+          Part4: 3928374218
+        _hasCustomColor: 0
+        _customColor: {r: 0.45, g: 0.45, b: 0.45, a: 1}
+      - _fromNodeId:
+          Part1: 4055041039
+          Part2: 1075286931
+          Part3: 3488624006
+          Part4: 3928374218
+        _outputKey: Next
+        _toNodeId:
+          Part1: 583131444
+          Part2: 1290379256
+          Part3: 904338600
+          Part4: 1457170593
+        _hasCustomColor: 0
+        _customColor: {r: 0.45, g: 0.45, b: 0.45, a: 1}
+      - _fromNodeId:
+          Part1: 583131444
+          Part2: 1290379256
+          Part3: 904338600
+          Part4: 1457170593
+        _outputKey: Next
+        _toNodeId:
+          Part1: 1292134200
+          Part2: 1088619409
+          Part3: 2395079072
+          Part4: 464452659
+        _hasCustomColor: 0
+        _customColor: {r: 0.45, g: 0.45, b: 0.45, a: 1}
+      _blackboard:
+        _entries: []
+    _presenterOverridePrefab: {fileID: 780100000000000001, guid: 4d0a7f35e89b4d69965eab2f261f3b53, type: 3}
+  _actors:
+  - _actorId:
+      Part1: 1989911408
+      Part2: 1258626916
+      Part3: 3656990374
+      Part4: 2545776425
+    _key: actor-1
+    _displayName: Actor 1
+    _portrait: {fileID: 21300000, guid: 2a7759d5cdfb34d4aa69f702ba9c6af7, type: 3}
+    _themeColor: {r: 0.3207547, g: 0.06475613, b: 0.07890434, a: 1}
+    _notes: 
+  - _actorId:
+      Part1: 833867500
+      Part2: 1294340135
+      Part3: 270688164
+      Part4: 3183601858
+    _key: actor-2
+    _displayName: Actor 2
+    _portrait: {fileID: 21300000, guid: 1bfee4e61637ac44090639b655bdc2af, type: 3}
+    _themeColor: {r: 0.3207547, g: 0.06475613, b: 0.07890434, a: 1}
+    _notes: 
+  - _actorId:
+      Part1: 909907090
+      Part2: 1253829580
+      Part3: 3064912043
+      Part4: 685534519
+    _key: actor-3
+    _displayName: Actor 3
+    _portrait: {fileID: 21300000, guid: 7d48dcf56ea44fb4c88f6f93d663b6ac, type: 3}
+    _themeColor: {r: 0.3207547, g: 0.06475613, b: 0.07890434, a: 1}
+    _notes: 
+  - _actorId:
+      Part1: 2343770915
+      Part2: 1187069554
+      Part3: 2945445005
+      Part4: 1876298951
+    _key: actor-4
+    _displayName: Actor 4
+    _portrait: {fileID: 21300000, guid: 0e9f32f4a37a4384dade8c686184e1b1, type: 3}
+    _themeColor: {r: 0.06666666, g: 0.14222865, b: 0.32156864, a: 1}
+    _notes: 
+  _continueAction: {fileID: 9120403175427506597, guid: 911b0a49865f48bb9ac70e222f1b891b, type: 3}
+  _cancelAction: {fileID: -7958101087658997014, guid: 911b0a49865f48bb9ac70e222f1b891b, type: 3}
+  _skipAction: {fileID: -7958101087658997014, guid: 911b0a49865f48bb9ac70e222f1b891b, type: 3}
+  _defaultPresenterPrefab: {fileID: 770100000000000001, guid: a1ec4b60e20d4ce5bc2be84e41c0d75f, type: 3}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1096524733446619406
+      type: {class: ConversationEntryNode, ns: IndieGabo.HandyTools.ConversationsModule.Nodes, asm: IndieGabo.HandyTools.Conversations}
+      data:
+        _id:
+          Part1: 36893419
+          Part2: 1149454426
+          Part3: 2656489367
+          Part4: 1981669825
+        _title: 
+        _position: {x: 0, y: 0}
+    - rid: 1096524733446619420
+      type: {class: ConversationLineNode, ns: IndieGabo.HandyTools.ConversationsModule.Nodes, asm: IndieGabo.HandyTools.Conversations}
+      data:
+        _id:
+          Part1: 4055041039
+          Part2: 1075286931
+          Part3: 3488624006
+          Part4: 3928374218
+        _title: 
+        _position: {x: 240, y: 0}
+        _lineText: This sample line proves the presenter can keep portraits at the
+          sides and dialogue centered.
+        _speakerActorId:
+          Part1: 1989911408
+          Part2: 1258626916
+          Part3: 3656990374
+          Part4: 2545776425
+        _listenerActorId:
+          Part1: 2343770915
+          Part2: 1187069554
+          Part3: 2945445005
+          Part4: 1876298951
+        _speakerSlot: 2
+        _listenerSlot: 1
+    - rid: 1096524756874166360
+      type: {class: ConversationNarrationLineNode, ns: IndieGabo.HandyTools.ConversationsModule.Nodes, asm: IndieGabo.HandyTools.Conversations}
+      data:
+        _id:
+          Part1: 583131444
+          Part2: 1290379256
+          Part3: 904338600
+          Part4: 1457170593
+        _title: 
+        _position: {x: 480, y: 0}
+        _lineText: A narration node can reuse the same presenter without speaker
+          cards.
+    - rid: 1096524756874166361
+      type: {class: ConversationNarrationLineNode, ns: IndieGabo.HandyTools.ConversationsModule.Nodes, asm: IndieGabo.HandyTools.Conversations}
+      data:
+        _id:
+          Part1: 1292134200
+          Part2: 1088619409
+          Part3: 2395079072
+          Part4: 464452659
+        _title: 
+        _position: {x: 720, y: 0}
+        _lineText: Skip or cancel ends the conversation, while advance walks to the
+          next node.

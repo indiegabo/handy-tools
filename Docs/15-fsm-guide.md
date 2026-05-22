@@ -53,7 +53,7 @@ the migration, but they are now deprecated and should not be used by new code.
 - `FSMBrain` continues to use its dedicated custom inspector, including the
   `Third Party` section that reports Simple Blackboard and Character Controller
   Pro availability directly on the brain.
-- The `FSM CCPro Starter Kit` is distributed through the package samples tab.
+- The `FSM CCPro Example` is distributed through the package samples tab.
 
 ## Reading Order
 

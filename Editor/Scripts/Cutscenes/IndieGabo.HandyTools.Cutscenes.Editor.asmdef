@@ -5,7 +5,10 @@
         "IndieGabo.HandyTools.Runtime",
         "IndieGabo.HandyTools.Editor",
         "IndieGabo.HandyTools.Cutscenes",
-        "IndieGabo.HandyTools.Utils"
+        "IndieGabo.HandyTools.Conversations",
+        "IndieGabo.HandyTools.Utils",
+        "IndieGabo.HandyTools.GraphCore",
+        "IndieGabo.HandyTools.GraphCore.Editor"
     ],
     "includePlatforms": [
         "Editor"
